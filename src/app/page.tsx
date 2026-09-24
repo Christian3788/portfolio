@@ -10,6 +10,13 @@ interface Project {
 
 const projects: Project[] = [
   {
+    title: "LYRIC – Music Streaming Platform",
+    description:
+      "Full-stack audio streaming system featuring HTTP 206 partial content range streaming in Go, real-time WebSocket synchronized 'Listen Along' rooms, MinIO object storage, and a Next.js persistent audio player.",
+    tags: ["Go", "Next.js", "WebSockets", "MinIO", "Redis", "Prisma"],
+    githubUrl: "https://github.com/Christian3788",
+  },
+  {
     title: "Concurrent TCP Chat Server",
     description:
       "High-throughput multi-client TCP chat engine built with goroutines, custom broadcast protocols, and containerized deployment.",
@@ -19,7 +26,7 @@ const projects: Project[] = [
   {
     title: "Spatial Risk Analytics Engine",
     description:
-      "Geographic vulnerability scoring engine utilizing spatial queries, vulnerability modeling formulas, and postGIS data layers.",
+      "Geographic vulnerability scoring engine utilizing spatial queries, vulnerability modeling formulas, and PostGIS data layers.",
     tags: ["PostGIS", "Next.js", "Prisma", "TypeScript"],
     githubUrl: "https://github.com/Christian3788",
   },
@@ -30,23 +37,18 @@ const projects: Project[] = [
     tags: ["Go", "Docker", "Prisma", "REST API"],
     githubUrl: "https://github.com/Christian3788",
   },
-  {
-    title: "DukaPOS",
-    description:
-      "Offline-capable point-of-sale progressive web app integrated with M-Pesa automated payment workflows and real-time syncing.",
-    tags: ["Next.js", "PWA", "M-Pesa API", "Prisma"],
-    githubUrl: "https://github.com/Christian3788",
-  },
 ];
 
 const skills: string[] = [
   "Go",
   "TypeScript",
   "Next.js",
+  "WebSockets",
   "Python",
   "PostgreSQL / PostGIS",
   "Prisma",
   "Docker",
+  "Redis",
   "Git & CI/CD",
   "REST APIs",
   "Linux / Shell",
@@ -88,7 +90,7 @@ export default function Home() {
             Hi, I'm <span className="text-teal-400">Christian Amos</span>
           </h1>
           <p className="text-lg sm:text-xl text-slate-400 max-w-2xl leading-relaxed">
-            Software engineer focused on scalable backend systems, distributed architectures, spatial data, and robust web applications.
+            Software engineer focused on scalable backend systems, distributed architectures, spatial data, and modern web applications.
           </p>
           <div className="flex flex-wrap gap-4 pt-2">
             <a
@@ -121,10 +123,10 @@ export default function Home() {
           </h2>
           <div className="text-slate-400 space-y-4 leading-relaxed">
             <p>
-              I build resilient backend microservices, network-level protocols, and data-intensive applications. My workflow balances low-level efficiency with modern full-stack development, ensuring applications are performant, maintainable, and production-ready.
+              I build resilient backend microservices, real-time protocols, and data-intensive applications. My workflow balances low-level efficiency with modern full-stack development, ensuring applications are performant, maintainable, and production-ready.
             </p>
             <p>
-              Whether engineering concurrent TCP servers in Go, modeling complex spatial datasets with PostGIS, or designing full-stack systems with Next.js and Prisma, I enjoy tackling architectural challenges from design through deployment.
+              Whether engineering low-latency streaming services and concurrent networking applications in Go, modeling complex spatial datasets with PostGIS, or building reactive interfaces with Next.js, I enjoy tackling architectural challenges from end to end.
             </p>
           </div>
         </section>
@@ -208,7 +210,7 @@ export default function Home() {
           </p>
           <div className="flex flex-wrap gap-4">
             <a
-              href="mailto:contact@example.com"
+              href="mailto:christianamos67@gmail.com"
               className="px-5 py-2.5 bg-slate-900 border border-slate-700 text-teal-400 font-mono text-sm rounded-lg hover:border-teal-400 transition-colors"
             >
               Send an Email
