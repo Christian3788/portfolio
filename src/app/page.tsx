@@ -20,6 +20,7 @@ import {
   Crosshair,
 } from "lucide-react";
 
+// Native SVG replacement for GitHub
 function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -28,6 +29,15 @@ function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
         d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
         clipRule="evenodd"
       />
+    </svg>
+  );
+}
+
+// Native SVG for LinkedIn
+function LinkedinIcon({ className = "w-4 h-4" }: { className?: string }) {
+  return (
+    <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.2a1.62 1.62 0 0 0-1.62 1.62c0 .9.72 1.63 1.62 1.63.9 0 1.63-.73 1.63-1.63 0-.9-.73-1.62-1.63-1.62Z" />
     </svg>
   );
 }
@@ -133,6 +143,33 @@ const projects: Project[] = [
   },
 ];
 
+const articles = [
+  {
+    title: "Implementing HTTP 206 Partial Content in Go for Media Streaming",
+    date: "Sep 2026",
+    summary:
+      "A deep dive into parsing HTTP byte ranges, satisfying Range header bounds, and piping io.ReadSeeker streams safely to avoid memory exhaustion.",
+    tags: ["Go", "Streaming", "HTTP"],
+    link: "https://dev.to/christian-otieno",
+  },
+  {
+    title: "Architecting Real-Time WebSocket Rooms with Goroutine Hubs",
+    date: "Aug 2026",
+    summary:
+      "Preventing deadlocks and managing slow client write drops in high-throughput fan-out broadcast architectures.",
+    tags: ["Concurrency", "Go", "WebSockets"],
+    link: "https://dev.to/christian-otieno",
+  },
+  {
+    title: "PostGIS Spatial Indexing: Query Optimization at Scale",
+    date: "Jul 2026",
+    summary:
+      "Benchmarking GiST indexing against R-Tree structures when performing multi-polygon intersections across urban coordinates.",
+    tags: ["PostGIS", "Databases"],
+    link: "https://dev.to/christian-otieno",
+  },
+];
+
 const skills = [
   "Go",
   "TypeScript",
@@ -155,7 +192,6 @@ const themePalettes = {
     borderAccent: "border-teal-400",
     bgBadge: "bg-teal-950/60 border-teal-800/60 text-teal-300",
     hoverBorder: "hover:border-teal-400/50",
-    ringAccent: "ring-teal-400",
   },
   emerald: {
     accent: "text-emerald-400",
@@ -163,7 +199,6 @@ const themePalettes = {
     borderAccent: "border-emerald-400",
     bgBadge: "bg-emerald-950/60 border-emerald-800/60 text-emerald-300",
     hoverBorder: "hover:border-emerald-400/50",
-    ringAccent: "ring-emerald-400",
   },
   amber: {
     accent: "text-amber-400",
@@ -171,7 +206,6 @@ const themePalettes = {
     borderAccent: "border-amber-400",
     bgBadge: "bg-amber-950/60 border-amber-800/60 text-amber-300",
     hoverBorder: "hover:border-amber-400/50",
-    ringAccent: "ring-amber-400",
   },
   violet: {
     accent: "text-violet-400",
@@ -179,7 +213,6 @@ const themePalettes = {
     borderAccent: "border-violet-400",
     bgBadge: "bg-violet-950/60 border-violet-800/60 text-violet-300",
     hoverBorder: "hover:border-violet-400/50",
-    ringAccent: "ring-violet-400",
   },
 };
 
@@ -220,7 +253,7 @@ export default function Home() {
   const [, startTransition] = useTransition();
   const theme = themePalettes[currentTheme];
 
-  // Fetch real telemetry from edge route
+  // Fetch telemetry
   useEffect(() => {
     fetch("/api/telemetry")
       .then((res) => res.json())
@@ -271,7 +304,14 @@ export default function Home() {
 
       for (let i = 0; i < bufferLength; i++) {
         const barHeight = (dataArray[i] / 255) * canvas.height;
-        ctx.fillStyle = currentTheme === "amber" ? "#f59e0b" : currentTheme === "emerald" ? "#10b981" : currentTheme === "violet" ? "#8b5cf6" : "#2dd4bf";
+        ctx.fillStyle =
+          currentTheme === "amber"
+            ? "#f59e0b"
+            : currentTheme === "emerald"
+            ? "#10b981"
+            : currentTheme === "violet"
+            ? "#8b5cf6"
+            : "#2dd4bf";
         ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
         x += barWidth + 2;
       }
@@ -288,7 +328,9 @@ export default function Home() {
     }
 
     try {
-      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      const AudioCtx =
+        window.AudioContext ||
+        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
       const ctx = new AudioCtx();
       audioContextRef.current = ctx;
 
@@ -325,7 +367,7 @@ export default function Home() {
     }
   };
 
-  // GIS coordinate simulator click
+  // GIS coordinate simulator
   const handleGisCanvasClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();
     const x = Math.round(((e.clientX - rect.left) / rect.width) * 100);
@@ -344,7 +386,7 @@ export default function Home() {
 
     switch (cmd) {
       case "help":
-        out = "Commands: help, projects, skills, status, resume, clear, exit";
+        out = "Commands: help, projects, skills, status, resume, devto, linkedin, clear, exit";
         break;
       case "projects":
         out = projects.map((p) => `• ${p.title} [${p.tags.join(", ")}]`).join("\n");
@@ -358,6 +400,14 @@ export default function Home() {
       case "resume":
         setIsResumeOpen(true);
         out = "Opening interactive resume modal...";
+        break;
+      case "devto":
+        window.open("https://dev.to/christian-otieno", "_blank");
+        out = "Opening DEV.to profile...";
+        break;
+      case "linkedin":
+        window.open("https://www.linkedin.com/in/christian-otieno-9a9806229/", "_blank");
+        out = "Opening LinkedIn profile...";
         break;
       case "clear":
         setTerminalHistory([]);
@@ -398,6 +448,7 @@ export default function Home() {
             <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-300">
               <a href="#about" className="hover:text-white transition">About</a>
               <a href="#projects" className="hover:text-white transition">Projects</a>
+              <a href="#articles" className="hover:text-white transition">Articles</a>
               <button
                 onClick={() => setIsResumeOpen(true)}
                 className="hover:text-teal-400 transition flex items-center gap-1"
@@ -443,7 +494,7 @@ export default function Home() {
 
       {/* Main Container */}
       <main className="max-w-5xl mx-auto px-6 py-14 space-y-20">
-        {/* Hero Section with Live Edge Telemetry */}
+        {/* Hero Section */}
         <section className="space-y-6">
           <div className="flex flex-wrap items-center gap-3">
             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono border ${theme.bgBadge}`}>
@@ -482,10 +533,19 @@ export default function Home() {
               href="https://github.com/Christian3788"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 px-5 py-2.5 border border-slate-800 bg-slate-900/60 font-medium rounded-lg hover:border-slate-700 transition"
+              className="flex items-center gap-2 px-4 py-2.5 border border-slate-800 bg-slate-900/60 font-medium rounded-lg hover:border-slate-700 transition"
             >
               <GithubIcon className="w-4 h-4" />
               GitHub
+            </a>
+            <a
+              href="https://www.linkedin.com/in/christian-otieno-9a9806229/"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 px-4 py-2.5 border border-slate-800 bg-slate-900/60 font-medium rounded-lg hover:border-slate-700 transition text-sky-400"
+            >
+              <LinkedinIcon className="w-4 h-4" />
+              LinkedIn
             </a>
           </div>
         </section>
@@ -578,7 +638,6 @@ export default function Home() {
                         {proj.title}
                       </h3>
 
-                      {/* Interactive Visualizer Trigger for LYRIC */}
                       {proj.hasAudioVisualizer && (
                         <button
                           onClick={toggleAudioPreview}
@@ -681,30 +740,23 @@ export default function Home() {
           </motion.div>
         </section>
 
-        {/* Engineering Notes */}
+        {/* Engineering Notes & Articles */}
         <section id="articles" className="space-y-6">
-          <h2 className="text-2xl font-bold text-white border-b border-slate-800 pb-3 flex items-center gap-2">
-            <FileText className="w-5 h-5 text-slate-400" /> Engineering Notes & Technical Papers
-          </h2>
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              <FileText className="w-5 h-5 text-slate-400" /> Engineering Notes & Technical Papers
+            </h2>
+            <a
+              href="https://dev.to/christian-otieno"
+              target="_blank"
+              rel="noreferrer"
+              className="text-xs font-mono text-teal-400 hover:underline flex items-center gap-1"
+            >
+              dev.to/christian-otieno &rarr;
+            </a>
+          </div>
           <div className="space-y-4">
-            {[
-              {
-                title: "Implementing HTTP 206 Partial Content in Go for Media Streaming",
-                date: "Sep 2026",
-                summary:
-                  "A deep dive into parsing HTTP byte ranges, satisfying Range header bounds, and piping io.ReadSeeker streams safely to avoid memory exhaustion.",
-                tags: ["Go", "Streaming", "HTTP"],
-                link: "https://github.com/Christian3788",
-              },
-              {
-                title: "Architecting Real-Time WebSocket Rooms with Goroutine Hubs",
-                date: "Aug 2026",
-                summary:
-                  "Preventing deadlocks and managing slow client write drops in high-throughput fan-out broadcast architectures.",
-                tags: ["Concurrency", "Go", "WebSockets"],
-                link: "https://github.com/Christian3788",
-              },
-            ].map((art) => (
+            {articles.map((art) => (
               <a
                 key={art.title}
                 href={art.link}
@@ -750,7 +802,23 @@ export default function Home() {
               rel="noreferrer"
               className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 border border-slate-800 rounded-lg text-sm font-mono text-slate-200 hover:border-slate-700 transition"
             >
-              <GithubIcon className="w-4 h-4" /> github.com/Christian3788
+              <GithubIcon className="w-4 h-4" /> GitHub
+            </a>
+            <a
+              href="https://www.linkedin.com/in/christian-otieno-9a9806229/"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 border border-slate-800 rounded-lg text-sm font-mono text-slate-200 hover:border-slate-700 transition text-sky-400"
+            >
+              <LinkedinIcon className="w-4 h-4" /> LinkedIn
+            </a>
+            <a
+              href="https://dev.to/christian-otieno"
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 border border-slate-800 rounded-lg text-sm font-mono text-slate-200 hover:border-slate-700 transition"
+            >
+              <FileText className="w-4 h-4 text-teal-400" /> DEV.to
             </a>
           </div>
         </section>
@@ -852,7 +920,7 @@ export default function Home() {
                 type="text"
                 value={terminalInput}
                 onChange={(e) => setTerminalInput(e.target.value)}
-                placeholder="type 'help', 'status', or 'resume'..."
+                placeholder="type 'help', 'devto', 'linkedin', or 'resume'..."
                 autoFocus
                 className="w-full bg-transparent text-slate-100 placeholder-slate-600 focus:outline-none text-sm font-mono"
               />
