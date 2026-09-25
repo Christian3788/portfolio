@@ -20,7 +20,7 @@ import {
   Crosshair,
 } from "lucide-react";
 
-// Native SVG replacement for GitHub
+// Native SVG for GitHub
 function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
   return (
     <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
@@ -102,9 +102,9 @@ const projects: Project[] = [
   },
   {
     id: "tcp-chat",
-    title: "Concurrent TCP Chat Server",
+    title: "Concurrent TCP Chat Server & Core Systems",
     description:
-      "High-throughput multi-client TCP chat engine built with goroutines, custom broadcast protocols, non-blocking channels, and containerized deployment.",
+      "High-throughput multi-client TCP chat engine built with goroutines, custom broadcast protocols, non-blocking channels, alongside algorithmic backtracking solvers.",
     tags: ["Go", "Docker", "Networking", "Concurrency"],
     githubUrl: "https://github.com/Christian3788",
     architecture: {
@@ -508,11 +508,11 @@ export default function Home() {
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
-            Hi, I'm <span className={theme.accent}>Christian Amos</span>
+            Hi, I'm <span className={theme.accent}>Christian Amos Otieno</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-400 max-w-2xl leading-relaxed">
-            Software engineer focused on scalable backend engines, Go concurrency, spatial PostGIS architectures, and modern web systems.
+            Full-Stack Software Engineer specialized in Go (Golang) for high-concurrency microservices, real-time streaming engines, spatial PostGIS architectures, and modern Next.js applications.
           </p>
 
           <div className="flex flex-wrap gap-4 pt-2">
@@ -827,50 +827,86 @@ export default function Home() {
       {/* Interactive Resume Drawer / Quick-View Modal */}
       {isResumeOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="w-full max-w-2xl bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-2xl p-6 space-y-6">
+          <div className="w-full max-w-3xl bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-2xl p-6 space-y-6">
             <div className="flex items-center justify-between border-b border-slate-800 pb-3">
               <div>
                 <span className="text-xs font-mono text-teal-400 uppercase tracking-wider">
                   Curriculum Vitae
                 </span>
-                <h3 className="text-xl font-bold text-white mt-1">Christian Amos – Software Engineer</h3>
+                <h3 className="text-xl font-bold text-white mt-1">Christian Amos Otieno[cite: 5]</h3>
+                <p className="text-xs text-slate-400 font-mono mt-0.5">
+                  Full-Stack Software Engineer • +254 713114123 • christianamos67@gmail.com[cite: 5]
+                </p>
               </div>
               <button onClick={() => setIsResumeOpen(false)} className="text-slate-400 hover:text-white">
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="space-y-4 text-sm text-slate-300 max-h-96 overflow-y-auto pr-2">
+            <div className="space-y-5 text-sm text-slate-300 max-h-[60vh] overflow-y-auto pr-2 font-sans">
               <div>
-                <h4 className="font-semibold text-white">Summary</h4>
-                <p className="text-slate-400 mt-1 leading-relaxed">
-                  Software engineer with expertise in Go, high-throughput microservices, WebSocket protocols, and spatial databases (PostGIS). Proven track record developing distributed streaming engines and scalable full-stack applications.
+                <h4 className="font-semibold text-white uppercase text-xs tracking-wider border-b border-slate-800 pb-1">
+                  Professional Summary
+                </h4>
+                <p className="text-slate-400 mt-2 text-xs leading-relaxed">
+                  Adaptive, highly analytical Full-Stack Software Engineer with extensive experience architecting scalable backend systems, high-performance web applications, and database integrations[cite: 5]. Specialized in leveraging Go (Golang) for high-concurrency services, network protocols, and core CS optimization alongside modern frontends using TypeScript, Next.js, and Tailwind CSS[cite: 5].
                 </p>
               </div>
 
               <div>
-                <h4 className="font-semibold text-white">Core Competencies</h4>
-                <p className="text-slate-400 mt-1 font-mono text-xs">
-                  Go, TypeScript, Next.js, Python, PostgreSQL, PostGIS, Docker, Redis, MinIO S3, WebSockets, REST APIs, Git.
+                <h4 className="font-semibold text-white uppercase text-xs tracking-wider border-b border-slate-800 pb-1">
+                  Technical Skills
+                </h4>
+                <p className="text-slate-400 mt-2 text-xs leading-relaxed font-mono">
+                  <strong className="text-slate-200">Languages:</strong> Go (Golang), TypeScript, JavaScript (ES6+), Python, SQL, HTML5, CSS3[cite: 5]<br/>
+                  <strong className="text-slate-200">Frameworks:</strong> Next.js, React, Node.js, Prisma ORM, NextAuth, Tailwind CSS[cite: 5]<br/>
+                  <strong className="text-slate-200">Databases & DevOps:</strong> PostgreSQL, PostGIS, Redis, Docker, Git, Linux/Bash Scripting[cite: 5]
                 </p>
               </div>
 
               <div>
-                <h4 className="font-semibold text-white">Key Engineering Highlights</h4>
-                <ul className="list-disc list-inside space-y-1 text-slate-400 mt-1 text-xs">
-                  <li>Engineered HTTP 206 Partial Content audio engine in Go, reducing buffering latency.</li>
-                  <li>Architected concurrent multi-room WebSocket hub for synchronized playback.</li>
-                  <li>Constructed spatial vulnerability query pipelines via PostGIS spatial indexes.</li>
-                </ul>
+                <h4 className="font-semibold text-white uppercase text-xs tracking-wider border-b border-slate-800 pb-1">
+                  Updated Key Projects
+                </h4>
+                <div className="space-y-3 mt-2 text-xs text-slate-400">
+                  <div>
+                    <span className="font-semibold text-white">LYRIC – Real-Time Music Streaming Platform</span>
+                    <p className="mt-0.5">Go, Next.js, WebSockets, MinIO S3, Redis, Prisma. HTTP 206 partial content range streaming engine with synchronized group listening rooms.</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-white">Spatial Risk Analytics Engine</span>
+                    <p className="mt-0.5">PostGIS, Next.js, Prisma, TypeScript. Sub-10ms geometric bounding queries utilizing GiST indexes and IPCC vulnerability scoring formulas.</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-white">Hyperlocal Gift Economy Platform[cite: 5]</span>
+                    <p className="mt-0.5">Next.js, TypeScript, Docker, Prisma ORM, PostgreSQL[cite: 5]. Containerized community exchange application with optimized relational schemas[cite: 5].</p>
+                  </div>
+                  <div>
+                    <span className="font-semibold text-white">Concurrent TCP Chat Server & Core Systems Suite[cite: 5]</span>
+                    <p className="mt-0.5">Go, Docker, Net-Cat, Tetris-Optimizer, Push-Swap[cite: 5]. Goroutine connection models, thread-safe channel broadcasting, and recursive backtracking algorithms[cite: 5].</p>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <h4 className="font-semibold text-white uppercase text-xs tracking-wider border-b border-slate-800 pb-1">
+                  Professional Experience & Education
+                </h4>
+                <div className="text-xs text-slate-400 space-y-1 mt-2">
+                  <p><strong className="text-slate-200">Apprentice Software Engineer</strong> – Zone01 Kisumu (2026 – Present)[cite: 5]</p>
+                  <p><strong className="text-slate-200">Neuro-Analytics & Brain-Data Integration</strong> – Skills for Africa (2023 – 2024)[cite: 5]</p>
+                  <p><strong className="text-slate-200">B.Sc. in Microbiology and Biotechnology</strong> – Aga Khan University (2019 – 2022)[cite: 5]</p>
+                </div>
               </div>
             </div>
 
             <div className="flex justify-between items-center pt-3 border-t border-slate-800">
               <a
-                href="mailto:christianamos67@gmail.com?subject=Resume%20Request%20-%20Christian%20Amos"
+                href="/resume.pdf"
+                download="Christian_Amos_Otieno_Resume.pdf"
                 className="flex items-center gap-1.5 px-4 py-2 bg-teal-400 text-slate-950 text-xs font-semibold rounded hover:bg-teal-300 transition"
               >
-                <Download className="w-3.5 h-3.5" /> Request Full PDF
+                <Download className="w-3.5 h-3.5" /> Download Official PDF
               </a>
               <button
                 onClick={() => setIsResumeOpen(false)}
@@ -991,7 +1027,7 @@ export default function Home() {
 
       {/* Footer */}
       <footer className="border-t border-slate-900 py-8 text-center text-xs font-mono text-slate-600">
-        © {new Date().getFullYear()} Christian Amos. Edge telemetry: {telemetry.latency} • Status: {telemetry.status}
+        © {new Date().getFullYear()} Christian Amos Otieno. Edge telemetry: {telemetry.latency} • Status: {telemetry.status}[cite: 5]
       </footer>
     </div>
   );
