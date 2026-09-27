@@ -531,9 +531,13 @@ export default function Home() {
 
       {/* Main Container */}
       <main className="max-w-5xl mx-auto px-6 py-14 space-y-20">
-      {/* Hero Section */}
-        <section className="space-y-6">
-          <div className="flex flex-wrap items-center gap-3">
+     {/* Hero Section */}
+        <section className="relative pt-6 pb-12 overflow-visible">
+          {/* Subtle Ambient Glow Behind Photo */}
+          <div className="absolute top-10 right-0 w-96 h-96 bg-teal-500/10 rounded-full blur-3xl pointer-events-none -z-10" />
+
+          {/* Status Telemetry Pills */}
+          <div className="flex flex-wrap items-center gap-3 mb-8">
             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono border ${theme.bgBadge}`}>
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
               Systems Operational
@@ -544,15 +548,15 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-10 pt-2">
-            {/* Left Bio & CTAs */}
-            <div className="space-y-5 flex-1">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            {/* Left Bio & CTAs (7 Cols) */}
+            <div className="lg:col-span-7 space-y-6 z-10">
               <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
                 Hi, I'm <span className={theme.accent}>Christian Amos Otieno</span>
               </h1>
 
               <p className="text-lg sm:text-xl text-slate-400 max-w-xl leading-relaxed">
-                Full-Stack Software Engineer specialized in Go (Golang) for high-concurrency microservices, real-time streaming engines, spatial PostGIS architectures, and modern Next.js applications[cite: 5].
+                Full-Stack Software Engineer specialized in Go (Golang) for high-concurrency microservices, real-time streaming engines, spatial PostGIS architectures, and modern Next.js applications.
               </p>
 
               <div className="flex flex-wrap gap-3 pt-2">
@@ -564,7 +568,7 @@ export default function Home() {
                 </a>
                 <button
                   onClick={() => setIsResumeOpen(true)}
-                  className="flex items-center gap-2 px-5 py-2.5 border border-slate-800 bg-slate-900/60 font-medium rounded-lg hover:border-slate-700 transition"
+                  className="flex items-center gap-2 px-5 py-2.5 border border-slate-800 bg-slate-900/80 font-medium rounded-lg hover:border-slate-700 transition"
                 >
                   <FileCode className="w-4 h-4 text-teal-400" />
                   View Resume
@@ -573,7 +577,7 @@ export default function Home() {
                   href="https://github.com/Christian3788"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-2 px-4 py-2.5 border border-slate-800 bg-slate-900/60 font-medium rounded-lg hover:border-slate-700 transition"
+                  className="flex items-center gap-2 px-4 py-2.5 border border-slate-800 bg-slate-900/80 font-medium rounded-lg hover:border-slate-700 transition"
                 >
                   <GithubIcon className="w-4 h-4" />
                   GitHub
@@ -582,7 +586,7 @@ export default function Home() {
                   href="https://www.linkedin.com/in/christian-otieno-9a9806229/"
                   target="_blank"
                   rel="noreferrer"
-                  className="flex items-center gap-2 px-4 py-2.5 border border-slate-800 bg-slate-900/60 font-medium rounded-lg hover:border-slate-700 transition text-sky-400"
+                  className="flex items-center gap-2 px-4 py-2.5 border border-slate-800 bg-slate-900/80 font-medium rounded-lg hover:border-slate-700 transition text-sky-400"
                 >
                   <LinkedinIcon className="w-4 h-4" />
                   LinkedIn
@@ -590,17 +594,29 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Right Strategic Portrait Frame */}
-            <div className="relative group shrink-0">
-              <div className={`absolute -inset-1 rounded-2xl bg-gradient-to-r from-slate-800 via-teal-500/30 to-slate-800 blur-lg opacity-40 group-hover:opacity-75 transition duration-500`} />
-              <div className="relative w-56 h-72 sm:w-64 sm:h-80 rounded-2xl overflow-hidden border-2 border-slate-800/80 bg-slate-900 shadow-2xl">
-                <Image
-                  src="/profile.jpg"
-                  alt="Christian Amos Otieno"
-                  fill
-                  priority
-                  className="object-cover object-top hover:scale-105 transition-transform duration-700 ease-out"
-                />
+            {/* Right: Large Seamless Fading Portrait (5 Cols) */}
+            <div className="lg:col-span-5 flex justify-center lg:justify-end">
+              <div className="relative w-72 h-[420px] sm:w-80 sm:h-[480px] lg:w-[350px] lg:h-[510px]">
+                {/* Image Component with Edge Vignette Mask */}
+                <div 
+                  className="relative w-full h-full"
+                  style={{
+                    maskImage: "radial-gradient(ellipse 85% 85% at 50% 45%, black 40%, transparent 95%)",
+                    WebkitMaskImage: "radial-gradient(ellipse 85% 85% at 50% 45%, black 40%, transparent 95%)",
+                  }}
+                >
+                  <Image
+                    src="/profile.jpg"
+                    alt="Christian Amos Otieno"
+                    fill
+                    priority
+                    sizes="(max-width: 768px) 100vw, 400px"
+                    className="object-cover object-top filter contrast-[1.04] brightness-95"
+                  />
+                  {/* Subtle directional gradient blending into slate-950 */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent opacity-80" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-slate-950/40 via-transparent to-slate-950/40" />
+                </div>
               </div>
             </div>
           </div>
