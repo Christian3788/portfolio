@@ -3,7 +3,8 @@
 import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useSpring, useMotionValue } from "framer-motion";
+import Lenis from "lenis";
 import {
   Play,
   Square,
@@ -40,8 +41,6 @@ import {
   Network,
   Command,
   Database,
-  Eye,
-  CheckCircle2,
 } from "lucide-react";
 
 // Native SVG for GitHub
@@ -66,6 +65,38 @@ function LinkedinIcon({ className = "w-4 h-4" }: { className?: string }) {
   );
 }
 
+// Monospace Glyph Decryptor Component
+function ScrambleText({ text, className = "" }: { text: string; className?: string }) {
+  const [displayText, setDisplayText] = useState(text);
+  const glyphs = "!<>-_\\/[]{}—=+*^?#________0101";
+
+  const scramble = () => {
+    let iteration = 0;
+    const interval = setInterval(() => {
+      setDisplayText(
+        text
+          .split("")
+          .map((char, index) => {
+            if (index < iteration) return text[index];
+            return glyphs[Math.floor(Math.random() * glyphs.length)];
+          })
+          .join("")
+      );
+
+      if (iteration >= text.length) {
+        clearInterval(interval);
+      }
+      iteration += 1 / 2;
+    }, 25);
+  };
+
+  return (
+    <span onMouseEnter={scramble} className={`cursor-default font-mono ${className}`}>
+      {displayText}
+    </span>
+  );
+}
+
 interface Project {
   id: string;
   title: string;
@@ -77,12 +108,14 @@ interface Project {
   hasAudioVisualizer?: boolean;
   hasGisSimulator?: boolean;
   architecture: {
-    diagram: string;
+    nodes: { id: string; label: string; x: number; y: number; type: "gateway" | "client" | "storage" | "cache" }[];
+    connections: { from: string; to: string }[];
     highlights: string[];
     tradeoffs: string;
     failureModes?: {
       id: string;
       name: string;
+      affectedNode: string;
       description: string;
       remedy: string;
     }[];
@@ -102,9 +135,17 @@ const projects: Project[] = [
     cloneCommand: "git clone https://github.com/Christian3788/lyric.git",
     hasAudioVisualizer: true,
     architecture: {
-      diagram: `Client (Next.js) ---> Go HTTP/WS Gateway ---> Redis Pub/Sub (Party Sync)
-       |                            |
-       +--> HTML5 Audio (Range) <---+---> MinIO / S3 Object Store`,
+      nodes: [
+        { id: "client", label: "Client (Next.js)", x: 50, y: 70, type: "client" },
+        { id: "gateway", label: "Go 206 Gateway", x: 220, y: 70, type: "gateway" },
+        { id: "redis", label: "Redis Pub/Sub", x: 390, y: 35, type: "cache" },
+        { id: "minio", label: "MinIO S3 Bucket", x: 390, y: 110, type: "storage" },
+      ],
+      connections: [
+        { from: "client", to: "gateway" },
+        { from: "gateway", to: "redis" },
+        { from: "gateway", to: "minio" },
+      ],
       highlights: [
         "Go HTTP 206 Range Streamer serves 64KB byte-range buffers directly without full heap buffering.",
         "Custom WebSocket Hub coordinates synchronous playback states (seek/pause/play) across peers.",
@@ -116,20 +157,16 @@ const projects: Project[] = [
         {
           id: "minio-down",
           name: "MinIO S3 Gateway Outage",
+          affectedNode: "minio",
           description: "Storage bucket unreachable during active audio streaming.",
-          remedy: "Circuit breaker switches instantly to ephemeral local NVMe write-through cache; returns HTTP 503 with retry-after jitter.",
+          remedy: "Circuit breaker switches instantly to local NVMe read-through cache; returns HTTP 503 with retry-after jitter.",
         },
         {
           id: "redis-split",
           name: "Redis Pub/Sub Partition",
+          affectedNode: "redis",
           description: "Multi-client listener state synchronization disconnected.",
           remedy: "Fall back to in-memory local Go sync.Map broadcast hub per node; gracefully isolates distributed party sync.",
-        },
-        {
-          id: "thundering-herd",
-          name: "Peak Concurrency Spike",
-          description: "10,000+ synchronized socket reconnections following network blip.",
-          remedy: "Token-bucket rate limiter with quadratic backoff delay on the WebSocket handshake upgrade router.",
         },
       ],
     },
@@ -146,9 +183,17 @@ const projects: Project[] = [
     cloneCommand: "git clone https://github.com/Christian3788/spatial-risk.git",
     hasGisSimulator: true,
     architecture: {
-      diagram: `GeoJSON Coordinates ---> PostGIS (ST_DWithin / ST_Intersects) ---> IPCC Risk Pipeline
-                                          |                                         |
-                                   GiST Indexed DB                      Calculated Hazard Score`,
+      nodes: [
+        { id: "client", label: "GeoJSON Coordinates", x: 50, y: 70, type: "client" },
+        { id: "gateway", label: "PostGIS Engine", x: 220, y: 70, type: "gateway" },
+        { id: "gist", label: "GiST Spatial Index", x: 390, y: 40, type: "cache" },
+        { id: "ipcc", label: "IPCC Scoring Unit", x: 390, y: 110, type: "storage" },
+      ],
+      connections: [
+        { from: "client", to: "gateway" },
+        { from: "gateway", to: "gist" },
+        { from: "gateway", to: "ipcc" },
+      ],
       highlights: [
         "PostGIS GiST spatial indexing for sub-10ms bounding box queries across multi-polygon layers.",
         "Normalized IPCC vulnerability assessment scoring computed directly via SQL geometric aggregates.",
@@ -158,8 +203,9 @@ const projects: Project[] = [
       failureModes: [
         {
           id: "gist-degrade",
-          name: "Spatial Index Bloat",
-          description: "GiST index fragmentation causing degraded sequential scan fallback.",
+          name: "Spatial Index Corruption",
+          affectedNode: "gist",
+          description: "GiST index bloat causing degraded sequential scan fallback.",
           remedy: "Automated REINDEX CONCURRENTLY script triggered when query planner cost exceeds 15ms threshold.",
         },
       ],
@@ -176,15 +222,20 @@ const projects: Project[] = [
     githubUrl: "https://github.com/Christian3788/Vector-Vanguard",
     cloneCommand: "git clone https://github.com/Christian3788/Vector-Vanguard.git",
     architecture: {
-      diagram: `High-Dim Query Vectors ---> In-Memory Distance Evaluator (Cosine / Dot)
-                                        |
-                            Hierarchical Graph / Quantized Index
-                                        |
-                             Top-K Nearest Embeddings Returned`,
+      nodes: [
+        { id: "client", label: "Query Embeddings", x: 50, y: 70, type: "client" },
+        { id: "gateway", label: "SIMD Vector Matcher", x: 220, y: 70, type: "gateway" },
+        { id: "hnsw", label: "HNSW Graph Index", x: 390, y: 40, type: "cache" },
+        { id: "quant", label: "PQ Quantizer", x: 390, y: 110, type: "storage" },
+      ],
+      connections: [
+        { from: "client", to: "gateway" },
+        { from: "gateway", to: "hnsw" },
+        { from: "gateway", to: "quant" },
+      ],
       highlights: [
         "High-performance vectorized similarity metrics evaluated across dense numeric vectors.",
         "Optimized memory access patterns and vector partitioning for sub-millisecond query cycles.",
-        "Containerized benchmarking harness to stress-test throughput under concurrent read loads.",
       ],
       tradeoffs:
         "Balanced index build speed against query recall by choosing an approximate nearest neighbor (ANN) approach over brute-force exhaustive scanning.",
@@ -192,6 +243,7 @@ const projects: Project[] = [
         {
           id: "oom-vector",
           name: "Index Graph Exhaustion",
+          affectedNode: "hnsw",
           description: "Embedding graph exceeds allocated container heap allocation.",
           remedy: "Dynamic product quantization (PQ) triggers to compress 32-bit floats into 8-bit quantized centroid buckets.",
         },
@@ -209,13 +261,18 @@ const projects: Project[] = [
     githubUrl: "https://github.com/Christian3788/kijijiShare",
     cloneCommand: "git clone https://github.com/Christian3788/kijijiShare.git",
     architecture: {
-      diagram: `User Client ---> Next.js App / API Route ---> PostgreSQL / Prisma
-                       |
-        Geospatial Radius Filter (Neighborhood Bounds) ---> Direct Peer Coordination`,
+      nodes: [
+        { id: "client", label: "Mobile Client", x: 50, y: 70, type: "client" },
+        { id: "gateway", label: "Next.js App Server", x: 220, y: 70, type: "gateway" },
+        { id: "db", label: "PostgreSQL Prisma", x: 390, y: 70, type: "storage" },
+      ],
+      connections: [
+        { from: "client", to: "gateway" },
+        { from: "gateway", to: "db" },
+      ],
       highlights: [
         "Geospatial radius queries to filter available neighborhood assets by user proximity.",
         "Robust relational schemas enforcing atomic reservations and status life cycles.",
-        "Lightweight, mobile-first progressive web interface designed for low-bandwidth environments.",
       ],
       tradeoffs:
         "Used transactional PostgreSQL relational models for deterministic reservation guarantees rather than eventual-consistency document stores.",
@@ -315,6 +372,14 @@ export default function Home() {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(false);
 
+  // Velocity-Aware Physics Cursor Spring State
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
+  const springConfig = { damping: 25, stiffness: 350 };
+  const cursorX = useSpring(mouseX, springConfig);
+  const cursorY = useSpring(mouseY, springConfig);
+  const [cursorScale, setCursorScale] = useState(1);
+
   // Command Palette State
   const [isCommandOpen, setIsCommandOpen] = useState(false);
   const [commandQuery, setCommandQuery] = useState("");
@@ -359,42 +424,129 @@ export default function Home() {
   const lensingCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [lensPos, setLensPos] = useState({ x: 180, y: 70 });
 
-  // Synthesize UI feedback click
-  const playHapticClick = useCallback((freq = 90, duration = 0.02) => {
-    if (!soundEnabled) return;
-    try {
-      const AudioCtx =
-        window.AudioContext ||
-        (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      if (!hapticAudioCtxRef.current) {
-        hapticAudioCtxRef.current = new AudioCtx();
-      }
-      const ctx = hapticAudioCtxRef.current;
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
+  // Starfield Constellation Background Canvas Ref
+  const starfieldCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + duration);
+  // Initialize Lenis Smooth Scroll
+  useEffect(() => {
+    const lenis = new Lenis({
+      duration: 1.1,
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      orientation: "vertical",
+      smoothWheel: true,
+    });
 
-      gain.gain.setValueAtTime(0.08, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + duration);
-    } catch {
-      // Audio autoplay policy fallback
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
     }
-  }, [soundEnabled]);
+    requestAnimationFrame(raf);
+
+    return () => lenis.destroy();
+  }, []);
+
+  // Track Mouse Movement for Velocity Physics Cursor
+  useEffect(() => {
+    let lastX = 0;
+    let lastY = 0;
+    const handleMouseMove = (e: MouseEvent) => {
+      const vx = e.clientX - lastX;
+      const vy = e.clientY - lastY;
+      lastX = e.clientX;
+      lastY = e.clientY;
+
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+
+      const speed = Math.hypot(vx, vy);
+      setCursorScale(Math.min(1.7, 1 + speed * 0.015));
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [mouseX, mouseY]);
+
+  // Starfield Constellation Background Loop
+  useEffect(() => {
+    const canvas = starfieldCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    const stars = Array.from({ length: 55 }).map(() => ({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      vx: (Math.random() - 0.5) * 0.25,
+      vy: (Math.random() - 0.5) * 0.25,
+      radius: Math.random() * 1.2 + 0.5,
+    }));
+
+    const render = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "rgba(45, 212, 191, 0.45)";
+      stars.forEach((s) => {
+        s.x += s.vx;
+        s.y += s.vy;
+        if (s.x < 0) s.x = canvas.width;
+        if (s.x > canvas.width) s.x = 0;
+        if (s.y < 0) s.y = canvas.height;
+        if (s.y > canvas.height) s.y = 0;
+
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      animId = requestAnimationFrame(render);
+    };
+
+    render();
+    return () => cancelAnimationFrame(animId);
+  }, []);
+
+  // Synthesize UI feedback click
+  const playHapticClick = useCallback(
+    (freq = 90, duration = 0.02) => {
+      if (!soundEnabled) return;
+      try {
+        const AudioCtx =
+          window.AudioContext ||
+          (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+        if (!hapticAudioCtxRef.current) {
+          hapticAudioCtxRef.current = new AudioCtx();
+        }
+        const ctx = hapticAudioCtxRef.current;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(30, ctx.currentTime + duration);
+
+        gain.gain.setValueAtTime(0.08, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + duration);
+
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start();
+        osc.stop(ctx.currentTime + duration);
+      } catch {
+        // Audio autoplay policy fallback
+      }
+    },
+    [soundEnabled]
+  );
 
   // Pre-generated static vector nodes
   const vectorPoints = useMemo(() => {
     const pts = [];
     const seedPoints = [
       [40, 50], [60, 90], [120, 40], [180, 70], [210, 110], [90, 120], [150, 130],
-      [240, 60], [80, 30], [170, 45], [130, 95], [260, 120], [50, 140], [220, 30]
+      [240, 60], [80, 30], [170, 45], [130, 95], [260, 120], [50, 140], [220, 30],
     ];
     for (let i = 0; i < seedPoints.length; i++) {
       pts.push({ id: i, x: seedPoints[i][0], y: seedPoints[i][1] });
@@ -485,7 +637,7 @@ export default function Home() {
 
     let animId: number;
     const gridSpacing = 16;
-    const GM = 1400; // Gravitational mass multiplier
+    const GM = 1400;
 
     const renderLensing = () => {
       ctx.fillStyle = "#020617";
@@ -496,8 +648,6 @@ export default function Home() {
           const dx = x - lensPos.x;
           const dy = y - lensPos.y;
           const dist = Math.hypot(dx, dy) + 0.1;
-
-          // Einstein deflection formula: alpha = 4GM / r
           const deflection = GM / (dist * dist);
           const drawX = x + (dx / dist) * Math.min(deflection, 45);
           const drawY = y + (dy / dist) * Math.min(deflection, 45);
@@ -509,7 +659,6 @@ export default function Home() {
         }
       }
 
-      // Draw central black hole / lens mass
       ctx.beginPath();
       ctx.arc(lensPos.x, lensPos.y, 8, 0, Math.PI * 2);
       ctx.fillStyle = "#000000";
@@ -700,7 +849,6 @@ export default function Home() {
     setGisScore(calculatedScore);
   };
 
-  // Compile Dynamic Plaintext Resume
   const downloadDynamicResume = () => {
     playHapticClick(120, 0.02);
     const resumeText = `CHRISTIAN AMOS OTIENO
@@ -759,16 +907,34 @@ EDUCATION & EXPERIENCE:
   }, [sortedNeighbors, activeK]);
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 dark:bg-slate-950 dark:text-slate-100 font-sans selection:bg-teal-500 selection:text-slate-950 antialiased">
+    <div className="relative min-h-screen bg-slate-950 text-slate-100 dark:bg-slate-950 dark:text-slate-100 font-sans selection:bg-teal-500 selection:text-slate-950 antialiased overflow-x-hidden">
+      {/* Background Starfield Canvas */}
+      <canvas
+        ref={starfieldCanvasRef}
+        className="fixed inset-0 pointer-events-none z-0 opacity-40"
+      />
+
+      {/* Velocity-Aware Spring Cursor (Hidden on touch devices) */}
+      <motion.div
+        className="fixed top-0 left-0 w-4 h-4 rounded-full pointer-events-none z-50 border border-teal-400/80 bg-teal-400/20 hidden md:block"
+        style={{
+          x: cursorX,
+          y: cursorY,
+          scale: cursorScale,
+          translateX: "-50%",
+          translateY: "-50%",
+        }}
+      />
+
       {/* Top Navbar */}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-slate-950/80 border-b border-slate-900">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <a
             href="#"
             onClick={() => playHapticClick(80, 0.02)}
-            className="font-mono font-bold text-base tracking-wider text-teal-400"
+            className="font-mono font-bold text-base tracking-wider text-teal-400 flex items-center gap-1.5"
           >
-            christian.dev
+            <ScrambleText text="christian.dev" />
           </a>
 
           <div className="flex items-center gap-6">
@@ -862,7 +1028,7 @@ EDUCATION & EXPERIENCE:
       </header>
 
       {/* Main Container */}
-      <main className="max-w-5xl mx-auto px-6 py-12 space-y-24">
+      <main className="relative z-10 max-w-5xl mx-auto px-6 py-12 space-y-24">
         {/* Real-Time GitHub Events & Edge Peer Ping */}
         <section className="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 space-y-3 text-xs font-mono">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
@@ -933,7 +1099,7 @@ EDUCATION & EXPERIENCE:
                   <span>Kisumu, Kenya • Software Engineer</span>
                 </div>
                 <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-white leading-tight">
-                  Christian Amos Otieno
+                  <ScrambleText text="Christian Amos Otieno" />
                 </h1>
               </div>
 
@@ -1040,7 +1206,7 @@ EDUCATION & EXPERIENCE:
           </div>
         </section>
 
-        {/* Core Technologies */}
+        {/* Core Technologies with Glyph Scramble on Badges */}
         <section id="skills" className="space-y-4">
           <h2 className="text-xl font-bold text-white border-b border-slate-800 pb-3">
             Core Technologies
@@ -1049,9 +1215,9 @@ EDUCATION & EXPERIENCE:
             {skills.map((skill) => (
               <span
                 key={skill}
-                className="px-3 py-1.5 bg-slate-900 border border-slate-800 text-slate-300 rounded-md text-xs sm:text-sm font-mono hover:border-slate-700 transition-colors"
+                className="px-3 py-1.5 bg-slate-900 border border-slate-800 text-slate-300 rounded-md text-xs sm:text-sm font-mono hover:border-teal-500/50 hover:text-teal-300 transition-colors cursor-default"
               >
-                {skill}
+                <ScrambleText text={skill} />
               </span>
             ))}
           </div>
@@ -1115,7 +1281,7 @@ EDUCATION & EXPERIENCE:
                   <div>
                     <div className="flex items-start justify-between gap-2">
                       <h3 className="text-lg font-bold text-white group-hover:text-teal-400 transition-colors">
-                        {proj.title}
+                        <ScrambleText text={proj.title} />
                       </h3>
 
                       {proj.hasAudioVisualizer && (
@@ -1246,9 +1412,9 @@ EDUCATION & EXPERIENCE:
                       {proj.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="text-xs bg-slate-950 border border-slate-800/80 text-slate-300 px-2.5 py-0.5 rounded font-mono"
+                          className="text-xs bg-slate-950 border border-slate-800/80 text-slate-300 px-2.5 py-0.5 rounded font-mono hover:border-teal-500/40 transition"
                         >
-                          {tag}
+                          <ScrambleText text={tag} />
                         </span>
                       ))}
                     </div>
@@ -1377,7 +1543,7 @@ EDUCATION & EXPERIENCE:
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <h3 className="text-base font-semibold text-slate-100 group-hover:text-teal-400 transition">
-                    {art.title}
+                    <ScrambleText text={art.title} />
                   </h3>
                   <span className="text-xs font-mono text-slate-500">{art.date}</span>
                 </div>
@@ -1577,7 +1743,7 @@ EDUCATION & EXPERIENCE:
         </div>
       )}
 
-      {/* Interactive Resume Modal with Dynamic Downloader */}
+      {/* Interactive Resume Modal */}
       {isResumeOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-3xl bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-2xl p-6 space-y-6">
@@ -1694,7 +1860,7 @@ EDUCATION & EXPERIENCE:
         </div>
       )}
 
-      {/* Interactive Architecture Modal with Dynamic Sandboxes & Failure-Mode Simulator */}
+      {/* Interactive Architecture Modal with Dynamic SVG Cable Circuit Routing */}
       {selectedModalProject && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-2xl bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-2xl p-6 space-y-5">
@@ -1718,101 +1884,87 @@ EDUCATION & EXPERIENCE:
               </button>
             </div>
 
-            {/* Special Live Sandbox: Vector-Vanguard 2D Nearest-Neighbor Probe */}
-            {selectedModalProject.id === "vector-vanguard" && (
-              <div className="p-4 bg-slate-900/80 border border-slate-800 rounded-lg space-y-3">
-                <div className="flex items-center justify-between text-xs font-mono text-slate-300">
-                  <span className="flex items-center gap-1.5 text-teal-400">
-                    <Terminal className="w-3.5 h-3.5" /> Interactive 2D Embedding Metric Probe
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <span>k-NN:</span>
-                    {[3, 4, 6].map((k) => (
-                      <button
-                        key={k}
-                        onClick={() => {
-                          playHapticClick(100, 0.02);
-                          setActiveK(k);
-                        }}
-                        className={`px-2 py-0.5 rounded text-[10px] ${
-                          activeK === k
-                            ? "bg-teal-400 text-slate-950 font-bold"
-                            : "bg-slate-800 text-slate-400"
-                        }`}
-                      >
-                        {k}
-                      </button>
-                    ))}
-                  </div>
-                </div>
+            {/* Dynamic SVG Animated Circuit & Cable Routing Engine */}
+            <div className="relative p-4 bg-slate-900/90 border border-slate-800 rounded-lg space-y-2">
+              <div className="flex justify-between items-center text-xs font-mono text-slate-300 mb-1">
+                <span className="text-teal-400 flex items-center gap-1">
+                  <Network className="w-3.5 h-3.5" /> Interactive Cable & Packet Pipeline
+                </span>
+                <span className="text-slate-500 text-[10px]">Animated SVG Paths</span>
+              </div>
 
-                <div
-                  onMouseMove={(e) => {
-                    const rect = e.currentTarget.getBoundingClientRect();
-                    setVectorProbe({
-                      x: Math.round(e.clientX - rect.left),
-                      y: Math.round(e.clientY - rect.top),
-                    });
-                  }}
-                  className="relative h-36 w-full bg-slate-950 rounded border border-slate-800 cursor-crosshair overflow-hidden"
-                >
-                  {/* Scatter plot points */}
-                  {vectorPoints.map((pt) => {
-                    const isNear = nearestIds.has(pt.id);
+              <div className="relative w-full h-36 bg-slate-950 rounded border border-slate-800/80 overflow-hidden">
+                <svg className="absolute inset-0 w-full h-full">
+                  {/* Dynamic Bézier Cable Connections */}
+                  {selectedModalProject.architecture.connections.map((conn) => {
+                    const fromNode = selectedModalProject.architecture.nodes.find(
+                      (n) => n.id === conn.from
+                    );
+                    const toNode = selectedModalProject.architecture.nodes.find(
+                      (n) => n.id === conn.to
+                    );
+                    if (!fromNode || !toNode) return null;
+
+                    const isBroken =
+                      activeFailureMode &&
+                      selectedModalProject.architecture.failureModes?.find(
+                        (f) => f.id === activeFailureMode
+                      )?.affectedNode === conn.to;
+
+                    const path = `M ${fromNode.x + 40} ${fromNode.y} C ${
+                      (fromNode.x + toNode.x) / 2
+                    } ${fromNode.y}, ${(fromNode.x + toNode.x) / 2} ${toNode.y}, ${
+                      toNode.x - 30
+                    } ${toNode.y}`;
+
                     return (
-                      <div
-                        key={pt.id}
-                        className={`absolute w-2.5 h-2.5 -ml-1 -mt-1 rounded-full transition-colors ${
-                          isNear ? "bg-teal-400 ring-4 ring-teal-400/20" : "bg-slate-600"
-                        }`}
-                        style={{ left: pt.x, top: pt.y }}
-                      />
+                      <g key={`${conn.from}-${conn.to}`}>
+                        <path
+                          d={path}
+                          fill="none"
+                          stroke={isBroken ? "#f43f5e" : "#0f766e"}
+                          strokeWidth="2"
+                          strokeDasharray={isBroken ? "4 4" : "none"}
+                        />
+                        {!isBroken && (
+                          <path
+                            d={path}
+                            fill="none"
+                            stroke="#2dd4bf"
+                            strokeWidth="2"
+                            strokeDasharray="6 14"
+                            className="animate-[dash_1.5s_linear_infinite]"
+                          />
+                        )}
+                      </g>
                     );
                   })}
+                </svg>
 
-                  {/* Active query vector probe */}
-                  <div
-                    className="absolute w-3 h-3 -ml-1.5 -mt-1.5 rounded-full bg-rose-400 border border-white"
-                    style={{ left: vectorProbe.x, top: vectorProbe.y }}
-                  />
-                </div>
+                {/* Render Topology Nodes */}
+                {selectedModalProject.architecture.nodes.map((node) => {
+                  const isNodeFailing =
+                    activeFailureMode &&
+                    selectedModalProject.architecture.failureModes?.find(
+                      (f) => f.id === activeFailureMode
+                    )?.affectedNode === node.id;
 
-                <div className="text-[11px] font-mono text-slate-400 flex justify-between">
-                  <span>Hover to move query vector ({vectorProbe.x}, {vectorProbe.y})</span>
-                  <span className="text-teal-400">
-                    Top similarity: {sortedNeighbors[0]?.similarity || "0.000"}
-                  </span>
-                </div>
-              </div>
-            )}
-
-            {/* Special Live Sandbox: LYRIC Byte-Range Buffer Inspector */}
-            {selectedModalProject.id === "lyric" && (
-              <div className="p-3 bg-slate-900/80 border border-slate-800 rounded-lg space-y-2">
-                <span className="text-xs font-mono text-teal-400 block">
-                  Chunk Buffer Allocator (64KB Slices)
-                </span>
-                <div className="grid grid-cols-12 gap-1 h-6">
-                  {Array.from({ length: 24 }).map((_, idx) => (
+                  return (
                     <div
-                      key={idx}
-                      className={`h-full rounded-sm ${
-                        idx < 9
-                          ? "bg-teal-400/80"
-                          : idx === 9
-                          ? "bg-teal-400 animate-pulse"
-                          : "bg-slate-800"
+                      key={node.id}
+                      className={`absolute -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded text-[11px] font-mono border transition-all ${
+                        isNodeFailing
+                          ? "bg-rose-950/90 border-rose-600 text-rose-300 ring-2 ring-rose-500/40 animate-pulse"
+                          : "bg-slate-900 border-slate-700 text-slate-200"
                       }`}
-                      title={`Chunk #${idx} (${idx * 64}KB - ${(idx + 1) * 64}KB)`}
-                    />
-                  ))}
-                </div>
-                <div className="flex justify-between text-[10px] font-mono text-slate-500">
-                  <span className="text-teal-300">Buffered in Memory: 576 KB</span>
-                  <span>Total File Size: 1.54 MB</span>
-                </div>
+                      style={{ left: node.x, top: node.y }}
+                    >
+                      {node.label}
+                    </div>
+                  );
+                })}
               </div>
-            )}
+            </div>
 
             {/* Failure-Mode Chaos Simulator Controls */}
             {selectedModalProject.architecture.failureModes && (
@@ -1852,7 +2004,6 @@ EDUCATION & EXPERIENCE:
                   ))}
                 </div>
 
-                {/* Active Failure Mode Annotation */}
                 {activeFailureMode && (
                   <div className="mt-2 p-2.5 bg-rose-950/30 border border-rose-900/60 rounded text-xs space-y-1">
                     <span className="font-bold text-rose-300 block">
@@ -1875,19 +2026,6 @@ EDUCATION & EXPERIENCE:
                 )}
               </div>
             )}
-
-            <div>
-              <span className="text-xs font-mono text-slate-400 block mb-2">System Topology:</span>
-              <pre
-                className={`p-3 rounded-lg text-xs font-mono overflow-x-auto border transition-colors ${
-                  activeFailureMode
-                    ? "bg-rose-950/20 border-rose-900/50 text-rose-300"
-                    : "bg-slate-900 border-slate-800 text-teal-300"
-                }`}
-              >
-                {selectedModalProject.architecture.diagram}
-              </pre>
-            </div>
 
             <div>
               <span className="text-xs font-mono text-slate-400 block mb-2">
@@ -1925,7 +2063,7 @@ EDUCATION & EXPERIENCE:
       )}
 
       {/* Footer */}
-      <footer className="border-t border-slate-900 py-8 text-center text-xs font-mono text-slate-500">
+      <footer className="relative z-10 border-t border-slate-900 py-8 text-center text-xs font-mono text-slate-500">
         © {new Date().getFullYear()} Christian Amos Otieno. Built with Go, Next.js & Tailwind CSS.
       </footer>
     </div>
