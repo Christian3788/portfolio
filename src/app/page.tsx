@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import React, { useState, useEffect, useRef, useTransition } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -530,7 +531,7 @@ export default function Home() {
 
       {/* Main Container */}
       <main className="max-w-5xl mx-auto px-6 py-14 space-y-20">
-        {/* Hero Section */}
+      {/* Hero Section */}
         <section className="space-y-6">
           <div className="flex flex-wrap items-center gap-3">
             <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono border ${theme.bgBadge}`}>
@@ -543,46 +544,65 @@ export default function Home() {
             </div>
           </div>
 
-          <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
-            Hi, I'm <span className={theme.accent}>Christian Amos Otieno</span>
-          </h1>
+          <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-10 pt-2">
+            {/* Left Bio & CTAs */}
+            <div className="space-y-5 flex-1">
+              <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white leading-tight">
+                Hi, I'm <span className={theme.accent}>Christian Amos Otieno</span>
+              </h1>
 
-          <p className="text-lg sm:text-xl text-slate-400 max-w-2xl leading-relaxed">
-            Full-Stack Software Engineer specialized in Go (Golang) for high-concurrency microservices, real-time streaming engines, spatial PostGIS architectures, and modern Next.js applications[cite: 5].
-          </p>
+              <p className="text-lg sm:text-xl text-slate-400 max-w-xl leading-relaxed">
+                Full-Stack Software Engineer specialized in Go (Golang) for high-concurrency microservices, real-time streaming engines, spatial PostGIS architectures, and modern Next.js applications[cite: 5].
+              </p>
 
-          <div className="flex flex-wrap gap-4 pt-2">
-            <a
-              href="#projects"
-              className={`px-5 py-2.5 ${theme.bgAccent} text-slate-950 font-semibold rounded-lg hover:opacity-90 transition font-medium`}
-            >
-              View Projects
-            </a>
-            <button
-              onClick={() => setIsResumeOpen(true)}
-              className="flex items-center gap-2 px-5 py-2.5 border border-slate-800 bg-slate-900/60 font-medium rounded-lg hover:border-slate-700 transition"
-            >
-              <FileCode className="w-4 h-4 text-teal-400" />
-              View Resume
-            </button>
-            <a
-              href="https://github.com/Christian3788"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-2 px-4 py-2.5 border border-slate-800 bg-slate-900/60 font-medium rounded-lg hover:border-slate-700 transition"
-            >
-              <GithubIcon className="w-4 h-4" />
-              GitHub
-            </a>
-            <a
-              href="https://www.linkedin.com/in/christian-otieno-9a9806229/"
-              target="_blank"
-              rel="noreferrer"
-              className="flex items-center gap-2 px-4 py-2.5 border border-slate-800 bg-slate-900/60 font-medium rounded-lg hover:border-slate-700 transition text-sky-400"
-            >
-              <LinkedinIcon className="w-4 h-4" />
-              LinkedIn
-            </a>
+              <div className="flex flex-wrap gap-3 pt-2">
+                <a
+                  href="#projects"
+                  className={`px-5 py-2.5 ${theme.bgAccent} text-slate-950 font-semibold rounded-lg hover:opacity-90 transition font-medium`}
+                >
+                  View Projects
+                </a>
+                <button
+                  onClick={() => setIsResumeOpen(true)}
+                  className="flex items-center gap-2 px-5 py-2.5 border border-slate-800 bg-slate-900/60 font-medium rounded-lg hover:border-slate-700 transition"
+                >
+                  <FileCode className="w-4 h-4 text-teal-400" />
+                  View Resume
+                </button>
+                <a
+                  href="https://github.com/Christian3788"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 px-4 py-2.5 border border-slate-800 bg-slate-900/60 font-medium rounded-lg hover:border-slate-700 transition"
+                >
+                  <GithubIcon className="w-4 h-4" />
+                  GitHub
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/christian-otieno-9a9806229/"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-2 px-4 py-2.5 border border-slate-800 bg-slate-900/60 font-medium rounded-lg hover:border-slate-700 transition text-sky-400"
+                >
+                  <LinkedinIcon className="w-4 h-4" />
+                  LinkedIn
+                </a>
+              </div>
+            </div>
+
+            {/* Right Strategic Portrait Frame */}
+            <div className="relative group shrink-0">
+              <div className={`absolute -inset-1 rounded-2xl bg-gradient-to-r from-slate-800 via-teal-500/30 to-slate-800 blur-lg opacity-40 group-hover:opacity-75 transition duration-500`} />
+              <div className="relative w-56 h-72 sm:w-64 sm:h-80 rounded-2xl overflow-hidden border-2 border-slate-800/80 bg-slate-900 shadow-2xl">
+                <Image
+                  src="/profile.jpg"
+                  alt="Christian Amos Otieno"
+                  fill
+                  priority
+                  className="object-cover object-top hover:scale-105 transition-transform duration-700 ease-out"
+                />
+              </div>
+            </div>
           </div>
         </section>
 
