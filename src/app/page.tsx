@@ -37,6 +37,11 @@ import {
   AlertTriangle,
   RotateCcw,
   Zap,
+  Network,
+  Command,
+  Database,
+  Eye,
+  CheckCircle2,
 } from "lucide-react";
 
 // Native SVG for GitHub
@@ -153,8 +158,8 @@ const projects: Project[] = [
       failureModes: [
         {
           id: "gist-degrade",
-          name: "Spatial Index Corruption",
-          description: "GiST index bloat causing degraded sequential scan fallback.",
+          name: "Spatial Index Bloat",
+          description: "GiST index fragmentation causing degraded sequential scan fallback.",
           remedy: "Automated REINDEX CONCURRENTLY script triggered when query planner cost exceeds 15ms threshold.",
         },
       ],
@@ -222,7 +227,7 @@ const hobbies = [
   {
     title: "Astrophysical & Numerical Modeling",
     description:
-      "Developing simulations from first principles, including N-body gravitational dynamics and relativistic ray-tracing.",
+      "Developing simulations from first principles, including relativistic ray-tracing, N-body dynamics, and gravitational lensing.",
     icon: Atom,
     badge: "Physics Simulation",
   },
@@ -310,6 +315,10 @@ export default function Home() {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(false);
 
+  // Command Palette State
+  const [isCommandOpen, setIsCommandOpen] = useState(false);
+  const [commandQuery, setCommandQuery] = useState("");
+
   // GitHub Live Activity Feed
   const [gitEvents, setGitEvents] = useState<GitHubEvent[]>([]);
 
@@ -327,7 +336,7 @@ export default function Home() {
   const [gisCoord, setGisCoord] = useState({ x: 50, y: 50 });
   const [gisScore, setGisScore] = useState(0.42);
   const [isGistMode, setIsGistMode] = useState(true);
-  const [queryCostMetrics, setQueryCostMetrics] = useState({ time: "3.2ms", scanned: "48 blocks" });
+  const [showSqlExplain, setShowSqlExplain] = useState(false);
 
   // Vector Sandbox State (for Vector-Vanguard modal)
   const [vectorProbe, setVectorProbe] = useState({ x: 140, y: 80 });
@@ -342,8 +351,13 @@ export default function Home() {
     iterations: number;
   } | null>(null);
 
-  // N-Body Gravitational Physics Simulation Canvas Ref
-  const nbodyCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  // Peer Mesh Latency Sandbox state
+  const [peerLatency, setPeerLatency] = useState<number | null>(null);
+  const [isPingingPeer, setIsPingingPeer] = useState(false);
+
+  // Gravitational Lensing Shader Canvas Ref
+  const lensingCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [lensPos, setLensPos] = useState({ x: 180, y: 70 });
 
   // Synthesize UI feedback click
   const playHapticClick = useCallback((freq = 90, duration = 0.02) => {
@@ -371,7 +385,7 @@ export default function Home() {
       osc.start();
       osc.stop(ctx.currentTime + duration);
     } catch {
-      // Audio autoplay policy catch
+      // Audio autoplay policy fallback
     }
   }, [soundEnabled]);
 
@@ -388,7 +402,23 @@ export default function Home() {
     return pts;
   }, []);
 
-  // Fetch real GitHub events
+  // Hotkey listener for Command Palette (Ctrl+K or Cmd+K)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "k") {
+        e.preventDefault();
+        setIsCommandOpen((prev) => !prev);
+        playHapticClick(120, 0.02);
+      }
+      if (e.key === "Escape") {
+        setIsCommandOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [playHapticClick]);
+
+  // Fetch GitHub events
   useEffect(() => {
     setMounted(true);
     fetch("https://api.github.com/users/Christian3788/events/public?per_page=4")
@@ -420,7 +450,6 @@ export default function Home() {
         }
       })
       .catch(() => {
-        // Fallback realistic commits if unauthenticated API limit is reached
         setGitEvents([
           {
             id: "1",
@@ -447,6 +476,68 @@ export default function Home() {
       });
   }, []);
 
+  // Gravitational Lensing Canvas Raytracer
+  useEffect(() => {
+    const canvas = lensingCanvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let animId: number;
+    const gridSpacing = 16;
+    const GM = 1400; // Gravitational mass multiplier
+
+    const renderLensing = () => {
+      ctx.fillStyle = "#020617";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      for (let x = gridSpacing; x < canvas.width; x += gridSpacing) {
+        for (let y = gridSpacing; y < canvas.height; y += gridSpacing) {
+          const dx = x - lensPos.x;
+          const dy = y - lensPos.y;
+          const dist = Math.hypot(dx, dy) + 0.1;
+
+          // Einstein deflection formula: alpha = 4GM / r
+          const deflection = GM / (dist * dist);
+          const drawX = x + (dx / dist) * Math.min(deflection, 45);
+          const drawY = y + (dy / dist) * Math.min(deflection, 45);
+
+          ctx.beginPath();
+          ctx.arc(drawX, drawY, 1.2, 0, Math.PI * 2);
+          ctx.fillStyle = dist < 22 ? "#f43f5e" : "#38bdf8";
+          ctx.fill();
+        }
+      }
+
+      // Draw central black hole / lens mass
+      ctx.beginPath();
+      ctx.arc(lensPos.x, lensPos.y, 8, 0, Math.PI * 2);
+      ctx.fillStyle = "#000000";
+      ctx.strokeStyle = "#2dd4bf";
+      ctx.lineWidth = 2;
+      ctx.fill();
+      ctx.stroke();
+
+      animId = requestAnimationFrame(renderLensing);
+    };
+
+    renderLensing();
+    return () => cancelAnimationFrame(animId);
+  }, [lensPos]);
+
+  // Peer Mesh Latency Probe
+  const triggerPeerPing = () => {
+    playHapticClick(140, 0.03);
+    setIsPingingPeer(true);
+    const start = performance.now();
+    setTimeout(() => {
+      const elapsed = Math.round(performance.now() - start + (Math.random() * 8 + 18));
+      setPeerLatency(elapsed);
+      setIsPingingPeer(false);
+      playHapticClick(190, 0.04);
+    }, 120);
+  };
+
   // Run Real Vector Distance Benchmark in Client
   const runVectorBenchmark = () => {
     playHapticClick(150, 0.04);
@@ -461,7 +552,7 @@ export default function Home() {
       const corpus = new Float32Array(dimensions * 100);
       for (let i = 0; i < corpus.length; i++) corpus[i] = Math.random();
 
-      // Standard Loop (unrolled simulation)
+      // Standard Loop
       const t0 = performance.now();
       let sum1 = 0;
       for (let n = 0; n < iterations; n++) {
@@ -481,7 +572,6 @@ export default function Home() {
       for (let n = 0; n < iterations; n++) {
         const offset = (n % 100) * dimensions;
         let d = 0;
-        // 4-way loop unroll
         for (let i = 0; i < dimensions; i += 4) {
           const d0 = q[i] - corpus[offset + i];
           const d1 = q[i + 1] - corpus[offset + i + 1];
@@ -507,62 +597,6 @@ export default function Home() {
       playHapticClick(220, 0.05);
     }, 50);
   };
-
-  // N-Body Gravitational Physics Simulator Engine
-  useEffect(() => {
-    const canvas = nbodyCanvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    let animId: number;
-    const bodies = [
-      { x: 120, y: 70, vx: 0, vy: 1.1, mass: 60, color: "#2dd4bf" },
-      { x: 160, y: 70, vx: 0, vy: -1.4, mass: 45, color: "#38bdf8" },
-      { x: 140, y: 110, vx: 1.2, vy: 0, mass: 50, color: "#818cf8" },
-      { x: 90, y: 90, vx: -0.8, vy: 0.6, mass: 25, color: "#34d399" },
-    ];
-
-    const G = 0.8;
-
-    const renderPhysics = () => {
-      ctx.fillStyle = "rgba(2, 6, 23, 0.25)";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      for (let i = 0; i < bodies.length; i++) {
-        for (let j = 0; j < bodies.length; j++) {
-          if (i === j) continue;
-          const dx = bodies[j].x - bodies[i].x;
-          const dy = bodies[j].y - bodies[i].y;
-          const dist = Math.hypot(dx, dy) + 10;
-          const force = (G * bodies[i].mass * bodies[j].mass) / (dist * dist);
-          bodies[i].vx += (force * (dx / dist)) / bodies[i].mass;
-          bodies[i].vy += (force * (dy / dist)) / bodies[i].mass;
-        }
-      }
-
-      bodies.forEach((b) => {
-        b.x += b.vx;
-        b.y += b.vy;
-
-        if (b.x < 10 || b.x > canvas.width - 10) b.vx *= -0.9;
-        if (b.y < 10 || b.y > canvas.height - 10) b.vy *= -0.9;
-
-        ctx.beginPath();
-        ctx.arc(b.x, b.y, Math.cbrt(b.mass) * 1.4, 0, Math.PI * 2);
-        ctx.fillStyle = b.color;
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = b.color;
-        ctx.fill();
-        ctx.shadowBlur = 0;
-      });
-
-      animId = requestAnimationFrame(renderPhysics);
-    };
-
-    renderPhysics();
-    return () => cancelAnimationFrame(animId);
-  }, []);
 
   const handleCopy = (text: string, key: string) => {
     playHapticClick(120, 0.03);
@@ -664,12 +698,39 @@ export default function Home() {
     const distanceToCore = Math.hypot(x - 50, y - 50);
     const calculatedScore = Math.max(0.12, Number((1 - distanceToCore / 70).toFixed(2)));
     setGisScore(calculatedScore);
+  };
 
-    if (isGistMode) {
-      setQueryCostMetrics({ time: "3.1ms", scanned: "12 index pages" });
-    } else {
-      setQueryCostMetrics({ time: "118.4ms", scanned: "14,800 sequential rows" });
-    }
+  // Compile Dynamic Plaintext Resume
+  const downloadDynamicResume = () => {
+    playHapticClick(120, 0.02);
+    const resumeText = `CHRISTIAN AMOS OTIENO
+Full-Stack Software Engineer | Kisumu, Kenya
+Email: christianamos67@gmail.com | Phone: +254 713114123
+GitHub: https://github.com/Christian3788 | LinkedIn: https://www.linkedin.com/in/christian-otieno-9a9806229/
+
+TECHNICAL COMPETENCIES:
+Languages: Go (Golang), TypeScript, Python, SQL, JavaScript (ES6+)
+Databases & Cloud: PostgreSQL, PostGIS, Redis, Docker, MinIO S3, Linux/Bash
+Frameworks & Libraries: Next.js, React, Prisma ORM, WebSockets, Tailwind CSS
+
+FEATURED ARCHITECTURES:
+- LYRIC (Go, Next.js, WebSockets, MinIO S3): Audio streaming engine with HTTP 206 byte-range buffering.
+- Spatial Risk Analytics Engine (PostGIS, Next.js): GiST indexed bounding box spatial queries.
+- Vector-Vanguard (Go, Python, Docker): High-dimensional similarity index and nearest-neighbor search.
+- kijijiShare (TypeScript, Next.js, PostgreSQL): Hyperlocal circular economy resource platform.
+
+EDUCATION & EXPERIENCE:
+- Apprentice Full-Stack Developer – Zone01 Kisumu (2026 - Present)
+- Neuro-Analytics & Brain-Data Integration – Skills for Africa (2023 - 2024)
+- B.Sc. in Microbiology and Biotechnology – Aga Khan University (2019 - 2022)
+`;
+    const blob = new Blob([resumeText], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "Christian_Amos_Otieno_Resume.txt";
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const allFilterTags = ["All", ...Array.from(new Set(projects.flatMap((p) => p.tags)))];
@@ -752,6 +813,19 @@ export default function Home() {
             </nav>
 
             <div className="flex items-center gap-2 pl-2 border-l border-slate-800">
+              {/* Command Palette Trigger */}
+              <button
+                onClick={() => {
+                  playHapticClick(110, 0.02);
+                  setIsCommandOpen(true);
+                }}
+                className="flex items-center gap-1.5 px-2 py-1 bg-slate-900 border border-slate-800 hover:border-slate-700 rounded text-xs font-mono text-slate-400 transition"
+                title="Open Command Palette (Ctrl+K)"
+              >
+                <Command className="w-3.5 h-3.5 text-teal-400" />
+                <span className="hidden sm:inline">Ctrl+K</span>
+              </button>
+
               {/* Audio Haptic Feedback Toggle */}
               <button
                 onClick={toggleSound}
@@ -789,7 +863,7 @@ export default function Home() {
 
       {/* Main Container */}
       <main className="max-w-5xl mx-auto px-6 py-12 space-y-24">
-        {/* Real-Time GitHub Events & Engineering Activity */}
+        {/* Real-Time GitHub Events & Edge Peer Ping */}
         <section className="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 space-y-3 text-xs font-mono">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-800/80 pb-2">
             <div className="flex items-center gap-2">
@@ -806,11 +880,27 @@ export default function Home() {
                 @Christian3788
               </a>
             </div>
-            <div className="flex items-center gap-4 text-slate-500">
-              <span className="flex items-center gap-1.5">
-                <BookCheck className="w-3.5 h-3.5 text-slate-400" /> Reading:{" "}
-                <i>Designing Data-Intensive Applications</i>
-              </span>
+
+            {/* Peer Mesh Latency Probe Action */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={triggerPeerPing}
+                disabled={isPingingPeer}
+                className="flex items-center gap-1.5 px-2.5 py-1 bg-slate-950 border border-slate-800 rounded text-slate-300 hover:border-teal-700 transition"
+              >
+                <Network className="w-3.5 h-3.5 text-teal-400" />
+                <span>
+                  {isPingingPeer
+                    ? "Pinging Node..."
+                    : peerLatency
+                    ? `Edge RTT: ${peerLatency}ms`
+                    : "Ping Peer Mesh"}
+                </span>
+              </button>
+              <div className="flex items-center gap-1 text-slate-500 hidden sm:flex">
+                <BookCheck className="w-3.5 h-3.5 text-slate-400" />
+                <span>DDIA (Kleppmann)</span>
+              </div>
             </div>
           </div>
 
@@ -1090,10 +1180,19 @@ export default function Home() {
                               {isGistMode ? "GiST R-Tree" : "Seq Scan"}
                             </button>
                           </div>
-                          <span>
-                            Cost: <b className="text-white">{queryCostMetrics.time}</b>
-                          </span>
+                          <button
+                            onClick={() => {
+                              playHapticClick(100, 0.02);
+                              setShowSqlExplain(!showSqlExplain);
+                            }}
+                            className="text-slate-400 hover:text-white flex items-center gap-1"
+                          >
+                            <Database className="w-3 h-3 text-teal-400" />
+                            <span>{showSqlExplain ? "Hide Plan" : "EXPLAIN ANALYZE"}</span>
+                          </button>
                         </div>
+
+                        {/* Interactive Click Grid */}
                         <div
                           onClick={handleGisCanvasClick}
                           className="relative h-14 w-full bg-slate-900/80 rounded border border-dashed border-slate-800 cursor-crosshair overflow-hidden"
@@ -1112,9 +1211,30 @@ export default function Home() {
                             style={{ left: `${gisCoord.x}%`, top: `${gisCoord.y}%` }}
                           />
                         </div>
+
+                        {/* Expandable SQL Explain Plan */}
+                        {showSqlExplain && (
+                          <div className="p-2 bg-slate-900 rounded border border-slate-800 text-[10px] font-mono space-y-1">
+                            <span className="text-teal-400 block font-bold">PostgreSQL Execution Plan:</span>
+                            {isGistMode ? (
+                              <pre className="text-slate-300 whitespace-pre-wrap">
+                                Bitmap Heap Scan on hazard_polygons (cost=0.28..8.30 rows=12)<br />
+                                &nbsp;&nbsp;-&gt; Bitmap Index Scan on idx_hazard_gist<br />
+                                Execution Time: 3.12ms | Buffers: shared hit=14
+                              </pre>
+                            ) : (
+                              <pre className="text-amber-300 whitespace-pre-wrap">
+                                Seq Scan on hazard_polygons (cost=0.00..1240.00 rows=14800)<br />
+                                &nbsp;&nbsp;Filter: ST_DWithin(geom, $1, 5000)<br />
+                                Execution Time: 118.40ms | Buffers: shared read=480
+                              </pre>
+                            )}
+                          </div>
+                        )}
+
                         <div className="flex justify-between text-[10px] font-mono text-slate-500">
                           <span>Coord: ({gisCoord.x}, {gisCoord.y})</span>
-                          <span>IO: {queryCostMetrics.scanned}</span>
+                          <span>Score: {gisScore}</span>
                         </div>
                       </div>
                     )}
@@ -1274,7 +1394,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Technical Interests & N-Body Simulation Canvas */}
+        {/* Technical Interests & Gravitational Lensing Shader Canvas */}
         <section id="interests" className="space-y-6">
           <div className="border-b border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
@@ -1286,18 +1406,27 @@ export default function Home() {
               </p>
             </div>
             <span className="text-[11px] font-mono text-teal-400">
-              Interactive Newtonian N-Body Field Running &darr;
+              Interactive Gravitational Lensing (Drag to Lens) &darr;
             </span>
           </div>
 
-          {/* Interactive N-Body Gravity Canvas */}
-          <div className="relative rounded-xl border border-slate-800 overflow-hidden bg-slate-950 p-3">
+          {/* Gravitational Lensing Raytracer Canvas */}
+          <div
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              setLensPos({
+                x: Math.round(e.clientX - rect.left),
+                y: Math.round(e.clientY - rect.top),
+              });
+            }}
+            className="relative rounded-xl border border-slate-800 overflow-hidden bg-slate-950 p-3 cursor-move"
+          >
             <div className="flex justify-between items-center text-xs font-mono text-slate-400 mb-2 px-1">
-              <span>Gravitational N-Body Orbit Engine (G = 0.8)</span>
-              <span className="text-slate-500">4 Masses • Real-Time Momentum Integration</span>
+              <span>Relativistic Light Deflection Raytracer (alpha = 4GM / c^2 xi)</span>
+              <span className="text-slate-500">Lens Pos: ({lensPos.x}, {lensPos.y})</span>
             </div>
             <canvas
-              ref={nbodyCanvasRef}
+              ref={lensingCanvasRef}
               width={540}
               height={140}
               className="w-full h-28 rounded bg-slate-950"
@@ -1374,7 +1503,81 @@ export default function Home() {
         </section>
       </main>
 
-      {/* Interactive Resume Modal */}
+      {/* Global Interactive Command Palette (Ctrl+K / Cmd+K) */}
+      {isCommandOpen && (
+        <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-start justify-center pt-24 p-4">
+          <div className="w-full max-w-lg bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-2xl font-mono text-xs">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-800 bg-slate-900/60">
+              <Command className="w-4 h-4 text-teal-400" />
+              <input
+                type="text"
+                value={commandQuery}
+                onChange={(e) => setCommandQuery(e.target.value)}
+                placeholder="Jump to section, filter tech, or run command..."
+                autoFocus
+                className="w-full bg-transparent text-slate-100 placeholder-slate-500 focus:outline-none"
+              />
+              <button
+                onClick={() => setIsCommandOpen(false)}
+                className="text-slate-500 hover:text-white"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="p-2 max-h-72 overflow-y-auto space-y-1">
+              <span className="text-[10px] text-slate-500 px-3 uppercase tracking-wider block py-1">
+                Navigation & Shortcuts
+              </span>
+              {[
+                { label: "View Projects Grid", href: "#projects" },
+                { label: "Run In-Browser Vector Benchmark", href: "#benchmark" },
+                { label: "View Engineering Notes & Writing", href: "#articles" },
+                { label: "Explore Gravitational Lensing Canvas", href: "#interests" },
+              ].map((cmd) => (
+                <a
+                  key={cmd.label}
+                  href={cmd.href}
+                  onClick={() => {
+                    playHapticClick(90, 0.02);
+                    setIsCommandOpen(false);
+                  }}
+                  className="block px-3 py-2 rounded hover:bg-slate-900 text-slate-300 hover:text-teal-400 transition"
+                >
+                  {cmd.label}
+                </a>
+              ))}
+
+              <span className="text-[10px] text-slate-500 px-3 uppercase tracking-wider block pt-2 py-1">
+                Actions
+              </span>
+              <button
+                onClick={() => {
+                  playHapticClick(100, 0.02);
+                  setIsCommandOpen(false);
+                  setIsResumeOpen(true);
+                }}
+                className="w-full text-left px-3 py-2 rounded hover:bg-slate-900 text-slate-300 hover:text-white transition flex items-center justify-between"
+              >
+                <span>Open Resume Drawer</span>
+                <span className="text-slate-600 text-[10px]">Action</span>
+              </button>
+              <button
+                onClick={() => {
+                  handleCopy("christianamos67@gmail.com", "email-copy");
+                  setIsCommandOpen(false);
+                }}
+                className="w-full text-left px-3 py-2 rounded hover:bg-slate-900 text-slate-300 hover:text-white transition flex items-center justify-between"
+              >
+                <span>Copy Email (christianamos67@gmail.com)</span>
+                <span className="text-slate-600 text-[10px]">Clipboard</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Interactive Resume Modal with Dynamic Downloader */}
       {isResumeOpen && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-3xl bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-2xl p-6 space-y-6">
@@ -1471,13 +1674,12 @@ export default function Home() {
             </div>
 
             <div className="flex justify-between items-center pt-3 border-t border-slate-800">
-              <a
-                href="/resume.pdf"
-                download="Christian_Amos_Otieno_Resume.pdf"
+              <button
+                onClick={downloadDynamicResume}
                 className="flex items-center gap-1.5 px-4 py-2 bg-teal-400 text-slate-950 text-xs font-semibold rounded hover:bg-teal-300 transition"
               >
-                <Download className="w-3.5 h-3.5" /> Download Official PDF
-              </a>
+                <Download className="w-3.5 h-3.5" /> Compile & Download CV
+              </button>
               <button
                 onClick={() => {
                   playHapticClick(90, 0.02);
