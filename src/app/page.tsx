@@ -18,6 +18,11 @@ import {
   FileCode,
   Download,
   Crosshair,
+  Compass,
+  Atom,
+  Binary,
+  Dna,
+  BookOpen,
 } from "lucide-react";
 
 // Native SVG for GitHub
@@ -140,6 +145,33 @@ const projects: Project[] = [
       tradeoffs:
         "Relational model in PostgreSQL for strict ACID transactional integrity during item claims over NoSQL eventual consistency.",
     },
+  },
+];
+
+const hobbies = [
+  {
+    title: "Astrophysical & Numerical Modeling",
+    description: "Developing simulations from first principles, including N-body gravitational dynamics and relativistic ray-tracing.",
+    icon: Atom,
+    badge: "Physics Simulation",
+  },
+  {
+    title: "Quantum Simulation & Linear Algebra",
+    description: "Implementing discrete state-vector engines, unitary gate transformations, and toy quantum algorithm simulators.",
+    icon: Binary,
+    badge: "Quantum CS",
+  },
+  {
+    title: "Computational Biology & Emergence",
+    description: "Writing reaction-diffusion solvers and cellular automata to model pattern morphogenesis and complex system dynamics.",
+    icon: Dna,
+    badge: "Complex Systems",
+  },
+  {
+    title: "Technical Writing & Analytical Philosophy",
+    description: "Writing long-form essays and speculative fiction grounded in formal logic, information theory, and cosmology.",
+    icon: BookOpen,
+    badge: "Information Theory",
   },
 ];
 
@@ -386,13 +418,16 @@ export default function Home() {
 
     switch (cmd) {
       case "help":
-        out = "Commands: help, projects, skills, status, resume, devto, linkedin, clear, exit";
+        out = "Commands: help, projects, skills, status, hobbies, resume, devto, linkedin, clear, exit";
         break;
       case "projects":
         out = projects.map((p) => `• ${p.title} [${p.tags.join(", ")}]`).join("\n");
         break;
       case "skills":
         out = skills.join(" | ");
+        break;
+      case "hobbies":
+        out = hobbies.map((h) => `• ${h.title}: ${h.description}`).join("\n");
         break;
       case "status":
         out = `Telemetry: Latency ${telemetry.latency} | GitHub Repos ${telemetry.repos} | Systems Operational`;
@@ -449,6 +484,7 @@ export default function Home() {
               <a href="#about" className="hover:text-white transition">About</a>
               <a href="#projects" className="hover:text-white transition">Projects</a>
               <a href="#articles" className="hover:text-white transition">Articles</a>
+              <a href="#interests" className="hover:text-white transition">Interests</a>
               <button
                 onClick={() => setIsResumeOpen(true)}
                 className="hover:text-teal-400 transition flex items-center gap-1"
@@ -512,7 +548,7 @@ export default function Home() {
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-400 max-w-2xl leading-relaxed">
-            Full-Stack Software Engineer specialized in Go (Golang) for high-concurrency microservices, real-time streaming engines, spatial PostGIS architectures, and modern Next.js applications.
+            Full-Stack Software Engineer specialized in Go (Golang) for high-concurrency microservices, real-time streaming engines, spatial PostGIS architectures, and modern Next.js applications[cite: 5].
           </p>
 
           <div className="flex flex-wrap gap-4 pt-2">
@@ -783,6 +819,45 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Technical Interests & Research Pursuits (Hobbies) */}
+        <section id="interests" className="space-y-6">
+          <div className="border-b border-slate-800 pb-3">
+            <h2 className="text-2xl font-bold text-white flex items-center gap-2">
+              <Compass className="w-5 h-5 text-slate-400" /> Technical Interests & Modeling Pursuits
+            </h2>
+            <p className="text-sm text-slate-400 mt-1">
+              Independent exploration in computational physics, complex systems, discrete algorithms, and formal logic.
+            </p>
+          </div>
+
+          <div className="grid gap-4 sm:grid-cols-2">
+            {hobbies.map((hobby) => {
+              const Icon = hobby.icon;
+              return (
+                <div
+                  key={hobby.title}
+                  className="p-5 border border-slate-800/80 rounded-xl bg-slate-900/30 hover:border-slate-700 hover:bg-slate-900/50 transition flex flex-col justify-between"
+                >
+                  <div>
+                    <div className="flex items-center justify-between gap-2 mb-2">
+                      <div className="flex items-center gap-2">
+                        <Icon className={`w-4 h-4 ${theme.accent}`} />
+                        <h3 className="text-base font-semibold text-slate-100">{hobby.title}</h3>
+                      </div>
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-slate-400">
+                        {hobby.badge}
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-400 leading-relaxed mt-2">
+                      {hobby.description}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </section>
+
         {/* Contact Section */}
         <section id="contact" className="space-y-4">
           <h2 className="text-2xl font-bold text-white border-b border-slate-800 pb-3">Contact</h2>
@@ -956,7 +1031,7 @@ export default function Home() {
                 type="text"
                 value={terminalInput}
                 onChange={(e) => setTerminalInput(e.target.value)}
-                placeholder="type 'help', 'devto', 'linkedin', or 'resume'..."
+                placeholder="type 'help', 'hobbies', 'devto', 'linkedin', or 'resume'..."
                 autoFocus
                 className="w-full bg-transparent text-slate-100 placeholder-slate-600 focus:outline-none text-sm font-mono"
               />
