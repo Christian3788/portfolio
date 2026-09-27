@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect, useMemo } from "react";
 import Image from "next/image";
+import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Play,
@@ -22,6 +23,13 @@ import {
   BookOpen,
   MapPin,
   ArrowUpRight,
+  Copy,
+  Check,
+  Sun,
+  Moon,
+  Radio,
+  BookCheck,
+  Terminal,
 } from "lucide-react";
 
 // Native SVG for GitHub
@@ -53,7 +61,7 @@ interface Project {
   context: string;
   tags: string[];
   githubUrl: string;
-  liveUrl?: string;
+  cloneCommand: string;
   hasAudioVisualizer?: boolean;
   hasGisSimulator?: boolean;
   architecture: {
@@ -73,6 +81,7 @@ const projects: Project[] = [
       "Built to stream large audio files with low latency without buffering entire tracks into memory on the server.",
     tags: ["Go", "Next.js", "WebSockets", "MinIO", "Redis", "Prisma"],
     githubUrl: "https://github.com/Christian3788",
+    cloneCommand: "git clone https://github.com/Christian3788/lyric.git",
     hasAudioVisualizer: true,
     architecture: {
       diagram: `Client (Next.js) ---> Go HTTP/WS Gateway ---> Redis Pub/Sub (Party Sync)
@@ -96,6 +105,7 @@ const projects: Project[] = [
       "Benchmarked spatial join queries on polygon coordinate sets using GiST indexes to achieve sub-10ms response times.",
     tags: ["PostGIS", "Next.js", "Prisma", "TypeScript"],
     githubUrl: "https://github.com/Christian3788",
+    cloneCommand: "git clone https://github.com/Christian3788/spatial-risk.git",
     hasGisSimulator: true,
     architecture: {
       diagram: `GeoJSON Coordinates ---> PostGIS (ST_DWithin / ST_Intersects) ---> IPCC Risk Pipeline
@@ -118,6 +128,7 @@ const projects: Project[] = [
       "Engineered to explore embedding vector indexing, distance metrics (Cosine, Euclidean), and low-latency nearest-neighbor retrieval pipelines.",
     tags: ["Go", "Python", "Vector Search", "Algorithms", "Docker"],
     githubUrl: "https://github.com/Christian3788/Vector-Vanguard",
+    cloneCommand: "git clone https://github.com/Christian3788/Vector-Vanguard.git",
     architecture: {
       diagram: `High-Dim Query Vectors ---> In-Memory Distance Evaluator (Cosine / Dot)
                                         |
@@ -142,6 +153,7 @@ const projects: Project[] = [
       "Built with location-aware radius queries and clean relational schemas to facilitate circular economy exchanges locally.",
     tags: ["TypeScript", "Next.js", "PostgreSQL", "Prisma", "Tailwind CSS"],
     githubUrl: "https://github.com/Christian3788/kijijiShare",
+    cloneCommand: "git clone https://github.com/Christian3788/kijijiShare.git",
     architecture: {
       diagram: `User Client ---> Next.js App / API Route ---> PostgreSQL / Prisma
                        |
@@ -231,12 +243,15 @@ const skills = [
 ];
 
 export default function Home() {
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTag, setSelectedTag] = useState("All");
   const [selectedModalProject, setSelectedModalProject] = useState<Project | null>(null);
   const [isResumeOpen, setIsResumeOpen] = useState(false);
+  const [copiedKey, setCopiedKey] = useState<string | null>(null);
 
-  // Canvas Audio Visualizer
+  // Audio preview state
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -247,7 +262,34 @@ export default function Home() {
   const [gisCoord, setGisCoord] = useState({ x: 50, y: 50 });
   const [gisScore, setGisScore] = useState(0.42);
 
-  // Audio Visualizer runner
+  // Vector Sandbox State (for Vector-Vanguard modal)
+  const [vectorProbe, setVectorProbe] = useState({ x: 140, y: 80 });
+  const [activeK, setActiveK] = useState(4);
+
+  // Pre-generated static vector nodes
+  const vectorPoints = useMemo(() => {
+    const pts = [];
+    const seedPoints = [
+      [40, 50], [60, 90], [120, 40], [180, 70], [210, 110], [90, 120], [150, 130],
+      [240, 60], [80, 30], [170, 45], [130, 95], [260, 120], [50, 140], [220, 30]
+    ];
+    for (let i = 0; i < seedPoints.length; i++) {
+      pts.push({ id: i, x: seedPoints[i][0], y: seedPoints[i][1] });
+    }
+    return pts;
+  }, []);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleCopy = (text: string, key: string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedKey(key);
+    setTimeout(() => setCopiedKey(null), 2000);
+  };
+
+  // Canvas visualizer
   const renderVisualizer = () => {
     if (!canvasRef.current || !analyserRef.current) return;
     const canvas = canvasRef.current;
@@ -344,8 +386,23 @@ export default function Home() {
     return matchesTag && matchesSearch;
   });
 
+  // Calculate top-K nearest neighbors dynamically for Vector-Vanguard sandbox
+  const sortedNeighbors = useMemo(() => {
+    return [...vectorPoints]
+      .map((pt) => {
+        const dist = Math.hypot(pt.x - vectorProbe.x, pt.y - vectorProbe.y);
+        const similarity = Math.max(0, 1 - dist / 200).toFixed(3);
+        return { ...pt, dist, similarity };
+      })
+      .sort((a, b) => a.dist - b.dist);
+  }, [vectorPoints, vectorProbe]);
+
+  const nearestIds = useMemo(() => {
+    return new Set(sortedNeighbors.slice(0, activeK).map((n) => n.id));
+  }, [sortedNeighbors, activeK]);
+
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-teal-500 selection:text-slate-950 antialiased">
+    <div className="min-h-screen bg-slate-950 text-slate-100 dark:bg-slate-950 dark:text-slate-100 font-sans selection:bg-teal-500 selection:text-slate-950 antialiased">
       {/* Top Navbar */}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-slate-950/80 border-b border-slate-900">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
@@ -354,37 +411,50 @@ export default function Home() {
           </a>
 
           <div className="flex items-center gap-6">
-            <nav className="flex items-center gap-6 text-sm font-medium text-slate-400">
-              <a href="#about" className="hover:text-slate-100 transition">
-                About
-              </a>
-              <a href="#projects" className="hover:text-slate-100 transition">
-                Projects
-              </a>
-              <a href="#articles" className="hover:text-slate-100 transition">
-                Writing
-              </a>
-              <a href="#interests" className="hover:text-slate-100 transition">
-                Interests
-              </a>
-              <button
-                onClick={() => setIsResumeOpen(true)}
-                className="hover:text-teal-400 transition"
-              >
+            <nav className="flex items-center gap-5 sm:gap-6 text-sm font-medium text-slate-400">
+              <a href="#about" className="hover:text-slate-100 transition">About</a>
+              <a href="#projects" className="hover:text-slate-100 transition">Projects</a>
+              <a href="#articles" className="hover:text-slate-100 transition hidden sm:inline">Writing</a>
+              <a href="#interests" className="hover:text-slate-100 transition hidden md:inline">Interests</a>
+              <button onClick={() => setIsResumeOpen(true)} className="hover:text-teal-400 transition">
                 Resume
               </button>
-              <a href="#contact" className="hover:text-slate-100 transition hidden sm:inline">
-                Contact
-              </a>
+              <a href="#contact" className="hover:text-slate-100 transition hidden sm:inline">Contact</a>
             </nav>
+
+            {/* Dark / Light Toggle */}
+            {mounted && (
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="p-1.5 rounded-lg border border-slate-800 bg-slate-900 text-slate-400 hover:text-white transition"
+                title={`Switch to ${theme === "dark" ? "Light" : "Dark"} Mode`}
+              >
+                {theme === "dark" ? <Sun className="w-4 h-4 text-amber-300" /> : <Moon className="w-4 h-4 text-slate-300" />}
+              </button>
+            )}
           </div>
         </div>
       </header>
 
       {/* Main Container */}
       <main className="max-w-5xl mx-auto px-6 py-12 space-y-24">
+        {/* Engineering Status Ticker (Proof of Continuous Learning) */}
+        <section className="bg-slate-900/60 border border-slate-800/80 rounded-xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-3 text-xs font-mono text-slate-400">
+          <div className="flex items-center gap-2">
+            <Radio className="w-3.5 h-3.5 text-teal-400 animate-pulse" />
+            <span className="text-slate-200 font-semibold uppercase tracking-wider">Active Focus:</span>
+            <span className="text-slate-300">Benchmarking HNSW vs. IVF approximate vector index search latency in Go</span>
+          </div>
+          <div className="flex items-center gap-4 text-slate-500">
+            <span className="flex items-center gap-1.5">
+              <BookCheck className="w-3.5 h-3.5 text-slate-400" /> Reading: <i>Designing Data-Intensive Applications</i>
+            </span>
+            <span className="hidden sm:inline border-l border-slate-800 pl-4">Zone01 Apprentice</span>
+          </div>
+        </section>
+
         {/* Hero Section */}
-        <section className="relative pt-4 pb-8">
+        <section className="relative pt-2 pb-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left Bio (7 cols) */}
             <div className="lg:col-span-7 space-y-6 z-10">
@@ -518,7 +588,7 @@ export default function Home() {
             <div>
               <h2 className="text-xl font-bold text-white">Featured Projects</h2>
               <p className="text-xs sm:text-sm text-slate-400 mt-1">
-                Real code, architectural diagrams, and interactive live demos.
+                Real code, architectural diagrams, and interactive live sandboxes.
               </p>
             </div>
 
@@ -594,7 +664,7 @@ export default function Home() {
                       )}
                     </div>
 
-                    {/* Canvas Waveform Display */}
+                    {/* Canvas Waveform Display for LYRIC */}
                     {proj.hasAudioVisualizer && (
                       <div className="mt-3 p-2 bg-slate-950 rounded-lg border border-slate-800/80">
                         <div className="flex justify-between text-[10px] font-mono text-slate-500 mb-1">
@@ -665,14 +735,30 @@ export default function Home() {
                       View Architecture &rarr;
                     </button>
 
-                    <a
-                      href={proj.githubUrl}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="flex items-center gap-1 font-medium text-teal-400 hover:underline text-xs font-mono"
-                    >
-                      Code <ExternalLink className="w-3.5 h-3.5" />
-                    </a>
+                    <div className="flex items-center gap-3">
+                      {/* One-click git clone copy */}
+                      <button
+                        onClick={() => handleCopy(proj.cloneCommand, `clone-${proj.id}`)}
+                        className="text-xs font-mono text-slate-500 hover:text-slate-300 flex items-center gap-1 transition"
+                        title={proj.cloneCommand}
+                      >
+                        {copiedKey === `clone-${proj.id}` ? (
+                          <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        ) : (
+                          <Copy className="w-3.5 h-3.5" />
+                        )}
+                        <span>{copiedKey === `clone-${proj.id}` ? "Copied" : "Clone"}</span>
+                      </button>
+
+                      <a
+                        href={proj.githubUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="flex items-center gap-1 font-medium text-teal-400 hover:underline text-xs font-mono"
+                      >
+                        Code <ExternalLink className="w-3.5 h-3.5" />
+                      </a>
+                    </div>
                   </div>
                 </motion.div>
               ))}
@@ -723,7 +809,7 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Technical Interests & Research Pursuits (Hobbies) */}
+        {/* Technical Interests & Research Pursuits */}
         <section id="interests" className="space-y-6">
           <div className="border-b border-slate-800 pb-3">
             <h2 className="text-xl font-bold text-white flex items-center gap-2">
@@ -764,19 +850,26 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Contact Section */}
+        {/* Interactive Contact Drawer & Instant Email Copier */}
         <section id="contact" className="space-y-4">
           <h2 className="text-xl font-bold text-white border-b border-slate-800 pb-3">Get in Touch</h2>
           <p className="text-slate-400 text-sm max-w-xl">
             Currently open to backend engineering roles, systems contracts, and collaborative research projects.
           </p>
           <div className="flex flex-wrap gap-4 pt-2">
-            <a
-              href="mailto:christianamos67@gmail.com"
+            {/* Quick Email Copier */}
+            <button
+              onClick={() => handleCopy("christianamos67@gmail.com", "email-copy")}
               className="flex items-center gap-2 px-5 py-2.5 bg-slate-900 border border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-200 hover:border-slate-700 transition"
             >
-              <Mail className="w-4 h-4 text-teal-400" /> christianamos67@gmail.com
-            </a>
+              {copiedKey === "email-copy" ? (
+                <Check className="w-4 h-4 text-emerald-400" />
+              ) : (
+                <Mail className="w-4 h-4 text-teal-400" />
+              )}
+              <span>{copiedKey === "email-copy" ? "Copied Email!" : "christianamos67@gmail.com"}</span>
+            </button>
+
             <a
               href="https://github.com/Christian3788"
               target="_blank"
@@ -909,7 +1002,7 @@ export default function Home() {
         </div>
       )}
 
-      {/* Architecture Modal */}
+      {/* Interactive Architecture Modal with Dynamic Sandboxes */}
       {selectedModalProject && (
         <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-2xl bg-slate-950 border border-slate-800 rounded-xl overflow-hidden shadow-2xl p-6 space-y-5">
@@ -929,6 +1022,99 @@ export default function Home() {
                 <X className="w-5 h-5" />
               </button>
             </div>
+
+            {/* Special Live Sandbox: Vector-Vanguard 2D Nearest-Neighbor Probe */}
+            {selectedModalProject.id === "vector-vanguard" && (
+              <div className="p-4 bg-slate-900/80 border border-slate-800 rounded-lg space-y-3">
+                <div className="flex items-center justify-between text-xs font-mono text-slate-300">
+                  <span className="flex items-center gap-1.5 text-teal-400">
+                    <Terminal className="w-3.5 h-3.5" /> Interactive 2D Embedding Metric Probe
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <span>k-NN:</span>
+                    {[3, 4, 6].map((k) => (
+                      <button
+                        key={k}
+                        onClick={() => setActiveK(k)}
+                        className={`px-2 py-0.5 rounded text-[10px] ${
+                          activeK === k
+                            ? "bg-teal-400 text-slate-950 font-bold"
+                            : "bg-slate-800 text-slate-400"
+                        }`}
+                      >
+                        {k}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                <div
+                  onMouseMove={(e) => {
+                    const rect = e.currentTarget.getBoundingClientRect();
+                    setVectorProbe({
+                      x: Math.round(e.clientX - rect.left),
+                      y: Math.round(e.clientY - rect.top),
+                    });
+                  }}
+                  className="relative h-40 w-full bg-slate-950 rounded border border-slate-800 cursor-crosshair overflow-hidden"
+                >
+                  {/* Scatter plot points */}
+                  {vectorPoints.map((pt) => {
+                    const isNear = nearestIds.has(pt.id);
+                    return (
+                      <div
+                        key={pt.id}
+                        className={`absolute w-2.5 h-2.5 -ml-1 -mt-1 rounded-full transition-colors ${
+                          isNear ? "bg-teal-400 ring-4 ring-teal-400/20" : "bg-slate-600"
+                        }`}
+                        style={{ left: pt.x, top: pt.y }}
+                      />
+                    );
+                  })}
+
+                  {/* Active query vector probe */}
+                  <div
+                    className="absolute w-3 h-3 -ml-1.5 -mt-1.5 rounded-full bg-rose-400 border border-white"
+                    style={{ left: vectorProbe.x, top: vectorProbe.y }}
+                  />
+                </div>
+
+                <div className="text-[11px] font-mono text-slate-400 flex justify-between">
+                  <span>Hover to move query vector ({vectorProbe.x}, {vectorProbe.y})</span>
+                  <span className="text-teal-400">
+                    Top similarity: {sortedNeighbors[0]?.similarity || "0.000"}
+                  </span>
+                </div>
+              </div>
+            )}
+
+            {/* Special Live Sandbox: LYRIC Byte-Range Buffer Inspector */}
+            {selectedModalProject.id === "lyric" && (
+              <div className="p-3 bg-slate-900/80 border border-slate-800 rounded-lg space-y-2">
+                <span className="text-xs font-mono text-teal-400 block">
+                  Chunk Buffer Allocator (64KB Slices)
+                </span>
+                <div className="grid grid-cols-12 gap-1 h-6">
+                  {Array.from({ length: 24 }).map((_, idx) => (
+                    <div
+                      key={idx}
+                      className={`h-full rounded-sm ${
+                        idx < 9
+                          ? "bg-teal-400/80"
+                          : idx === 9
+                          ? "bg-teal-400 animate-pulse"
+                          : "bg-slate-800"
+                      }`}
+                      title={`Chunk #${idx} (${idx * 64}KB - ${(idx + 1) * 64}KB)`}
+                    />
+                  ))}
+                </div>
+                <div className="flex justify-between text-[10px] font-mono text-slate-500">
+                  <span className="text-teal-300">Buffered in Memory: 576 KB</span>
+                  <span>Total File Size: 1.54 MB</span>
+                </div>
+              </div>
+            )}
 
             <div>
               <span className="text-xs font-mono text-slate-400 block mb-2">System Topology:</span>
