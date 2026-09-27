@@ -41,6 +41,11 @@ import {
   Network,
   Command,
   Database,
+  Cpu,
+  Activity,
+  HardDrive,
+  Workflow,
+  Wifi,
 } from "lucide-react";
 
 // Native SVG for GitHub
@@ -148,7 +153,7 @@ const projects: Project[] = [
       ],
       highlights: [
         "Go HTTP 206 Range Streamer serves 64KB byte-range buffers directly without full heap buffering.",
-        "Custom WebSocket Hub coordinates synchronous playback states (seek/pause/play) across peers.",
+        "Custom WebSocket Hub coordinates synchronous playback states across peers.",
         "Zustand state store coordinates persistent client playback across page route transitions.",
       ],
       tradeoffs:
@@ -238,14 +243,14 @@ const projects: Project[] = [
         "Optimized memory access patterns and vector partitioning for sub-millisecond query cycles.",
       ],
       tradeoffs:
-        "Balanced index build speed against query recall by choosing an approximate nearest neighbor (ANN) approach over brute-force exhaustive scanning.",
+        "Balanced index build speed against query recall by choosing an approximate nearest neighbor approach.",
       failureModes: [
         {
           id: "oom-vector",
           name: "Index Graph Exhaustion",
           affectedNode: "hnsw",
           description: "Embedding graph exceeds allocated container heap allocation.",
-          remedy: "Dynamic product quantization (PQ) triggers to compress 32-bit floats into 8-bit quantized centroid buckets.",
+          remedy: "Dynamic product quantization triggers to compress 32-bit floats into 8-bit quantized centroid buckets.",
         },
       ],
     },
@@ -390,11 +395,12 @@ export default function Home() {
   // Web Audio Context for UI Haptics
   const hapticAudioCtxRef = useRef<AudioContext | null>(null);
 
-  // LYRIC Audio preview state
+  // LYRIC Audio preview state & 3D Waterfall Spectrogram
   const [isPlayingAudio, setIsPlayingAudio] = useState(false);
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const waterfallCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const animFrameRef = useRef<number | null>(null);
 
   // GIS Interactive Simulator state
@@ -426,6 +432,135 @@ export default function Home() {
 
   // Starfield Constellation Background Canvas Ref
   const starfieldCanvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  // --- SYSTEM LAB 1: Memory Slab Allocator State ---
+  const [memoryHeap, setMemoryHeap] = useState<Array<{ id: number; allocated: boolean; size: number; label?: string }>>(
+    () => Array.from({ length: 32 }, (_, i) => ({ id: i, allocated: i % 7 === 0 || i % 11 === 0, size: 64 }))
+  );
+  const [lastMalloc, setLastMalloc] = useState<string>("0x0480");
+
+  // --- SYSTEM LAB 2: Go Goroutine & Deadlock Simulator ---
+  const [channelBuffer, setChannelBuffer] = useState<number[]>([]);
+  const [channelCapacity, setChannelCapacity] = useState<number>(2);
+  const [goroutineStatus, setGoroutineStatus] = useState<"idle" | "running" | "deadlocked">("idle");
+  const [deadlockError, setDeadlockError] = useState<string | null>(null);
+
+  // --- SYSTEM LAB 3: TCP Handshake & Sliding Window ---
+  const [tcpState, setTcpState] = useState<"CLOSED" | "SYN_SENT" | "SYN_RECEIVED" | "ESTABLISHED">("CLOSED");
+  const [packetLossPct, setPacketLossPct] = useState<number>(0);
+  const [cwndSize, setCwndSize] = useState<number>(4);
+
+  // --- SYSTEM LAB 4: Bloom Filter Probe ---
+  const [bloomArray, setBloomArray] = useState<number[]>(() => Array.from({ length: 32 }, () => 0));
+  const [bloomInput, setBloomInput] = useState<string>("user_token_99");
+  const [bloomMatch, setBloomMatch] = useState<boolean | null>(null);
+
+  // Hash functions for Bloom Filter
+  const hash1 = (s: string) => {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) % 32;
+    return Math.abs(h);
+  };
+  const hash2 = (s: string) => {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h * 17 + s.charCodeAt(i)) % 32;
+    return Math.abs(h);
+  };
+  const hash3 = (s: string) => {
+    let h = 0;
+    for (let i = 0; i < s.length; i++) h = (h * 53 + s.charCodeAt(i)) % 32;
+    return Math.abs(h);
+  };
+
+  const handleBloomInsert = () => {
+    if (!bloomInput.trim()) return;
+    const i1 = hash1(bloomInput);
+    const i2 = hash2(bloomInput);
+    const i3 = hash3(bloomInput);
+    setBloomArray((prev) => {
+      const next = [...prev];
+      next[i1] = 1;
+      next[i2] = 1;
+      next[i3] = 1;
+      return next;
+    });
+    setBloomMatch(true);
+    playHapticClick(180, 0.03);
+  };
+
+  const handleBloomCheck = () => {
+    const i1 = hash1(bloomInput);
+    const i2 = hash2(bloomInput);
+    const i3 = hash3(bloomInput);
+    const present = bloomArray[i1] === 1 && bloomArray[i2] === 1 && bloomArray[i3] === 1;
+    setBloomMatch(present);
+    playHapticClick(present ? 200 : 90, 0.04);
+  };
+
+  // Memory Allocator actions
+  const allocateMemoryBlock = () => {
+    playHapticClick(140, 0.02);
+    setMemoryHeap((prev) => {
+      const next = [...prev];
+      const freeIdx = next.findIndex((b) => !b.allocated);
+      if (freeIdx !== -1) {
+        next[freeIdx] = { ...next[freeIdx], allocated: true, label: "slab_ptr" };
+        setLastMalloc(`0x0${(freeIdx * 64).toString(16).toUpperCase()}`);
+      }
+      return next;
+    });
+  };
+
+  const freeMemoryBlock = () => {
+    playHapticClick(110, 0.02);
+    setMemoryHeap((prev) => {
+      const next = [...prev];
+      const allocIdx = next.findIndex((b) => b.allocated);
+      if (allocIdx !== -1) {
+        next[allocIdx] = { ...next[allocIdx], allocated: false, label: undefined };
+      }
+      return next;
+    });
+  };
+
+  const sweepGarbageCollection = () => {
+    playHapticClick(190, 0.04);
+    setMemoryHeap((prev) => prev.map((b, i) => (i % 5 === 0 ? { ...b, allocated: false } : b)));
+  };
+
+  // Goroutine actions
+  const produceChannelMessage = () => {
+    playHapticClick(150, 0.02);
+    if (channelBuffer.length >= channelCapacity) {
+      setGoroutineStatus("deadlocked");
+      setDeadlockError("fatal error: all goroutines are asleep - deadlock! Channel send blocked on full buffer.");
+      return;
+    }
+    setGoroutineStatus("running");
+    setDeadlockError(null);
+    setChannelBuffer((prev) => [...prev, Math.floor(Math.random() * 90 + 10)]);
+  };
+
+  const consumeChannelMessage = () => {
+    playHapticClick(130, 0.02);
+    if (channelBuffer.length === 0) {
+      setGoroutineStatus("deadlocked");
+      setDeadlockError("runtime block: goroutine 4 [chan receive]: channel is empty without pending producers.");
+      return;
+    }
+    setGoroutineStatus("running");
+    setDeadlockError(null);
+    setChannelBuffer((prev) => prev.slice(1));
+  };
+
+  // TCP Handshake action
+  const stepTcpHandshake = () => {
+    playHapticClick(160, 0.03);
+    if (tcpState === "CLOSED") setTcpState("SYN_SENT");
+    else if (tcpState === "SYN_SENT") setTcpState("SYN_RECEIVED");
+    else if (tcpState === "SYN_RECEIVED") setTcpState("ESTABLISHED");
+    else setTcpState("CLOSED");
+  };
 
   // Initialize Lenis Smooth Scroll
   useEffect(() => {
@@ -760,12 +895,15 @@ export default function Home() {
     if (next) playHapticClick(160, 0.05);
   };
 
-  // Canvas visualizer
+  // 3D Audio Spectrum Waterfall & Waveform
   const renderVisualizer = () => {
     if (!canvasRef.current || !analyserRef.current) return;
     const canvas = canvasRef.current;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
+
+    const waterfallCanvas = waterfallCanvasRef.current;
+    const wCtx = waterfallCanvas?.getContext("2d");
 
     const analyser = analyserRef.current;
     const bufferLength = analyser.frequencyBinCount;
@@ -775,6 +913,7 @@ export default function Home() {
       animFrameRef.current = requestAnimationFrame(draw);
       analyser.getByteFrequencyData(dataArray);
 
+      // 2D Frequency Bar
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const barWidth = (canvas.width / bufferLength) * 2.5;
       let x = 0;
@@ -784,6 +923,21 @@ export default function Home() {
         ctx.fillStyle = "#2dd4bf";
         ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
         x += barWidth + 2;
+      }
+
+      // Rolling Waterfall Spectrogram
+      if (waterfallCanvas && wCtx) {
+        // Shift existing rows down
+        const imgData = wCtx.getImageData(0, 0, waterfallCanvas.width, waterfallCanvas.height - 1);
+        wCtx.putImageData(imgData, 0, 1);
+
+        // Draw new top row
+        for (let i = 0; i < bufferLength; i++) {
+          const val = dataArray[i];
+          const hue = 180 + (val / 255) * 120; // Cyan to purple
+          wCtx.fillStyle = `hsl(${hue}, 90%, ${val / 5}%)`;
+          wCtx.fillRect((i / bufferLength) * waterfallCanvas.width, 0, waterfallCanvas.width / bufferLength + 1, 1);
+        }
       }
     };
     draw();
@@ -832,7 +986,7 @@ export default function Home() {
       setTimeout(() => {
         setIsPlayingAudio(false);
         if (animFrameRef.current) cancelAnimationFrame(animFrameRef.current);
-      }, 2000);
+      }, 3500);
     } catch {
       setIsPlayingAudio(false);
     }
@@ -914,7 +1068,7 @@ EDUCATION & EXPERIENCE:
         className="fixed inset-0 pointer-events-none z-0 opacity-40"
       />
 
-      {/* Velocity-Aware Spring Cursor (Hidden on touch devices) */}
+      {/* Velocity-Aware Spring Cursor */}
       <motion.div
         className="fixed top-0 left-0 w-4 h-4 rounded-full pointer-events-none z-50 border border-teal-400/80 bg-teal-400/20 hidden md:block"
         style={{
@@ -954,11 +1108,11 @@ EDUCATION & EXPERIENCE:
                 Projects
               </a>
               <a
-                href="#benchmark"
+                href="#systems-lab"
                 onClick={() => playHapticClick(80, 0.02)}
                 className="hover:text-slate-100 transition hidden sm:inline"
               >
-                Benchmark
+                Systems Lab
               </a>
               <a
                 href="#articles"
@@ -1111,7 +1265,6 @@ EDUCATION & EXPERIENCE:
                 Currently an apprentice at Zone01 Kisumu, exploring real-time streaming architectures, discrete simulation engines, and technical writing on the side.
               </p>
 
-              {/* Clean, intentional button hierarchy */}
               <div className="pt-2 flex flex-wrap items-center gap-4">
                 <a
                   href="#projects"
@@ -1131,7 +1284,6 @@ EDUCATION & EXPERIENCE:
                   Resume
                 </button>
 
-                {/* Minimalist social links */}
                 <div className="flex items-center gap-3 pl-3 border-l border-slate-800 text-slate-400">
                   <a
                     href="https://github.com/Christian3788"
@@ -1308,23 +1460,32 @@ EDUCATION & EXPERIENCE:
                       )}
                     </div>
 
-                    {/* Canvas Waveform Display for LYRIC */}
+                    {/* Canvas Waveform Display & 3D Waterfall Spectrogram for LYRIC */}
                     {proj.hasAudioVisualizer && (
-                      <div className="mt-3 p-2 bg-slate-950 rounded-lg border border-slate-800/80">
-                        <div className="flex justify-between text-[10px] font-mono text-slate-500 mb-1">
+                      <div className="mt-3 p-2 bg-slate-950 rounded-lg border border-slate-800/80 space-y-2">
+                        <div className="flex justify-between text-[10px] font-mono text-slate-500">
                           <span>HTTP 206 Partial Stream</span>
-                          <span>{isPlayingAudio ? "Oscillator Active" : "Click 'Play Stream'"}</span>
+                          <span>{isPlayingAudio ? "FFT Active" : "Click 'Play Stream'"}</span>
                         </div>
                         <canvas
                           ref={canvasRef}
                           width={280}
-                          height={42}
-                          className="w-full h-10 rounded bg-slate-900/50"
+                          height={30}
+                          className="w-full h-8 rounded bg-slate-900/50"
+                        />
+                        <div className="text-[9px] font-mono text-slate-500 uppercase tracking-wider">
+                          3D Spectrum Waterfall (Rolling FFT)
+                        </div>
+                        <canvas
+                          ref={waterfallCanvasRef}
+                          width={280}
+                          height={50}
+                          className="w-full h-12 rounded bg-slate-900/70"
                         />
                       </div>
                     )}
 
-                    {/* Interactive GIS Spatial Risk Simulator (GiST vs Sequential Mode) */}
+                    {/* Interactive GIS Spatial Risk Simulator */}
                     {proj.hasGisSimulator && (
                       <div className="mt-3 p-3 bg-slate-950 rounded-lg border border-slate-800/80 space-y-2">
                         <div className="flex justify-between items-center text-[10px] font-mono text-slate-400">
@@ -1462,6 +1623,253 @@ EDUCATION & EXPERIENCE:
               ))}
             </AnimatePresence>
           </motion.div>
+        </section>
+
+        {/* --- SYSTEMS LAB: 4 LIVE INTERACTIVE ENGINEERING WORKBENCHES --- */}
+        <section id="systems-lab" className="space-y-6">
+          <div className="border-b border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+            <div>
+              <h2 className="text-xl font-bold text-white flex items-center gap-2">
+                <Cpu className="w-5 h-5 text-teal-400" /> Systems Engineering Interactive Lab
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-400 mt-1">
+                Live interactive visualizers exploring operating system memory, Go channel concurrency, TCP flow, and probabilistic hashing.
+              </p>
+            </div>
+            <span className="text-[11px] font-mono text-teal-400">Low-Level CS Internals</span>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {/* WORKBENCH 1: Virtual Memory Heap Allocator */}
+            <div className="p-5 bg-slate-900/40 border border-slate-800 rounded-xl space-y-4 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-xs font-mono mb-2">
+                  <span className="text-teal-400 flex items-center gap-1.5 font-bold">
+                    <HardDrive className="w-4 h-4" /> 1. Virtual Memory Slab Allocator
+                  </span>
+                  <span className="text-slate-500">Ptr: {lastMalloc}</span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Contiguous heap allocations with 64-byte alignment headers, showing fragmentation and free list sweeps.
+                </p>
+
+                {/* 32 Memory Slabs Grid */}
+                <div className="grid grid-cols-8 gap-1.5 p-3 bg-slate-950 rounded-lg border border-slate-800/80 my-3">
+                  {memoryHeap.map((slab) => (
+                    <div
+                      key={slab.id}
+                      className={`h-5 rounded-sm transition-all border ${
+                        slab.allocated
+                          ? "bg-teal-500/80 border-teal-400 shadow-sm shadow-teal-500/20"
+                          : "bg-slate-900 border-slate-800"
+                      }`}
+                      title={`Address: 0x0${(slab.id * 64).toString(16).toUpperCase()} (${
+                        slab.allocated ? "ALLOCATED" : "FREE"
+                      })`}
+                    />
+                  ))}
+                </div>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
+                <button
+                  onClick={allocateMemoryBlock}
+                  className="px-3 py-1 bg-teal-400 text-slate-950 font-bold rounded hover:bg-teal-300 transition"
+                >
+                  malloc(64B)
+                </button>
+                <button
+                  onClick={freeMemoryBlock}
+                  className="px-3 py-1 bg-slate-800 border border-slate-700 text-slate-300 rounded hover:bg-slate-700 transition"
+                >
+                  free()
+                </button>
+                <button
+                  onClick={sweepGarbageCollection}
+                  className="px-3 py-1 bg-slate-950 border border-slate-800 text-slate-400 rounded hover:text-white transition"
+                >
+                  gc_sweep()
+                </button>
+              </div>
+            </div>
+
+            {/* WORKBENCH 2: Go Goroutine & Channel Concurrency */}
+            <div className="p-5 bg-slate-900/40 border border-slate-800 rounded-xl space-y-4 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-xs font-mono mb-2">
+                  <span className="text-teal-400 flex items-center gap-1.5 font-bold">
+                    <Workflow className="w-4 h-4" /> 2. Go Channel Deadlock Simulator
+                  </span>
+                  <span
+                    className={`px-2 py-0.5 rounded text-[10px] uppercase font-mono ${
+                      goroutineStatus === "deadlocked"
+                        ? "bg-rose-950 border border-rose-800 text-rose-300 animate-pulse"
+                        : "bg-slate-800 text-teal-300"
+                    }`}
+                  >
+                    {goroutineStatus}
+                  </span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Worker goroutines reading and writing to a synchronized Go channel (`ch := make(chan int, {channelCapacity})`).
+                </p>
+
+                {/* Channel Buffer Visualizer */}
+                <div className="p-3 bg-slate-950 rounded-lg border border-slate-800/80 my-3 flex items-center justify-between font-mono text-xs">
+                  <span className="text-slate-500">Producer &rarr;</span>
+                  <div className="flex gap-2">
+                    {Array.from({ length: channelCapacity }).map((_, i) => (
+                      <div
+                        key={i}
+                        className={`w-10 h-8 rounded border flex items-center justify-center font-bold transition-all ${
+                          channelBuffer[i] !== undefined
+                            ? "bg-teal-950 border-teal-500 text-teal-300"
+                            : "bg-slate-900 border-slate-800 text-slate-600"
+                        }`}
+                      >
+                        {channelBuffer[i] ?? "∅"}
+                      </div>
+                    ))}
+                  </div>
+                  <span className="text-slate-500">&rarr; Consumer</span>
+                </div>
+
+                {deadlockError && (
+                  <p className="text-[11px] font-mono text-rose-400 bg-rose-950/30 p-2 rounded border border-rose-900/60">
+                    {deadlockError}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
+                <button
+                  onClick={produceChannelMessage}
+                  className="px-3 py-1 bg-teal-400 text-slate-950 font-bold rounded hover:bg-teal-300 transition"
+                >
+                  ch &lt;- val
+                </button>
+                <button
+                  onClick={consumeChannelMessage}
+                  className="px-3 py-1 bg-slate-800 border border-slate-700 text-slate-300 rounded hover:bg-slate-700 transition"
+                >
+                  &lt;- ch
+                </button>
+                <button
+                  onClick={() => {
+                    setChannelBuffer([]);
+                    setGoroutineStatus("idle");
+                    setDeadlockError(null);
+                  }}
+                  className="px-3 py-1 bg-slate-950 border border-slate-800 text-slate-400 rounded hover:text-white transition"
+                >
+                  Reset Hub
+                </button>
+              </div>
+            </div>
+
+            {/* WORKBENCH 3: TCP Handshake & Sliding Window */}
+            <div className="p-5 bg-slate-900/40 border border-slate-800 rounded-xl space-y-4 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-xs font-mono mb-2">
+                  <span className="text-teal-400 flex items-center gap-1.5 font-bold">
+                    <Wifi className="w-4 h-4" /> 3. TCP 3-Way Handshake Pipeline
+                  </span>
+                  <span className="text-slate-500">State: {tcpState}</span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  SYN / SYN-ACK / ACK progression stepping through congestion window controls and socket lifecycles.
+                </p>
+
+                <div className="p-3 bg-slate-950 rounded-lg border border-slate-800/80 my-3 font-mono text-xs space-y-2">
+                  <div className="flex justify-between items-center text-slate-400">
+                    <span className="text-teal-400 font-bold">CLIENT</span>
+                    <span className="text-slate-500">Socket Protocol Stream</span>
+                    <span className="text-sky-400 font-bold">SERVER</span>
+                  </div>
+                  <div className="h-10 border border-dashed border-slate-800 rounded flex items-center justify-center text-slate-300">
+                    {tcpState === "CLOSED" && "Socket Inactive (CLOSED)"}
+                    {tcpState === "SYN_SENT" && "Client &rarr; [SYN Seq=100] &rarr; Server"}
+                    {tcpState === "SYN_RECEIVED" && "Server &rarr; [SYN-ACK Seq=300 Ack=101] &rarr; Client"}
+                    {tcpState === "ESTABLISHED" && "Connection Open: [ACK Seq=101 Ack=301] • ESTABLISHED"}
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-1 font-mono text-xs">
+                <button
+                  onClick={stepTcpHandshake}
+                  className="px-3 py-1 bg-teal-400 text-slate-950 font-bold rounded hover:bg-teal-300 transition"
+                >
+                  Step Handshake &rarr;
+                </button>
+                <span className="text-[11px] text-slate-500">cwnd = {cwndSize} MSS</span>
+              </div>
+            </div>
+
+            {/* WORKBENCH 4: Bloom Filter Set Membership Probe */}
+            <div className="p-5 bg-slate-900/40 border border-slate-800 rounded-xl space-y-4 flex flex-col justify-between">
+              <div>
+                <div className="flex items-center justify-between text-xs font-mono mb-2">
+                  <span className="text-teal-400 flex items-center gap-1.5 font-bold">
+                    <Binary className="w-4 h-4" /> 4. Probabilistic Bloom Filter Probe
+                  </span>
+                  <span className="text-slate-500">32-bit Array (k=3)</span>
+                </div>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  Calculates 3 modulo hash offsets per key to guarantee zero false-negatives before hitting disk.
+                </p>
+
+                {/* 32 Bits Array */}
+                <div className="grid grid-cols-16 gap-1 p-2 bg-slate-950 rounded-lg border border-slate-800/80 my-3">
+                  {bloomArray.map((bit, idx) => (
+                    <div
+                      key={idx}
+                      className={`h-4 rounded-[2px] transition-all flex items-center justify-center text-[9px] font-mono ${
+                        bit === 1 ? "bg-teal-400 text-slate-950 font-bold" : "bg-slate-900 text-slate-600"
+                      }`}
+                      title={`Bit #${idx}: ${bit}`}
+                    >
+                      {bit}
+                    </div>
+                  ))}
+                </div>
+
+                <div className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={bloomInput}
+                    onChange={(e) => setBloomInput(e.target.value)}
+                    className="w-full bg-slate-950 border border-slate-800 rounded px-2.5 py-1 text-xs font-mono text-slate-200 focus:outline-none"
+                    placeholder="Enter key to hash..."
+                  />
+                  {bloomMatch !== null && (
+                    <span
+                      className={`text-[10px] font-mono px-2 py-1 rounded whitespace-nowrap ${
+                        bloomMatch ? "bg-emerald-950 text-emerald-300" : "bg-rose-950 text-rose-300"
+                      }`}
+                    >
+                      {bloomMatch ? "Probably In Set" : "Definitely NOT"}
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 pt-1 font-mono text-xs">
+                <button
+                  onClick={handleBloomInsert}
+                  className="px-3 py-1 bg-teal-400 text-slate-950 font-bold rounded hover:bg-teal-300 transition"
+                >
+                  Insert Key
+                </button>
+                <button
+                  onClick={handleBloomCheck}
+                  className="px-3 py-1 bg-slate-800 border border-slate-700 text-slate-300 rounded hover:bg-slate-700 transition"
+                >
+                  Check Key
+                </button>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Live Vector Distance Engine Benchmark */}
@@ -1697,6 +2105,7 @@ EDUCATION & EXPERIENCE:
               </span>
               {[
                 { label: "View Projects Grid", href: "#projects" },
+                { label: "Explore Systems Engineering Lab", href: "#systems-lab" },
                 { label: "Run In-Browser Vector Benchmark", href: "#benchmark" },
                 { label: "View Engineering Notes & Writing", href: "#articles" },
                 { label: "Explore Gravitational Lensing Canvas", href: "#interests" },
@@ -1895,7 +2304,6 @@ EDUCATION & EXPERIENCE:
 
               <div className="relative w-full h-36 bg-slate-950 rounded border border-slate-800/80 overflow-hidden">
                 <svg className="absolute inset-0 w-full h-full">
-                  {/* Dynamic Bézier Cable Connections */}
                   {selectedModalProject.architecture.connections.map((conn) => {
                     const fromNode = selectedModalProject.architecture.nodes.find(
                       (n) => n.id === conn.from
