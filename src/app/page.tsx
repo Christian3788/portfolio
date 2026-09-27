@@ -110,48 +110,49 @@ const projects: Project[] = [
     },
   },
   {
-    id: "tcp-chat",
-    title: "Concurrent TCP Chat Server & Core Systems",
+    id: "vector-vanguard",
+    title: "Vector-Vanguard",
     description:
-      "High-throughput multi-client TCP chat engine built with goroutines, custom broadcast protocols, non-blocking channels, alongside algorithmic backtracking solvers.",
+      "Vector search engine and high-dimensional similarity index built to perform nearest-neighbor lookups, metric space embeddings, and high-throughput vector queries.",
     context:
-      "Engineered from scratch to explore socket-level concurrency, goroutine leaks, and mutex contention under high client churn.",
-    tags: ["Go", "Docker", "Networking", "Concurrency"],
-    githubUrl: "https://github.com/Christian3788",
+      "Engineered to explore embedding vector indexing, distance metrics (Cosine, Euclidean), and low-latency nearest-neighbor retrieval pipelines.",
+    tags: ["Go", "Python", "Vector Search", "Algorithms", "Docker"],
+    githubUrl: "https://github.com/Christian3788/Vector-Vanguard",
     architecture: {
-      diagram: `TCP Clients ---> [Net.Listener] ---> Worker Goroutine (Reader)
-                                           |
-                                  Broadcast Hub Channel
-                                           |
-                            Fan-out to Active Client Buffers`,
+      diagram: `High-Dim Query Vectors ---> In-Memory Distance Evaluator (Cosine / Dot)
+                                        |
+                            Hierarchical Graph / Quantized Index
+                                        |
+                             Top-K Nearest Embeddings Returned`,
       highlights: [
-        "Goroutine-per-connection concurrency with non-blocking broadcast channels.",
-        "Graceful disconnection handling with mutex-guarded registry maps preventing race conditions.",
-        "Lightweight Docker multi-stage Alpine binary clocking under 15MB total container footprint.",
+        "High-performance vectorized similarity metrics evaluated across dense numeric vectors.",
+        "Optimized memory access patterns and vector partitioning for sub-millisecond query cycles.",
+        "Containerized benchmarking harness to stress-test throughput under concurrent read loads.",
       ],
       tradeoffs:
-        "Chose raw socket TCP protocol over WebSockets for performance testing, eliminating HTTP protocol overhead.",
+        "Balanced index build speed against query recall by choosing an approximate nearest neighbor (ANN) approach over brute-force exhaustive scanning.",
     },
   },
   {
-    id: "gift-economy",
-    title: "Hyperlocal Gift Economy",
+    id: "kijijishare",
+    title: "kijijiShare",
     description:
-      "Community sharing marketplace platform featuring Dockerized Go microservices, Prisma ORM, and location-aware item exchange matching.",
+      "Peer-to-peer hyperlocal resource sharing and item exchange platform built to connect communities with zero-friction item discovery and spatial coordination.",
     context:
-      "Designed with relational integrity and geospatial radius queries to coordinate zero-cost physical goods exchanges locally.",
-    tags: ["Go", "Docker", "Prisma", "REST API"],
-    githubUrl: "https://github.com/Christian3788",
+      "Built with location-aware radius queries and clean relational schemas to facilitate circular economy exchanges locally.",
+    tags: ["TypeScript", "Next.js", "PostgreSQL", "Prisma", "Tailwind CSS"],
+    githubUrl: "https://github.com/Christian3788/kijijiShare",
     architecture: {
-      diagram: `Client ---> Go Microservice REST Gateway ---> PostgreSQL / Prisma
+      diagram: `User Client ---> Next.js App / API Route ---> PostgreSQL / Prisma
                        |
-               Spatial Match Radius Filter`,
+        Geospatial Radius Filter (Neighborhood Bounds) ---> Direct Peer Coordination`,
       highlights: [
-        "Domain-driven microservice layers with clean separation of concerns.",
-        "Automated Docker Compose testing rigs for ephemeral integration tests.",
+        "Geospatial radius queries to filter available neighborhood assets by user proximity.",
+        "Robust relational schemas enforcing atomic reservations and status life cycles.",
+        "Lightweight, mobile-first progressive web interface designed for low-bandwidth environments.",
       ],
       tradeoffs:
-        "Relational model in PostgreSQL for strict ACID transactional integrity during item claims over NoSQL eventual consistency.",
+        "Used transactional PostgreSQL relational models for deterministic reservation guarantees rather than eventual-consistency document stores.",
     },
   },
 ];
@@ -382,7 +383,7 @@ export default function Home() {
 
       {/* Main Container */}
       <main className="max-w-5xl mx-auto px-6 py-12 space-y-24">
-        {/* Human-Crafted Hero Section */}
+        {/* Hero Section */}
         <section className="relative pt-4 pb-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             {/* Left Bio (7 cols) */}
@@ -489,7 +490,7 @@ export default function Home() {
               My approach to software is centered around mechanical sympathy: understanding how byte buffers flow over sockets, keeping memory footprints deterministic, and making database query plans predictable before reaching for more hardware.
             </p>
             <p>
-              Having studied microbiology and biotechnology before transitioning to full-stack engineering, I bring an experimental, first-principles mindset to writing code. Whether profiling goroutines in Go, partitioning geospatial indexes in PostGIS, or designing state machines in TypeScript, I focus on building systems that remain clean under load.
+              Having studied microbiology and biotechnology before transitioning to full-stack engineering, I bring an experimental, first-principles mindset to writing code. Whether profiling vector algorithms, partitioning geospatial indexes in PostGIS, or designing state machines in TypeScript, I focus on building systems that remain clean under load.
             </p>
           </div>
         </section>
@@ -647,7 +648,7 @@ export default function Home() {
                       {proj.tags.map((tag) => (
                         <span
                           key={tag}
-                          className="text-xs bg-slate-950 border border-slate-800/80 text-slate-300 px-2 py-0.5 rounded font-mono"
+                          className="text-xs bg-slate-950 border border-slate-800/80 text-slate-300 px-2.5 py-0.5 rounded font-mono"
                         >
                           {tag}
                         </span>
@@ -841,7 +842,7 @@ export default function Home() {
 
               <div>
                 <h4 className="font-semibold text-white uppercase text-xs tracking-wider border-b border-slate-800 pb-1">
-                  Updated Key Projects
+                  Featured Projects
                 </h4>
                 <div className="space-y-3 mt-2 text-xs text-slate-400">
                   <div>
@@ -857,15 +858,15 @@ export default function Home() {
                     </p>
                   </div>
                   <div>
-                    <span className="font-semibold text-white">Hyperlocal Gift Economy Platform</span>
+                    <span className="font-semibold text-white">Vector-Vanguard</span>
                     <p className="mt-0.5">
-                      Next.js, TypeScript, Docker, Prisma ORM, PostgreSQL. Containerized community exchange application with optimized relational schemas.
+                      Go, Python, Docker. High-dimensional vector similarity index and nearest-neighbor search engine.
                     </p>
                   </div>
                   <div>
-                    <span className="font-semibold text-white">Concurrent TCP Chat Server & Core Systems Suite</span>
+                    <span className="font-semibold text-white">kijijiShare</span>
                     <p className="mt-0.5">
-                      Go, Docker, Net-Cat, Tetris-Optimizer, Push-Swap. Goroutine connection models, thread-safe channel broadcasting, and recursive backtracking algorithms.
+                      Next.js, TypeScript, PostgreSQL, Prisma. Hyperlocal resource sharing and community circular economy exchange platform.
                     </p>
                   </div>
                 </div>
