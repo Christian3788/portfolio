@@ -1,16 +1,15 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useMemo, useCallback } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { useTheme } from "next-themes";
-import { motion, AnimatePresence, useSpring, useMotionValue } from "framer-motion";
+import { motion, useSpring, useMotionValue } from "framer-motion";
 import Lenis from "lenis";
 import {
   Play,
   Square,
   Search,
   ExternalLink,
-  Layers,
   FileText,
   Mail,
   X,
@@ -29,25 +28,20 @@ import {
   Sun,
   Moon,
   Radio,
-  BookCheck,
   Volume2,
   VolumeX,
-  GitCommit,
   Gauge,
   RotateCcw,
   Zap,
   Network,
   Command,
-  Database,
   Cpu,
   HardDrive,
   Workflow,
   Wifi,
   Briefcase,
   Code2,
-  Sliders,
   ChevronDown,
-  Terminal,
 } from "lucide-react";
 
 function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -119,12 +113,6 @@ interface Project {
     connections: { from: string; to: string }[];
     highlights: string[];
     tradeoffs: string;
-    failureModes?: {
-      id: string;
-      name: string;
-      description: string;
-      remedy: string;
-    }[];
   };
 }
 
@@ -133,9 +121,9 @@ const projects: Project[] = [
     id: "lyric",
     title: "LYRIC – Music Streaming Platform",
     description: "Audio streaming engine with HTTP 206 range requests, synchronized group playback, and an interactive waveform visualizer.",
-    problem: "Streaming multi-megabyte lossless audio to intermittent mobile networks while preventing buffer-induced server memory spikes.",
-    constraint: "Serving concurrent users on limited RAM without buffering full files into heap or suffering scrubbing latency.",
-    solution: "Wrote a Go HTTP 206 range streamer with 64KB chunk pipelines and WebSocket peer room synchronization; lowered server memory consumption by 78%.",
+    problem: "Streaming multi-megabyte lossless audio to intermittent mobile connections without buffer-induced memory exhaustion.",
+    constraint: "Serving concurrent listeners on limited RAM without buffering full files into heap or suffering scrubbing stalls.",
+    solution: "Built a Go HTTP 206 range streamer with 64KB chunk pipelines and WebSocket room synchronization; cut memory overhead by 78%.",
     tags: ["Go", "Next.js", "WebSockets", "MinIO", "Redis", "Prisma"],
     githubUrl: "https://github.com/Christian3788",
     cloneCommand: "git clone https://github.com/Christian3788/lyric.git",
@@ -169,24 +157,16 @@ func StreamAudioHandler(w http.ResponseWriter, r *http.Request) {
         "Go HTTP 206 Range Streamer serves 64KB byte-range buffers without loading full files into heap.",
         "Custom WebSocket Hub coordinates synchronous playback states across room peers.",
       ],
-      tradeoffs: "Selected byte-range HTTP 206 chunking over HLS to minimize transcode overhead and enable sub-40ms seek latency.",
-      failureModes: [
-        {
-          id: "minio-down",
-          name: "MinIO S3 Gateway Outage",
-          description: "Storage bucket unreachable during active audio streaming.",
-          remedy: "Circuit breaker switches to local NVMe read-through cache; responds with HTTP 503 and retry-after header.",
-        },
-      ],
+      tradeoffs: "Selected byte-range HTTP 206 chunking over HLS to minimize transcode processing overhead and ensure sub-40ms seek latency.",
     },
   },
   {
     id: "spatial-risk",
     title: "Spatial Risk Analytics Engine",
     description: "Geographic vulnerability scoring engine utilizing PostGIS spatial indexing, IPCC vulnerability modeling formulas, and coordinate bounding queries.",
-    problem: "Computing multi-layer spatial risk scores across tens of thousands of urban polygon zones within user-interactive time limits.",
+    problem: "Computing multi-layer spatial risk scores across tens of thousands of urban polygon zones within interactive browser latency limits.",
     constraint: "Brute-force nested spatial loops lock Node.js event loops and degrade to multi-second execution times.",
-    solution: "Shifted all geometric intersections to PostGIS GiST indexed queries; reduced query execution time from 118ms down to 3.12ms.",
+    solution: "Shifted geometric intersections to PostGIS GiST indexed queries; reduced query execution time from 118ms to 3.12ms.",
     tags: ["PostGIS", "Next.js", "Prisma", "TypeScript"],
     githubUrl: "https://github.com/Christian3788",
     cloneCommand: "git clone https://github.com/Christian3788/spatial-risk.git",
@@ -223,7 +203,7 @@ WHERE ST_DWithin(
     id: "vector-vanguard",
     title: "Vector-Vanguard",
     description: "Vector search engine and high-dimensional similarity index built to perform nearest-neighbor lookups, metric space embeddings, and high-throughput vector queries.",
-    problem: "Performing high-frequency similarity search across high-dimensional dense float vectors without dedicated external vector DB infrastructure.",
+    problem: "Performing high-frequency similarity search across high-dimensional dense float vectors without external vector database overhead.",
     constraint: "Standard distance calculations incur heavy CPU cache misses and garbage collection pauses under high read concurrency.",
     solution: "Designed contiguous float buffers with SIMD-style 4-way loop unrolling in Go; achieved sub-millisecond retrieval across dense vector spaces.",
     tags: ["Go", "Python", "Vector Search", "Algorithms", "Docker"],
@@ -386,15 +366,23 @@ export default function Home() {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(false);
 
-  // Persona Perspective Switcher: "tech-lead" vs "recruiter"
+  // Persona Perspective: Tech Lead vs Recruiter
   const [audiencePersona, setAudiencePersona] = useState<"tech-lead" | "recruiter">("tech-lead");
 
-  // Tabbed Project Deep-Dive State (keyed by project.id)
+  // Tabbed Project Deep-Dive State
   const [activeTabs, setActiveTabs] = useState<Record<string, "overview" | "code" | "architecture">>({
     lyric: "overview",
     "spatial-risk": "overview",
     "vector-vanguard": "overview",
     kijijishare: "overview",
+  });
+
+  // Collapsible 3-Part Engineering Anatomy Accordion per project
+  const [expandedAnatomy, setExpandedAnatomy] = useState<Record<string, boolean>>({
+    lyric: false,
+    "spatial-risk": false,
+    "vector-vanguard": false,
+    kijijishare: false,
   });
 
   // Top Scroll Progress Bar
@@ -422,7 +410,6 @@ export default function Home() {
   const animFrameRef = useRef<number | null>(null);
 
   const [gisCoord, setGisCoord] = useState({ x: 50, y: 50 });
-  const [gisScore, setGisScore] = useState(0.42);
   const [isGistMode, setIsGistMode] = useState(true);
   const [showSqlExplain, setShowSqlExplain] = useState(true);
 
@@ -441,7 +428,7 @@ export default function Home() {
   const [lensPos, setLensPos] = useState({ x: 180, y: 70 });
   const starfieldCanvasRef = useRef<HTMLCanvasElement | null>(null);
 
-  // Workbench States
+  // Systems Lab Workbench States
   const [memoryHeap, setMemoryHeap] = useState<Array<{ id: number; allocated: boolean; size: number }>>(
     () => Array.from({ length: 32 }, (_, i) => ({ id: i, allocated: i % 7 === 0 || i % 11 === 0, size: 64 }))
   );
@@ -562,7 +549,7 @@ export default function Home() {
     else setTcpState("CLOSED");
   };
 
-  // Scroll Progress Calculation & Lenis Smooth Scroll
+  // Lenis & Scroll Progress
   useEffect(() => {
     const handleScroll = () => {
       const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
@@ -678,7 +665,7 @@ export default function Home() {
         osc.start();
         osc.stop(ctx.currentTime + duration);
       } catch {
-        // Audio policy fallback
+        // Fallback
       }
     },
     [soundEnabled]
@@ -767,7 +754,7 @@ export default function Home() {
     const GM = 1400;
 
     const renderLensing = () => {
-      ctx.fillStyle = isLight ? "#f1f5f9" : "#020617";
+      ctx.fillStyle = isLight ? "#f8fafc" : "#020617";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       for (let x = gridSpacing; x < canvas.width; x += gridSpacing) {
@@ -781,7 +768,7 @@ export default function Home() {
 
           ctx.beginPath();
           ctx.arc(drawX, drawY, 1.3, 0, Math.PI * 2);
-          ctx.fillStyle = dist < 22 ? "#e11d48" : isLight ? "#0284c7" : "#38bdf8";
+          ctx.fillStyle = dist < 22 ? "#e11d48" : isLight ? "#0f766e" : "#38bdf8";
           ctx.fill();
         }
       }
@@ -966,9 +953,6 @@ export default function Home() {
     const x = Math.round(((e.clientX - rect.left) / rect.width) * 100);
     const y = Math.round(((e.clientY - rect.top) / rect.height) * 100);
     setGisCoord({ x, y });
-    const distanceToCore = Math.hypot(x - 50, y - 50);
-    const calculatedScore = Math.max(0.12, Number((1 - distanceToCore / 70).toFixed(2)));
-    setGisScore(calculatedScore);
   };
 
   const downloadDynamicResume = () => {
@@ -1015,20 +999,20 @@ EDUCATION & EXPERIENCE:
 
   return (
     <div className="relative min-h-screen bg-[#fafafa] dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-teal-500 selection:text-slate-950 antialiased overflow-x-hidden transition-colors duration-200">
-      {/* 1. Fluid 2px Scroll Progress Bar */}
+      {/* Top 2px Scroll Progress Bar */}
       <div
-        className="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-teal-500 to-emerald-400 z-50 transition-all duration-75"
+        className="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-teal-600 via-teal-400 to-emerald-400 z-50 transition-all duration-75"
         style={{ width: `${scrollProgress}%` }}
       />
 
-      {/* Background Subtle Grid / Starfield */}
-      <div className="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:24px_24px] opacity-40 dark:hidden" />
+      {/* Subtle Matrix / Starfield Background */}
+      <div className="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:24px_24px] opacity-35 dark:hidden" />
       <canvas
         ref={starfieldCanvasRef}
         className="fixed inset-0 pointer-events-none z-0 opacity-40 hidden dark:block"
       />
 
-      {/* Spring cursor */}
+      {/* Spring Interactive Cursor */}
       <motion.div
         className="fixed top-0 left-0 w-4 h-4 rounded-full pointer-events-none z-50 border border-teal-600/80 dark:border-teal-400/80 bg-teal-500/10 dark:bg-teal-400/20 hidden md:block"
         style={{
@@ -1040,44 +1024,44 @@ EDUCATION & EXPERIENCE:
         }}
       />
 
-      {/* Top Navbar */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/85 dark:bg-slate-950/80 border-b border-slate-200/80 dark:border-slate-900 transition-colors shadow-xs">
+      {/* Top Navigation */}
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-slate-950/85 border-b border-slate-200/90 dark:border-slate-900 transition-colors shadow-xs">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <a
             href="#"
             onClick={() => playHapticClick(80, 0.02)}
-            className="font-mono font-bold text-base tracking-wider text-teal-700 dark:text-teal-400 flex items-center gap-1.5"
+            className="font-mono font-bold text-base tracking-wider text-teal-800 dark:text-teal-400 flex items-center gap-1.5"
           >
             <ScrambleText text="christian.dev" />
           </a>
 
           <div className="flex items-center gap-6">
-            <nav className="flex items-center gap-5 sm:gap-6 text-sm font-medium text-slate-600 dark:text-slate-400">
+            <nav className="flex items-center gap-5 sm:gap-6 text-sm font-medium text-slate-700 dark:text-slate-300">
               <a
                 href="#about"
                 onClick={() => playHapticClick(80, 0.02)}
-                className="hover:text-slate-900 dark:hover:text-slate-100 transition"
+                className="hover:text-slate-950 dark:hover:text-white transition"
               >
                 About
               </a>
               <a
                 href="#projects"
                 onClick={() => playHapticClick(80, 0.02)}
-                className="hover:text-slate-900 dark:hover:text-slate-100 transition"
+                className="hover:text-slate-950 dark:hover:text-white transition"
               >
                 Projects
               </a>
               <a
                 href="#systems-lab"
                 onClick={() => playHapticClick(80, 0.02)}
-                className="hover:text-slate-900 dark:hover:text-slate-100 transition hidden sm:inline"
+                className="hover:text-slate-950 dark:hover:text-white transition hidden sm:inline"
               >
                 Systems Lab
               </a>
               <a
                 href="#articles"
                 onClick={() => playHapticClick(80, 0.02)}
-                className="hover:text-slate-900 dark:hover:text-slate-100 transition hidden md:inline"
+                className="hover:text-slate-950 dark:hover:text-white transition hidden md:inline"
               >
                 Writing
               </a>
@@ -1086,7 +1070,7 @@ EDUCATION & EXPERIENCE:
                   playHapticClick(110, 0.02);
                   setIsResumeOpen(true);
                 }}
-                className="hover:text-teal-700 dark:hover:text-teal-400 transition"
+                className="hover:text-teal-800 dark:hover:text-teal-400 font-semibold transition"
               >
                 Resume
               </button>
@@ -1098,10 +1082,10 @@ EDUCATION & EXPERIENCE:
                   playHapticClick(110, 0.02);
                   setIsCommandOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 rounded-md text-xs font-mono text-slate-600 dark:text-slate-400 transition shadow-2xs"
+                className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 rounded-md text-xs font-mono text-slate-800 dark:text-slate-300 transition shadow-2xs"
                 title="Open Command Palette (Ctrl+K)"
               >
-                <Command className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                <Command className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
                 <span className="hidden sm:inline">Ctrl+K</span>
               </button>
 
@@ -1109,8 +1093,8 @@ EDUCATION & EXPERIENCE:
                 onClick={toggleSound}
                 className={`p-1.5 rounded-lg border transition ${
                   soundEnabled
-                    ? "bg-teal-50 dark:bg-teal-950/60 border-teal-200 dark:border-teal-800 text-teal-700 dark:text-teal-400 shadow-2xs"
-                    : "bg-white dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 shadow-2xs"
+                    ? "bg-teal-50 dark:bg-teal-950/60 border-teal-300 dark:border-teal-800 text-teal-800 dark:text-teal-400 shadow-2xs"
+                    : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 shadow-2xs"
                 }`}
                 title={soundEnabled ? "Mute UI Sound Haptics" : "Enable UI Sound Haptics"}
               >
@@ -1123,11 +1107,11 @@ EDUCATION & EXPERIENCE:
                     playHapticClick(140, 0.02);
                     setTheme(isLight ? "dark" : "light");
                   }}
-                  className="p-1.5 rounded-lg border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition shadow-2xs"
+                  className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition shadow-2xs"
                   title={`Switch to ${isLight ? "Dark" : "Light"} Mode`}
                 >
                   {isLight ? (
-                    <Moon className="w-4 h-4 text-slate-700" />
+                    <Moon className="w-4 h-4 text-slate-800" />
                   ) : (
                     <Sun className="w-4 h-4 text-amber-300" />
                   )}
@@ -1139,21 +1123,21 @@ EDUCATION & EXPERIENCE:
       </header>
 
       {/* Main Content Area */}
-      <main className="relative z-10 max-w-5xl mx-auto px-6 py-10 space-y-20">
-        {/* 2. "Now Building" Live Editorial Ticker & Perspective Switcher */}
+      <main className="relative z-10 max-w-5xl mx-auto px-6 py-12 space-y-20 lg:space-y-24">
+        {/* Active Focus Ticker & Perspective Switcher */}
         <section className="space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 rounded-xl p-3.5 shadow-xs font-mono text-xs">
             <div className="flex items-center gap-2.5 overflow-x-auto">
               <span className="flex h-2 w-2 rounded-full bg-teal-500 animate-ping" />
-              <span className="font-bold text-slate-800 dark:text-slate-200 uppercase tracking-wider text-[11px]">
+              <span className="font-bold text-slate-950 dark:text-slate-100 uppercase tracking-wider text-[11px]">
                 Active Focus:
               </span>
-              <span className="text-slate-600 dark:text-slate-400 truncate">
+              <span className="text-slate-700 dark:text-slate-300 truncate">
                 Benchmarking lock-free concurrent ring buffers & io.CopyBuffer range streamers in Go
               </span>
             </div>
 
-            {/* Recruiter vs Tech Lead Persona Switcher */}
+            {/* Persona Switcher */}
             <div className="flex items-center gap-1 self-start sm:self-auto bg-slate-100 dark:bg-slate-950 p-1 rounded-lg border border-slate-200 dark:border-slate-800">
               <button
                 onClick={() => {
@@ -1162,11 +1146,11 @@ EDUCATION & EXPERIENCE:
                 }}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium transition ${
                   audiencePersona === "tech-lead"
-                    ? "bg-white dark:bg-slate-800 text-teal-800 dark:text-teal-300 font-bold shadow-2xs"
-                    : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-300"
+                    ? "bg-white dark:bg-slate-800 text-teal-900 dark:text-teal-300 font-bold shadow-2xs"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200"
                 }`}
               >
-                <Code2 className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                <Code2 className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
                 <span>Tech Lead View</span>
               </button>
               <button
@@ -1176,11 +1160,11 @@ EDUCATION & EXPERIENCE:
                 }}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium transition ${
                   audiencePersona === "recruiter"
-                    ? "bg-white dark:bg-slate-800 text-teal-800 dark:text-teal-300 font-bold shadow-2xs"
-                    : "text-slate-500 hover:text-slate-800 dark:hover:text-slate-300"
+                    ? "bg-white dark:bg-slate-800 text-teal-900 dark:text-teal-300 font-bold shadow-2xs"
+                    : "text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200"
                 }`}
               >
-                <Briefcase className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
+                <Briefcase className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
                 <span>Recruiter View</span>
               </button>
             </div>
@@ -1190,14 +1174,14 @@ EDUCATION & EXPERIENCE:
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5 font-mono text-xs">
             <div className="sm:col-span-3 bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-xs">
               <div className="flex items-center gap-2">
-                <Radio className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400 animate-pulse" />
-                <span className="font-semibold text-slate-800 dark:text-slate-200">GitHub:</span>
-                <span className="text-teal-700 dark:text-teal-400 font-bold">{gitEvents[0]?.repo || "portfolio"}</span>
-                <span className="text-slate-400 dark:text-slate-500 text-[11px] truncate max-w-xs sm:max-w-md">
+                <Radio className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400 animate-pulse" />
+                <span className="font-semibold text-slate-950 dark:text-slate-100">GitHub:</span>
+                <span className="text-teal-800 dark:text-teal-400 font-bold">{gitEvents[0]?.repo || "portfolio"}</span>
+                <span className="text-slate-600 dark:text-slate-400 text-[11px] truncate max-w-xs sm:max-w-md">
                   — {gitEvents[0]?.message || "Recent system updates"}
                 </span>
               </div>
-              <span className="text-[10px] text-slate-400 dark:text-slate-500">{gitEvents[0]?.time}</span>
+              <span className="text-[10px] text-slate-500 font-medium">{gitEvents[0]?.time}</span>
             </div>
 
             <button
@@ -1205,24 +1189,24 @@ EDUCATION & EXPERIENCE:
               disabled={isPingingPeer}
               className="bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 rounded-xl p-3 flex items-center justify-center gap-2 hover:border-teal-600 dark:hover:border-teal-400 transition shadow-xs"
             >
-              <Network className="w-3.5 h-3.5 text-teal-600 dark:text-teal-400" />
-              <span className="text-slate-700 dark:text-slate-300 font-semibold">
+              <Network className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
+              <span className="text-slate-800 dark:text-slate-200 font-semibold">
                 {isPingingPeer ? "Pinging..." : peerLatency ? `RTT: ${peerLatency}ms` : "Ping Peer Mesh"}
               </span>
             </button>
           </div>
         </section>
 
-        {/* Hero Section */}
-        <section className="relative pt-2 pb-8">
+        {/* 1. Optimized Hero Section with Custom Portrait Anchoring */}
+        <section className="relative pt-2 pb-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7 space-y-6 z-10">
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-xs font-mono text-teal-700 dark:text-teal-400 font-medium uppercase tracking-widest">
+                <div className="flex items-center gap-2 text-xs font-mono text-teal-800 dark:text-teal-400 font-bold uppercase tracking-widest">
                   <MapPin className="w-3.5 h-3.5" />
                   <span>Kisumu, Kenya • Full-Stack Software Engineer</span>
                 </div>
-                <h1 className="text-4xl sm:text-6xl font-bold tracking-tight text-slate-950 dark:text-white leading-tight">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-950 dark:text-white leading-[1.12]">
                   <ScrambleText text="Christian Amos Otieno" />
                 </h1>
               </div>
@@ -1238,7 +1222,7 @@ EDUCATION & EXPERIENCE:
               )}
 
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
-                Background in biotechnology and analytical modeling from Aga Khan University, applying empirical, first-principles rigor to distributed computing, memory alignment, and system architecture.
+                Background in biotechnology and analytical modeling from Aga Khan University, applying empirical rigor to distributed computing, memory alignment, and system architecture.
               </p>
 
               <div className="pt-2 flex flex-wrap items-center gap-4">
@@ -1254,18 +1238,18 @@ EDUCATION & EXPERIENCE:
                     playHapticClick(110, 0.02);
                     setIsResumeOpen(true);
                   }}
-                  className="px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium rounded-lg hover:border-slate-400 dark:hover:border-slate-700 hover:text-slate-950 dark:hover:text-white transition text-sm flex items-center gap-2 shadow-2xs"
+                  className="px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium rounded-lg hover:border-teal-600 dark:hover:border-slate-700 hover:text-slate-950 dark:hover:text-white transition text-sm flex items-center gap-2 shadow-2xs"
                 >
-                  <FileCode className="w-4 h-4 text-teal-600 dark:text-teal-400" />
+                  <FileCode className="w-4 h-4 text-teal-700 dark:text-teal-400" />
                   Resume / CV
                 </button>
 
-                <div className="flex items-center gap-3 pl-3 border-l border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400">
+                <div className="flex items-center gap-3 pl-3 border-l border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400">
                   <a
                     href="https://github.com/Christian3788"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-slate-900 dark:hover:text-white transition p-1"
+                    className="hover:text-slate-950 dark:hover:text-white transition p-1"
                     title="GitHub Profile"
                   >
                     <GithubIcon className="w-5 h-5" />
@@ -1274,7 +1258,7 @@ EDUCATION & EXPERIENCE:
                     href="https://www.linkedin.com/in/christian-otieno-9a9806229/"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-sky-600 dark:hover:text-sky-400 transition p-1"
+                    className="hover:text-sky-700 dark:hover:text-sky-400 transition p-1"
                     title="LinkedIn Profile"
                   >
                     <LinkedinIcon className="w-5 h-5" />
@@ -1283,7 +1267,7 @@ EDUCATION & EXPERIENCE:
                     href="https://dev.to/christian-otieno"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-teal-700 dark:hover:text-teal-400 transition p-1 text-xs font-mono font-bold"
+                    className="hover:text-teal-800 dark:hover:text-teal-400 transition p-1 text-xs font-mono font-bold"
                     title="DEV.to Articles"
                   >
                     DEV
@@ -1292,15 +1276,16 @@ EDUCATION & EXPERIENCE:
               </div>
             </div>
 
+            {/* Custom Focal-Anchored Portrait Container */}
             <div className="lg:col-span-5 flex justify-center lg:justify-end">
-              <div className="relative w-72 h-[420px] sm:w-80 sm:h-[480px] lg:w-[350px] lg:h-[510px]">
+              <div className="relative w-64 h-[360px] sm:w-72 sm:h-[400px] lg:w-[320px] lg:h-[440px]">
                 <div
-                  className="relative w-full h-full"
+                  className="relative w-full h-full rounded-2xl overflow-hidden"
                   style={{
                     maskImage:
-                      "radial-gradient(ellipse 85% 85% at 50% 45%, black 45%, transparent 95%)",
+                      "radial-gradient(ellipse 90% 90% at 50% 45%, black 50%, transparent 98%)",
                     WebkitMaskImage:
-                      "radial-gradient(ellipse 85% 85% at 50% 45%, black 45%, transparent 95%)",
+                      "radial-gradient(ellipse 90% 90% at 50% 45%, black 50%, transparent 98%)",
                   }}
                 >
                   <Image
@@ -1308,22 +1293,22 @@ EDUCATION & EXPERIENCE:
                     alt="Christian Amos Otieno"
                     fill
                     priority
-                    sizes="(max-width: 768px) 100vw, 400px"
-                    className="object-cover object-top filter contrast-[1.03]"
+                    sizes="(max-width: 768px) 100vw, 360px"
+                    className="object-cover object-[50%_15%] filter contrast-[1.03]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#fafafa] dark:from-slate-950 via-transparent to-transparent opacity-85" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#fafafa] dark:from-slate-950 via-transparent to-transparent opacity-50 dark:opacity-85" />
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* About Section */}
+        {/* Engineering Philosophy */}
         <section id="about" className="space-y-4">
           <h2 className="text-xl font-bold text-slate-950 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3">
             Engineering Philosophy
           </h2>
-          <div className="text-slate-700 dark:text-slate-400 space-y-4 leading-relaxed text-sm sm:text-base max-w-3xl">
+          <div className="text-slate-700 dark:text-slate-300 space-y-4 leading-relaxed text-sm sm:text-base max-w-3xl">
             <p>
               My approach to software is centered around mechanical sympathy: understanding how byte buffers flow over sockets, keeping memory footprints deterministic, and making database query plans predictable before reaching for more hardware.
             </p>
@@ -1342,7 +1327,7 @@ EDUCATION & EXPERIENCE:
             {skills.map((skill) => (
               <span
                 key={skill}
-                className="px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-slate-800 dark:text-slate-300 rounded-md text-xs sm:text-sm font-mono hover:border-teal-600 dark:hover:border-teal-500/50 hover:text-teal-700 dark:hover:text-teal-300 transition-colors cursor-default shadow-2xs"
+                className="px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-md text-xs sm:text-sm font-mono font-medium hover:border-teal-600 dark:hover:border-teal-500/50 hover:text-teal-800 dark:hover:text-teal-300 transition-colors cursor-default shadow-2xs"
               >
                 <ScrambleText text={skill} />
               </span>
@@ -1350,7 +1335,7 @@ EDUCATION & EXPERIENCE:
           </div>
         </section>
 
-        {/* 4. Featured Projects with Tabbed Architecture Inspector */}
+        {/* 2 & 4. Projects with Collapsible Anatomy Accordion & Tactile Hover Lift */}
         <section id="projects" className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
             <div>
@@ -1372,7 +1357,7 @@ EDUCATION & EXPERIENCE:
                 placeholder="Search projects or tags..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white dark:bg-slate-900 border border-slate-300/80 dark:border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-xs sm:text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-teal-600 dark:focus:border-slate-700 font-sans shadow-2xs"
+                className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-xs sm:text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-teal-600 dark:focus:border-slate-700 font-sans shadow-2xs"
               />
             </div>
           </div>
@@ -1388,7 +1373,7 @@ EDUCATION & EXPERIENCE:
                 className={`text-xs px-3 py-1 rounded-md font-mono transition-colors shadow-2xs ${
                   selectedTag === tag
                     ? "bg-teal-600 text-white dark:bg-teal-400 dark:text-slate-950 font-bold"
-                    : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-400 border border-slate-200/90 dark:border-slate-800 hover:text-slate-950 dark:hover:text-slate-200"
+                    : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-800 hover:text-slate-950 dark:hover:text-white"
                 }`}
               >
                 {tag}
@@ -1399,26 +1384,27 @@ EDUCATION & EXPERIENCE:
           <div className="grid gap-8">
             {filteredProjects.map((proj) => {
               const currentTab = activeTabs[proj.id] || "overview";
+              const isAnatomyOpen = expandedAnatomy[proj.id] || false;
 
               return (
                 <div
                   key={proj.id}
-                  className="p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800/80 rounded-2xl bg-white dark:bg-slate-900/30 hover:border-slate-300 dark:hover:border-slate-700 transition shadow-xs hover:shadow-md space-y-6"
+                  className="p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800/90 rounded-2xl bg-white dark:bg-slate-900/30 hover:border-teal-500/50 dark:hover:border-teal-500/40 hover:shadow-lg dark:hover:shadow-[0_0_30px_-8px_rgba(45,212,191,0.12)] transition-all duration-300 space-y-5"
                 >
-                  {/* Top Bar: Title, Tags, Audio preview trigger */}
+                  {/* Top Bar */}
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-4">
                     <div>
                       <h3 className="text-xl font-bold text-slate-950 dark:text-white">
                         <ScrambleText text={proj.title} />
                       </h3>
-                      <p className="mt-1 text-sm text-slate-600 dark:text-slate-400 max-w-2xl leading-relaxed">
+                      <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
                         {proj.description}
                       </p>
                       <div className="mt-3 flex flex-wrap gap-1.5">
                         {proj.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="text-xs bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 px-2 py-0.5 rounded font-mono"
+                            className="text-xs bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium px-2 py-0.5 rounded font-mono"
                           >
                             {tag}
                           </span>
@@ -1433,7 +1419,7 @@ EDUCATION & EXPERIENCE:
                           className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-full border transition font-mono font-semibold ${
                             isPlayingAudio
                               ? "bg-rose-50 dark:bg-rose-950/60 border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300"
-                              : "bg-teal-50 dark:bg-teal-950/60 border-teal-200 dark:border-teal-800/60 text-teal-800 dark:text-teal-300 hover:border-teal-500"
+                              : "bg-teal-50 dark:bg-teal-950/60 border-teal-300 dark:border-teal-800/60 text-teal-900 dark:text-teal-300 hover:border-teal-500"
                           }`}
                         >
                           {isPlayingAudio ? (
@@ -1456,12 +1442,12 @@ EDUCATION & EXPERIENCE:
                         rel="noreferrer"
                         className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:border-teal-600 transition"
                       >
-                        Code <ExternalLink className="w-3.5 h-3.5 text-teal-600" />
+                        Code <ExternalLink className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
                       </a>
                     </div>
                   </div>
 
-                  {/* Audio Waveform Canvas (if active) */}
+                  {/* Audio Waveform Canvas */}
                   {proj.hasAudioVisualizer && (
                     <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800/80 space-y-1.5">
                       <div className="flex justify-between text-[10px] font-mono text-slate-500">
@@ -1472,34 +1458,56 @@ EDUCATION & EXPERIENCE:
                     </div>
                   )}
 
-                  {/* 3-Part Engineering Anatomy: Problem -> Constraint -> Solution */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
-                    <div className="p-3 bg-slate-50 dark:bg-slate-950/70 rounded-xl border border-slate-200/80 dark:border-slate-800/80 space-y-1">
-                      <span className="text-[10px] uppercase font-bold text-rose-700 dark:text-rose-400 block">
-                        [1] The Problem
+                  {/* 2. Collapsible 3-Part Engineering Anatomy Accordion */}
+                  <div className="border border-slate-200/80 dark:border-slate-800/80 rounded-xl overflow-hidden bg-slate-50/70 dark:bg-slate-950/40">
+                    <button
+                      onClick={() => {
+                        playHapticClick(80, 0.02);
+                        setExpandedAnatomy((prev) => ({ ...prev, [proj.id]: !isAnatomyOpen }));
+                      }}
+                      className="w-full px-4 py-2.5 flex items-center justify-between text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900/60 transition"
+                    >
+                      <span className="flex items-center gap-2">
+                        <span className="text-teal-700 dark:text-teal-400 font-extrabold">&gt;</span>
+                        <span>Engineering Anatomy: Problem • Constraint • Architecture</span>
                       </span>
-                      <p className="text-slate-700 dark:text-slate-300 font-sans leading-relaxed text-xs">
-                        {proj.problem}
-                      </p>
-                    </div>
+                      <ChevronDown
+                        className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
+                          isAnatomyOpen ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
 
-                    <div className="p-3 bg-slate-50 dark:bg-slate-950/70 rounded-xl border border-slate-200/80 dark:border-slate-800/80 space-y-1">
-                      <span className="text-[10px] uppercase font-bold text-amber-700 dark:text-amber-400 block">
-                        [2] Engineering Constraint
-                      </span>
-                      <p className="text-slate-700 dark:text-slate-300 font-sans leading-relaxed text-xs">
-                        {proj.constraint}
-                      </p>
-                    </div>
+                    {isAnatomyOpen && (
+                      <div className="p-4 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
+                        <div className="p-3 bg-white dark:bg-slate-900/80 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
+                          <span className="text-[10px] uppercase font-bold text-rose-700 dark:text-rose-400 block">
+                            [1] The Problem
+                          </span>
+                          <p className="text-slate-700 dark:text-slate-300 font-sans leading-relaxed text-xs">
+                            {proj.problem}
+                          </p>
+                        </div>
 
-                    <div className="p-3 bg-slate-50 dark:bg-slate-950/70 rounded-xl border border-slate-200/80 dark:border-slate-800/80 space-y-1">
-                      <span className="text-[10px] uppercase font-bold text-teal-700 dark:text-teal-400 block">
-                        [3] Architectural Solution
-                      </span>
-                      <p className="text-slate-700 dark:text-slate-300 font-sans leading-relaxed text-xs">
-                        {proj.solution}
-                      </p>
-                    </div>
+                        <div className="p-3 bg-white dark:bg-slate-900/80 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
+                          <span className="text-[10px] uppercase font-bold text-amber-700 dark:text-amber-400 block">
+                            [2] Engineering Constraint
+                          </span>
+                          <p className="text-slate-700 dark:text-slate-300 font-sans leading-relaxed text-xs">
+                            {proj.constraint}
+                          </p>
+                        </div>
+
+                        <div className="p-3 bg-white dark:bg-slate-900/80 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
+                          <span className="text-[10px] uppercase font-bold text-teal-800 dark:text-teal-400 block">
+                            [3] Architectural Solution
+                          </span>
+                          <p className="text-slate-700 dark:text-slate-300 font-sans leading-relaxed text-xs">
+                            {proj.solution}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
 
                   {/* Tabbed Inspector Navigation */}
@@ -1519,8 +1527,8 @@ EDUCATION & EXPERIENCE:
                             }}
                             className={`py-2 px-3 border-b-2 font-medium transition ${
                               currentTab === t.id
-                                ? "border-teal-600 dark:border-teal-400 text-teal-800 dark:text-teal-300 font-bold"
-                                : "border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200"
+                                ? "border-teal-600 dark:border-teal-400 text-teal-900 dark:text-teal-300 font-bold"
+                                : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200"
                             }`}
                           >
                             {t.label}
@@ -1530,14 +1538,14 @@ EDUCATION & EXPERIENCE:
 
                       <button
                         onClick={() => handleCopy(proj.cloneCommand, `clone-${proj.id}`)}
-                        className="text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 flex items-center gap-1 transition py-1 text-[11px]"
+                        className="text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200 flex items-center gap-1 transition py-1 text-[11px] font-medium"
                       >
                         {copiedKey === `clone-${proj.id}` ? (
                           <Check className="w-3.5 h-3.5 text-emerald-600" />
                         ) : (
                           <Copy className="w-3.5 h-3.5" />
                         )}
-                        <span>{copiedKey === `clone-${proj.id}` ? "Copied" : "Copy Clone Command"}</span>
+                        <span>{copiedKey === `clone-${proj.id}` ? "Copied" : "Copy Clone"}</span>
                       </button>
                     </div>
 
@@ -1546,8 +1554,8 @@ EDUCATION & EXPERIENCE:
                       <div className="p-4 space-y-3">
                         {proj.hasGisSimulator ? (
                           <div className="space-y-3">
-                            <div className="flex justify-between items-center text-xs font-mono text-slate-600 dark:text-slate-400">
-                              <span className="flex items-center gap-1 text-teal-700 dark:text-teal-400 font-semibold">
+                            <div className="flex justify-between items-center text-xs font-mono text-slate-700 dark:text-slate-400">
+                              <span className="flex items-center gap-1 text-teal-800 dark:text-teal-400 font-bold">
                                 <Crosshair className="w-3.5 h-3.5" /> Interactive Spatial Query Sandbox (Click Grid)
                               </span>
                               <div className="flex gap-2">
@@ -1563,7 +1571,7 @@ EDUCATION & EXPERIENCE:
                                 </button>
                                 <button
                                   onClick={() => setShowSqlExplain(!showSqlExplain)}
-                                  className="text-[10px] text-slate-500 hover:text-slate-800 dark:hover:text-white"
+                                  className="text-[10px] text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white"
                                 >
                                   Toggle EXPLAIN Plan
                                 </button>
@@ -1609,15 +1617,15 @@ EDUCATION & EXPERIENCE:
                           </div>
                         ) : (
                           <div className="p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 font-mono text-xs space-y-2">
-                            <span className="text-teal-700 dark:text-teal-400 font-bold block">
+                            <span className="text-teal-800 dark:text-teal-400 font-bold block">
                               Architecture Highlights:
                             </span>
-                            <ul className="list-disc list-inside space-y-1 text-slate-600 dark:text-slate-300">
+                            <ul className="list-disc list-inside space-y-1 text-slate-700 dark:text-slate-300">
                               {proj.architecture.highlights.map((h, i) => (
                                 <li key={i}>{h}</li>
                               ))}
                             </ul>
-                            <div className="pt-2 text-slate-500 text-[11px] italic">
+                            <div className="pt-2 text-slate-600 dark:text-slate-400 text-[11px] italic">
                               "{proj.architecture.tradeoffs}"
                             </div>
                           </div>
@@ -1632,7 +1640,7 @@ EDUCATION & EXPERIENCE:
                       </div>
                     )}
 
-                    {/* Tab 3: System Topology & Trade-offs */}
+                    {/* Tab 3: System Topology */}
                     {currentTab === "architecture" && (
                       <div className="p-4 space-y-3 font-mono text-xs">
                         <div className="relative w-full h-32 bg-white dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
@@ -1651,7 +1659,7 @@ EDUCATION & EXPERIENCE:
                                   key={`${conn.from}-${conn.to}`}
                                   d={path}
                                   fill="none"
-                                  stroke={isLight ? "#0d9488" : "#2dd4bf"}
+                                  stroke={isLight ? "#0f766e" : "#2dd4bf"}
                                   strokeWidth="2"
                                   strokeDasharray="4 6"
                                   className="animate-[dash_1.5s_linear_infinite]"
@@ -1672,7 +1680,7 @@ EDUCATION & EXPERIENCE:
                         </div>
 
                         <div className="p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs">
-                          <strong className="text-teal-700 dark:text-teal-400 block mb-1">
+                          <strong className="text-teal-800 dark:text-teal-400 block mb-1">
                             Core Trade-off Decision:
                           </strong>
                           {proj.architecture.tradeoffs}
@@ -1686,31 +1694,31 @@ EDUCATION & EXPERIENCE:
           </div>
         </section>
 
-        {/* Systems Lab Section */}
+        {/* Systems Lab */}
         <section id="systems-lab" className="space-y-6">
           <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
               <h2 className="text-xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
-                <Cpu className="w-5 h-5 text-teal-700 dark:text-teal-400" /> Systems Engineering Interactive Lab
+                <Cpu className="w-5 h-5 text-teal-800 dark:text-teal-400" /> Systems Engineering Interactive Lab
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
                 Live interactive visualizers exploring operating system memory, Go channel concurrency, TCP flow, and probabilistic hashing.
               </p>
             </div>
-            <span className="text-[11px] font-mono text-teal-700 dark:text-teal-400 font-semibold">Low-Level CS Internals</span>
+            <span className="text-[11px] font-mono text-teal-800 dark:text-teal-400 font-bold">Low-Level CS Internals</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* WORKBENCH 1: Memory Slab Allocator */}
-            <div className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs">
+            <div className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800/90 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-teal-500/40 transition">
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="text-teal-800 dark:text-teal-400 flex items-center gap-1.5 font-bold">
+                  <span className="text-teal-900 dark:text-teal-400 flex items-center gap-1.5 font-bold">
                     <HardDrive className="w-4 h-4" /> 1. Virtual Memory Slab Allocator
                   </span>
-                  <span className="text-slate-500 font-semibold">Ptr: {lastMalloc}</span>
+                  <span className="text-slate-700 dark:text-slate-400 font-semibold">Ptr: {lastMalloc}</span>
                 </div>
-                <p className="text-xs text-slate-700 dark:text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
                   Contiguous heap allocations with 64-byte alignment headers, showing fragmentation and free list sweeps.
                 </p>
 
@@ -1746,7 +1754,7 @@ EDUCATION & EXPERIENCE:
                 </button>
                 <button
                   onClick={sweepGarbageCollection}
-                  className="px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-400 rounded-md transition"
+                  className="px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-md transition"
                 >
                   gc_sweep()
                 </button>
@@ -1754,43 +1762,43 @@ EDUCATION & EXPERIENCE:
             </div>
 
             {/* WORKBENCH 2: Go Goroutine & Channel Concurrency */}
-            <div className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs">
+            <div className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800/90 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-teal-500/40 transition">
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="text-teal-800 dark:text-teal-400 flex items-center gap-1.5 font-bold">
+                  <span className="text-teal-900 dark:text-teal-400 flex items-center gap-1.5 font-bold">
                     <Workflow className="w-4 h-4" /> 2. Go Channel Deadlock Simulator
                   </span>
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] uppercase font-mono font-bold ${
                       goroutineStatus === "deadlocked"
                         ? "bg-rose-100 dark:bg-rose-950 border border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-300 animate-pulse"
-                        : "bg-slate-100 dark:bg-slate-800 text-teal-800 dark:text-teal-300"
+                        : "bg-slate-100 dark:bg-slate-800 text-teal-900 dark:text-teal-300"
                     }`}
                   >
                     {goroutineStatus}
                   </span>
                 </div>
-                <p className="text-xs text-slate-700 dark:text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
                   Worker goroutines reading and writing to a synchronized Go channel (`ch := make(chan int, {channelCapacity})`).
                 </p>
 
                 <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800/80 my-3 flex items-center justify-between font-mono text-xs">
-                  <span className="text-slate-500 font-semibold">Producer &rarr;</span>
+                  <span className="text-slate-600 dark:text-slate-400 font-semibold">Producer &rarr;</span>
                   <div className="flex gap-2">
                     {Array.from({ length: channelCapacity }).map((_, i) => (
                       <div
                         key={i}
                         className={`w-10 h-8 rounded border flex items-center justify-center font-bold transition-all ${
                           channelBuffer[i] !== undefined
-                            ? "bg-teal-100 dark:bg-teal-950 border-teal-500 text-teal-900 dark:text-teal-300"
-                            : "bg-slate-200 dark:bg-slate-900 border-slate-300 dark:border-slate-800 text-slate-500 dark:text-slate-600"
+                            ? "bg-teal-100 dark:bg-teal-950 border-teal-500 text-teal-950 dark:text-teal-300"
+                            : "bg-slate-200 dark:bg-slate-900 border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-500"
                         }`}
                       >
                         {channelBuffer[i] ?? "∅"}
                       </div>
                     ))}
                   </div>
-                  <span className="text-slate-500 font-semibold">&rarr; Consumer</span>
+                  <span className="text-slate-600 dark:text-slate-400 font-semibold">&rarr; Consumer</span>
                 </div>
 
                 {deadlockError && (
@@ -1819,7 +1827,7 @@ EDUCATION & EXPERIENCE:
                     setGoroutineStatus("idle");
                     setDeadlockError(null);
                   }}
-                  className="px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-400 rounded-md transition"
+                  className="px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-md transition"
                 >
                   Reset Hub
                 </button>
@@ -1827,25 +1835,25 @@ EDUCATION & EXPERIENCE:
             </div>
 
             {/* WORKBENCH 3: TCP Handshake */}
-            <div className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs">
+            <div className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800/90 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-teal-500/40 transition">
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="text-teal-800 dark:text-teal-400 flex items-center gap-1.5 font-bold">
+                  <span className="text-teal-900 dark:text-teal-400 flex items-center gap-1.5 font-bold">
                     <Wifi className="w-4 h-4" /> 3. TCP 3-Way Handshake Pipeline
                   </span>
-                  <span className="text-slate-500 font-semibold">State: {tcpState}</span>
+                  <span className="text-slate-700 dark:text-slate-400 font-semibold">State: {tcpState}</span>
                 </div>
-                <p className="text-xs text-slate-700 dark:text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
                   SYN / SYN-ACK / ACK progression stepping through congestion window controls and socket lifecycles.
                 </p>
 
                 <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800/80 my-3 font-mono text-xs space-y-2">
-                  <div className="flex justify-between items-center text-slate-600 dark:text-slate-400">
-                    <span className="text-teal-700 dark:text-teal-400 font-bold">CLIENT</span>
+                  <div className="flex justify-between items-center text-slate-700 dark:text-slate-300">
+                    <span className="text-teal-800 dark:text-teal-400 font-bold">CLIENT</span>
                     <span>Socket Protocol Stream</span>
-                    <span className="text-sky-700 dark:text-sky-400 font-bold">SERVER</span>
+                    <span className="text-sky-800 dark:text-sky-400 font-bold">SERVER</span>
                   </div>
-                  <div className="h-10 border border-dashed border-slate-300 dark:border-slate-800 rounded flex items-center justify-center text-slate-800 dark:text-slate-300 font-medium">
+                  <div className="h-10 border border-dashed border-slate-300 dark:border-slate-800 rounded flex items-center justify-center text-slate-900 dark:text-slate-200 font-semibold">
                     {tcpState === "CLOSED" && "Socket Inactive (CLOSED)"}
                     {tcpState === "SYN_SENT" && "Client &rarr; [SYN Seq=100] &rarr; Server"}
                     {tcpState === "SYN_RECEIVED" && "Server &rarr; [SYN-ACK Seq=300 Ack=101] &rarr; Client"}
@@ -1861,20 +1869,20 @@ EDUCATION & EXPERIENCE:
                 >
                   Step Handshake &rarr;
                 </button>
-                <span className="text-[11px] text-slate-500 font-semibold">cwnd = {cwndSize} MSS</span>
+                <span className="text-[11px] text-slate-600 dark:text-slate-400 font-semibold">cwnd = {cwndSize} MSS</span>
               </div>
             </div>
 
             {/* WORKBENCH 4: Bloom Filter */}
-            <div className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs">
+            <div className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800/90 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-teal-500/40 transition">
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="text-teal-800 dark:text-teal-400 flex items-center gap-1.5 font-bold">
+                  <span className="text-teal-900 dark:text-teal-400 flex items-center gap-1.5 font-bold">
                     <Binary className="w-4 h-4" /> 4. Probabilistic Bloom Filter Probe
                   </span>
-                  <span className="text-slate-500 font-semibold">32-bit Array (k=3)</span>
+                  <span className="text-slate-700 dark:text-slate-400 font-semibold">32-bit Array (k=3)</span>
                 </div>
-                <p className="text-xs text-slate-700 dark:text-slate-400 leading-relaxed">
+                <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed">
                   Calculates 3 modulo hash offsets per key to guarantee zero false-negatives before hitting disk.
                 </p>
 
@@ -1885,7 +1893,7 @@ EDUCATION & EXPERIENCE:
                       className={`h-4 rounded-[2px] transition-all flex items-center justify-center text-[9px] font-mono ${
                         bit === 1
                           ? "bg-teal-600 dark:bg-teal-400 text-white dark:text-slate-950 font-bold"
-                          : "bg-slate-200 dark:bg-slate-900 text-slate-500 dark:text-slate-600"
+                          : "bg-slate-200 dark:bg-slate-900 text-slate-600 dark:text-slate-500"
                       }`}
                       title={`Bit #${idx}: ${bit}`}
                     >
@@ -1935,11 +1943,11 @@ EDUCATION & EXPERIENCE:
         </section>
 
         {/* Vector Engine Benchmark */}
-        <section id="benchmark" className="p-6 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-slate-900/40 space-y-4 shadow-xs">
+        <section id="benchmark" className="p-6 border border-slate-200/90 dark:border-slate-800/90 rounded-xl bg-white dark:bg-slate-900/40 space-y-4 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
             <div>
               <h2 className="text-xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
-                <Gauge className="w-5 h-5 text-teal-700 dark:text-teal-400" /> In-Browser Vector Engine Benchmark
+                <Gauge className="w-5 h-5 text-teal-800 dark:text-teal-400" /> In-Browser Vector Engine Benchmark
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
                 Stress-testing Euclidean distance across 50,000 iterations of 128-dimensional dense float vectors in memory.
@@ -1964,22 +1972,22 @@ EDUCATION & EXPERIENCE:
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
             <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
-              <span className="text-slate-500 block mb-1">Standard Loop</span>
-              <span className="text-lg font-bold text-slate-900 dark:text-slate-200">
+              <span className="text-slate-600 dark:text-slate-400 block mb-1 font-semibold">Standard Loop</span>
+              <span className="text-lg font-bold text-slate-950 dark:text-slate-100">
                 {benchmarkResults ? `${benchmarkResults.jsTime} ms` : "–"}
               </span>
               <span className="text-[10px] text-slate-500 block mt-1">Direct indexing</span>
             </div>
             <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
-              <span className="text-slate-500 block mb-1">Unrolled SIMD-Style Vector</span>
-              <span className="text-lg font-bold text-teal-700 dark:text-teal-400">
+              <span className="text-slate-600 dark:text-slate-400 block mb-1 font-semibold">Unrolled SIMD-Style Vector</span>
+              <span className="text-lg font-bold text-teal-800 dark:text-teal-400">
                 {benchmarkResults ? `${benchmarkResults.optTime} ms` : "–"}
               </span>
               <span className="text-[10px] text-slate-500 block mt-1">4-way parallel stride</span>
             </div>
             <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
-              <span className="text-slate-500 block mb-1">Measured Speedup</span>
-              <span className="text-lg font-bold text-emerald-700 dark:text-emerald-400">
+              <span className="text-slate-600 dark:text-slate-400 block mb-1 font-semibold">Measured Speedup</span>
+              <span className="text-lg font-bold text-emerald-800 dark:text-emerald-400">
                 {benchmarkResults ? benchmarkResults.speedup : "–"}
               </span>
               <span className="text-[10px] text-slate-500 block mt-1">Zero heap allocations</span>
@@ -1991,13 +1999,13 @@ EDUCATION & EXPERIENCE:
         <section id="articles" className="space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
             <h2 className="text-xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
-              <FileText className="w-5 h-5 text-slate-500 dark:text-slate-400" /> Engineering Writing & Notes
+              <FileText className="w-5 h-5 text-slate-600 dark:text-slate-400" /> Engineering Writing & Notes
             </h2>
             <a
               href="https://dev.to/christian-otieno"
               target="_blank"
               rel="noreferrer"
-              className="text-xs font-mono text-teal-700 dark:text-teal-400 hover:underline flex items-center gap-1 font-semibold"
+              className="text-xs font-mono text-teal-800 dark:text-teal-400 hover:underline flex items-center gap-1 font-bold"
             >
               dev.to/christian-otieno <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
@@ -2009,18 +2017,18 @@ EDUCATION & EXPERIENCE:
                 href={art.link}
                 target="_blank"
                 rel="noreferrer"
-                className="block p-5 border border-slate-200/90 dark:border-slate-800/80 rounded-xl bg-white dark:bg-slate-900/20 hover:border-slate-300 dark:hover:border-slate-700 transition group shadow-xs hover:shadow-md"
+                className="block p-5 border border-slate-200/90 dark:border-slate-800/80 rounded-xl bg-white dark:bg-slate-900/20 hover:border-teal-500/50 dark:hover:border-teal-500/40 transition group shadow-xs hover:shadow-md"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                  <h3 className="text-base font-semibold text-slate-900 dark:text-slate-100 group-hover:text-teal-700 dark:group-hover:text-teal-400 transition">
+                  <h3 className="text-base font-semibold text-slate-950 dark:text-slate-100 group-hover:text-teal-800 dark:group-hover:text-teal-400 transition">
                     <ScrambleText text={art.title} />
                   </h3>
                   <span className="text-xs font-mono text-slate-500">{art.date}</span>
                 </div>
-                <p className="mt-2 text-sm text-slate-700 dark:text-slate-400 leading-relaxed">{art.summary}</p>
+                <p className="mt-2 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{art.summary}</p>
                 <div className="mt-3 flex gap-2">
                   {art.tags.map((t) => (
-                    <span key={t} className="text-xs font-mono text-slate-500">
+                    <span key={t} className="text-xs font-mono text-slate-600 dark:text-slate-400 font-medium">
                       #{t}
                     </span>
                   ))}
@@ -2035,13 +2043,13 @@ EDUCATION & EXPERIENCE:
           <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
               <h2 className="text-xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
-                <Compass className="w-5 h-5 text-slate-500 dark:text-slate-400" /> Technical Interests & Modeling Pursuits
+                <Compass className="w-5 h-5 text-slate-600 dark:text-slate-400" /> Technical Interests & Modeling Pursuits
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
                 Independent exploration in computational physics, complex systems, and formal logic.
               </p>
             </div>
-            <span className="text-[11px] font-mono text-teal-700 dark:text-teal-400 font-semibold">
+            <span className="text-[11px] font-mono text-teal-800 dark:text-teal-400 font-bold">
               Interactive Gravitational Lensing (Drag to Lens) &darr;
             </span>
           </div>
@@ -2056,7 +2064,7 @@ EDUCATION & EXPERIENCE:
             }}
             className="relative rounded-xl border border-slate-200/90 dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-950 p-3 cursor-move shadow-xs"
           >
-            <div className="flex justify-between items-center text-xs font-mono text-slate-600 dark:text-slate-400 mb-2 px-1">
+            <div className="flex justify-between items-center text-xs font-mono text-slate-700 dark:text-slate-300 mb-2 px-1 font-medium">
               <span>Relativistic Light Deflection Raytracer (alpha = 4GM / c^2 xi)</span>
               <span className="text-slate-500">Lens Pos: ({lensPos.x}, {lensPos.y})</span>
             </div>
@@ -2079,16 +2087,16 @@ EDUCATION & EXPERIENCE:
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
-                        <Icon className="w-4 h-4 text-teal-700 dark:text-teal-400" />
-                        <h3 className="text-sm sm:text-base font-semibold text-slate-900 dark:text-slate-100">
+                        <Icon className="w-4 h-4 text-teal-800 dark:text-teal-400" />
+                        <h3 className="text-sm sm:text-base font-semibold text-slate-950 dark:text-slate-100">
                           {hobby.title}
                         </h3>
                       </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium">
                         {hobby.badge}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-700 dark:text-slate-400 leading-relaxed mt-2">
+                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed mt-2">
                       {hobby.description}
                     </p>
                   </div>
@@ -2101,7 +2109,7 @@ EDUCATION & EXPERIENCE:
         {/* Contact Section */}
         <section id="contact" className="space-y-4">
           <h2 className="text-xl font-bold text-slate-950 dark:text-white border-b border-slate-200 dark:border-slate-800 pb-3">Get in Touch</h2>
-          <p className="text-slate-700 dark:text-slate-400 text-sm max-w-xl">
+          <p className="text-slate-700 dark:text-slate-300 text-sm max-w-xl">
             Currently open to backend engineering roles, systems contracts, and collaborative research projects.
           </p>
           <div className="flex flex-wrap gap-4 pt-2">
@@ -2112,7 +2120,7 @@ EDUCATION & EXPERIENCE:
               {copiedKey === "email-copy" ? (
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               ) : (
-                <Mail className="w-4 h-4 text-teal-700 dark:text-teal-400" />
+                <Mail className="w-4 h-4 text-teal-800 dark:text-teal-400" />
               )}
               <span>{copiedKey === "email-copy" ? "Copied Email!" : "christianamos67@gmail.com"}</span>
             </button>
@@ -2137,68 +2145,68 @@ EDUCATION & EXPERIENCE:
         </section>
       </main>
 
-      {/* 5. Docked Floating Command Bar */}
-      <aside aria-label="Quick Actions" className="fixed bottom-5 left-1/2 -translate-x-1/2 z-40 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border border-slate-200/90 dark:border-slate-800 rounded-full px-4 py-2 shadow-lg flex items-center gap-3 text-xs font-mono">
+      {/* 3. Responsive Dock Optimization */}
+      <aside aria-label="Quick Actions" className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-300/90 dark:border-slate-800 rounded-full px-3.5 py-1.5 sm:px-4 sm:py-2 shadow-xl flex items-center gap-2.5 sm:gap-3 text-xs font-mono">
         <button
           onClick={() => {
             playHapticClick(90, 0.02);
             setIsCommandOpen(true);
           }}
-          className="flex items-center gap-1.5 text-slate-700 dark:text-slate-300 hover:text-teal-700 dark:hover:text-teal-400 font-semibold transition"
+          className="flex items-center gap-1.5 text-slate-800 dark:text-slate-200 hover:text-teal-800 dark:hover:text-teal-400 font-bold transition"
         >
-          <Command className="w-3.5 h-3.5 text-teal-600" />
-          <span>Quick Actions</span>
-          <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-500">Ctrl+K</kbd>
+          <Command className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
+          <span className="hidden sm:inline">Actions</span>
+          <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400">Ctrl+K</kbd>
         </button>
 
-        <span className="w-px h-4 bg-slate-200 dark:bg-slate-800" />
+        <span className="w-px h-3.5 bg-slate-300 dark:bg-slate-800" />
 
         <button
           onClick={downloadDynamicResume}
-          className="flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition"
+          className="flex items-center gap-1 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition font-semibold"
           title="Download Plaintext Resume"
         >
-          <Download className="w-3.5 h-3.5 text-teal-600" />
-          <span className="hidden sm:inline">CV</span>
+          <Download className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
+          <span>CV</span>
         </button>
 
-        <span className="w-px h-4 bg-slate-200 dark:bg-slate-800" />
+        <span className="w-px h-3.5 bg-slate-300 dark:bg-slate-800" />
 
         <button
           onClick={() => handleCopy("christianamos67@gmail.com", "quick-copy")}
-          className="flex items-center gap-1 text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white transition"
+          className="flex items-center gap-1 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition font-semibold"
         >
-          <Mail className="w-3.5 h-3.5 text-teal-600" />
-          <span className="hidden sm:inline">
+          <Mail className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
+          <span>
             {copiedKey === "quick-copy" ? "Copied!" : "Email"}
           </span>
         </button>
       </aside>
 
-      {/* Command Palette */}
+      {/* Command Palette Drawer */}
       {isCommandOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 dark:bg-black/80 backdrop-blur-xs flex items-start justify-center pt-24 p-4">
           <div className="w-full max-w-lg bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl overflow-hidden shadow-2xl font-mono text-xs">
             <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60">
-              <Command className="w-4 h-4 text-teal-700 dark:text-teal-400" />
+              <Command className="w-4 h-4 text-teal-800 dark:text-teal-400" />
               <input
                 type="text"
                 value={commandQuery}
                 onChange={(e) => setCommandQuery(e.target.value)}
                 placeholder="Jump to section or run action..."
                 autoFocus
-                className="w-full bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none"
+                className="w-full bg-transparent text-slate-900 dark:text-slate-100 placeholder-slate-500 focus:outline-none"
               />
               <button
                 onClick={() => setIsCommandOpen(false)}
-                className="text-slate-400 hover:text-slate-900 dark:hover:text-white"
+                className="text-slate-500 hover:text-slate-950 dark:hover:text-white"
               >
                 <X className="w-4 h-4" />
               </button>
             </div>
 
             <div className="p-2 max-h-72 overflow-y-auto space-y-1">
-              <span className="text-[10px] text-slate-400 dark:text-slate-500 px-3 uppercase tracking-wider block py-1">
+              <span className="text-[10px] text-slate-500 px-3 uppercase tracking-wider block py-1 font-semibold">
                 Navigation & Shortcuts
               </span>
               {[
@@ -2215,13 +2223,13 @@ EDUCATION & EXPERIENCE:
                     playHapticClick(90, 0.02);
                     setIsCommandOpen(false);
                   }}
-                  className="block px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-teal-700 dark:hover:text-teal-400 transition"
+                  className="block px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-800 dark:text-slate-300 hover:text-teal-800 dark:hover:text-teal-400 transition font-medium"
                 >
                   {cmd.label}
                 </a>
               ))}
 
-              <span className="text-[10px] text-slate-400 dark:text-slate-500 px-3 uppercase tracking-wider block pt-2 py-1">
+              <span className="text-[10px] text-slate-500 px-3 uppercase tracking-wider block pt-2 py-1 font-semibold">
                 Actions
               </span>
               <button
@@ -2230,20 +2238,20 @@ EDUCATION & EXPERIENCE:
                   setIsCommandOpen(false);
                   setIsResumeOpen(true);
                 }}
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition flex items-center justify-between"
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition flex items-center justify-between font-medium"
               >
                 <span>Open Resume Drawer</span>
-                <span className="text-slate-400 text-[10px]">Action</span>
+                <span className="text-slate-500 text-[10px]">Action</span>
               </button>
               <button
                 onClick={() => {
                   handleCopy("christianamos67@gmail.com", "email-copy");
                   setIsCommandOpen(false);
                 }}
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition flex items-center justify-between"
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition flex items-center justify-between font-medium"
               >
                 <span>Copy Email (christianamos67@gmail.com)</span>
-                <span className="text-slate-400 text-[10px]">Clipboard</span>
+                <span className="text-slate-500 text-[10px]">Clipboard</span>
               </button>
             </div>
           </div>
@@ -2256,7 +2264,7 @@ EDUCATION & EXPERIENCE:
           <div className="w-full max-w-3xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl overflow-hidden shadow-2xl p-6 space-y-6">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <div>
-                <span className="text-xs font-mono text-teal-700 dark:text-teal-400 uppercase tracking-wider font-semibold">
+                <span className="text-xs font-mono text-teal-800 dark:text-teal-400 uppercase tracking-wider font-bold">
                   Curriculum Vitae
                 </span>
                 <h3 className="text-xl font-bold text-slate-950 dark:text-white mt-1">Christian Amos Otieno</h3>
@@ -2269,18 +2277,18 @@ EDUCATION & EXPERIENCE:
                   playHapticClick(90, 0.02);
                   setIsResumeOpen(false);
                 }}
-                className="text-slate-400 hover:text-slate-950 dark:hover:text-white"
+                className="text-slate-500 hover:text-slate-950 dark:hover:text-white"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="space-y-5 text-sm text-slate-700 dark:text-slate-300 max-h-[60vh] overflow-y-auto pr-2 font-sans">
+            <div className="space-y-5 text-sm text-slate-800 dark:text-slate-300 max-h-[60vh] overflow-y-auto pr-2 font-sans">
               <div>
                 <h4 className="font-semibold text-slate-950 dark:text-white uppercase text-xs tracking-wider border-b border-slate-200 dark:border-slate-800 pb-1">
                   Professional Summary
                 </h4>
-                <p className="text-slate-700 dark:text-slate-400 mt-2 text-xs leading-relaxed">
+                <p className="text-slate-700 dark:text-slate-300 mt-2 text-xs leading-relaxed">
                   Adaptive, highly analytical Full-Stack Software Engineer with extensive experience architecting scalable backend systems, high-performance web applications, and database integrations. Specialized in leveraging Go (Golang) for high-concurrency services, network protocols, and core CS optimization alongside modern frontends using TypeScript, Next.js, and Tailwind CSS.
                 </p>
               </div>
@@ -2289,10 +2297,10 @@ EDUCATION & EXPERIENCE:
                 <h4 className="font-semibold text-slate-950 dark:text-white uppercase text-xs tracking-wider border-b border-slate-200 dark:border-slate-800 pb-1">
                   Technical Skills
                 </h4>
-                <p className="text-slate-700 dark:text-slate-400 mt-2 text-xs leading-relaxed font-mono">
-                  <strong className="text-slate-950 dark:text-slate-200">Languages:</strong> Go (Golang), TypeScript, JavaScript (ES6+), Python, SQL, HTML5, CSS3<br />
-                  <strong className="text-slate-950 dark:text-slate-200">Frameworks:</strong> Next.js, React, Node.js, Prisma ORM, NextAuth, Tailwind CSS<br />
-                  <strong className="text-slate-950 dark:text-slate-200">Databases & DevOps:</strong> PostgreSQL, PostGIS, Redis, Docker, Git, Linux/Bash Scripting
+                <p className="text-slate-700 dark:text-slate-300 mt-2 text-xs leading-relaxed font-mono">
+                  <strong className="text-slate-950 dark:text-slate-100">Languages:</strong> Go (Golang), TypeScript, JavaScript (ES6+), Python, SQL, HTML5, CSS3<br />
+                  <strong className="text-slate-950 dark:text-slate-100">Frameworks:</strong> Next.js, React, Node.js, Prisma ORM, NextAuth, Tailwind CSS<br />
+                  <strong className="text-slate-950 dark:text-slate-100">Databases & DevOps:</strong> PostgreSQL, PostGIS, Redis, Docker, Git, Linux/Bash Scripting
                 </p>
               </div>
 
@@ -2300,7 +2308,7 @@ EDUCATION & EXPERIENCE:
                 <h4 className="font-semibold text-slate-950 dark:text-white uppercase text-xs tracking-wider border-b border-slate-200 dark:border-slate-800 pb-1">
                   Featured Projects
                 </h4>
-                <div className="space-y-3 mt-2 text-xs text-slate-700 dark:text-slate-400">
+                <div className="space-y-3 mt-2 text-xs text-slate-700 dark:text-slate-300">
                   <div>
                     <span className="font-semibold text-slate-950 dark:text-white">LYRIC – Real-Time Music Streaming Platform</span>
                     <p className="mt-0.5">
@@ -2332,15 +2340,15 @@ EDUCATION & EXPERIENCE:
                 <h4 className="font-semibold text-slate-950 dark:text-white uppercase text-xs tracking-wider border-b border-slate-200 dark:border-slate-800 pb-1">
                   Professional Experience & Education
                 </h4>
-                <div className="text-xs text-slate-700 dark:text-slate-400 space-y-1 mt-2">
+                <div className="text-xs text-slate-700 dark:text-slate-300 space-y-1 mt-2">
                   <p>
-                    <strong className="text-slate-950 dark:text-slate-200">Apprentice Software Engineer</strong> – Zone01 Kisumu (2026 – Present)
+                    <strong className="text-slate-950 dark:text-slate-100">Apprentice Software Engineer</strong> – Zone01 Kisumu (2026 – Present)
                   </p>
                   <p>
-                    <strong className="text-slate-950 dark:text-slate-200">Neuro-Analytics & Brain-Data Integration</strong> – Skills for Africa (2023 – 2024)
+                    <strong className="text-slate-950 dark:text-slate-100">Neuro-Analytics & Brain-Data Integration</strong> – Skills for Africa (2023 – 2024)
                   </p>
                   <p>
-                    <strong className="text-slate-950 dark:text-slate-200">B.Sc. in Microbiology and Biotechnology</strong> – Aga Khan University (2019 – 2022)
+                    <strong className="text-slate-950 dark:text-slate-100">B.Sc. in Microbiology and Biotechnology</strong> – Aga Khan University (2019 – 2022)
                   </p>
                 </div>
               </div>
@@ -2358,7 +2366,7 @@ EDUCATION & EXPERIENCE:
                   playHapticClick(90, 0.02);
                   setIsResumeOpen(false);
                 }}
-                className="px-4 py-2 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-xs font-mono text-slate-800 dark:text-slate-300 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800"
+                className="px-4 py-2 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-xs font-mono text-slate-800 dark:text-slate-300 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 font-medium"
               >
                 Close
               </button>
@@ -2368,7 +2376,7 @@ EDUCATION & EXPERIENCE:
       )}
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-slate-200 dark:border-slate-900 py-10 text-center text-xs font-mono text-slate-500 pb-20">
+      <footer className="relative z-10 border-t border-slate-200 dark:border-slate-900 py-10 text-center text-xs font-mono text-slate-600 dark:text-slate-400 pb-20">
         © {new Date().getFullYear()} Christian Amos Otieno. Built with Go, Next.js & Tailwind CSS.
       </footer>
     </div>
