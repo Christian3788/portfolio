@@ -42,6 +42,7 @@ import {
   Briefcase,
   Code2,
   ChevronDown,
+  ArrowRight,
 } from "lucide-react";
 
 function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -61,37 +62,6 @@ function LinkedinIcon({ className = "w-4 h-4" }: { className?: string }) {
     <svg className={className} fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 10.9v8.37H9.2V10.9H6.46M7.83 6.2a1.62 1.62 0 0 0-1.62 1.62c0 .9.72 1.63 1.62 1.63.9 0 1.63-.73 1.63-1.63 0-.9-.73-1.62-1.63-1.62Z" />
     </svg>
-  );
-}
-
-function ScrambleText({ text, className = "" }: { text: string; className?: string }) {
-  const [displayText, setDisplayText] = useState(text);
-  const glyphs = "!<>-_\\/[]{}—=+*^?#________0101";
-
-  const scramble = () => {
-    let iteration = 0;
-    const interval = setInterval(() => {
-      setDisplayText(
-        text
-          .split("")
-          .map((char, index) => {
-            if (index < iteration) return text[index];
-            return glyphs[Math.floor(Math.random() * glyphs.length)];
-          })
-          .join("")
-      );
-
-      if (iteration >= text.length) {
-        clearInterval(interval);
-      }
-      iteration += 1 / 2;
-    }, 25);
-  };
-
-  return (
-    <span onMouseEnter={scramble} className={`cursor-default font-mono ${className}`}>
-      {displayText}
-    </span>
   );
 }
 
@@ -304,7 +274,7 @@ const hobbies = [
   },
   {
     title: "Technical Writing & Analytical Philosophy",
-    description: "Writing long-form essays and speculative fiction grounded in formal logic, information theory, and cosmology.",
+    description: "Writing long-form essays and speculative technical notes grounded in formal logic, information theory, and cosmology.",
     icon: BookOpen,
     badge: "Information Theory",
   },
@@ -1032,7 +1002,7 @@ EDUCATION & EXPERIENCE:
             onClick={() => playHapticClick(80, 0.02)}
             className="font-mono font-extrabold text-base tracking-wider bg-gradient-to-r from-cyan-400 via-cyan-300 to-sky-300 bg-clip-text text-transparent flex items-center gap-1.5"
           >
-            <ScrambleText text="christian.dev" />
+            christian.dev
           </a>
 
           <div className="flex items-center gap-6">
@@ -1197,60 +1167,87 @@ EDUCATION & EXPERIENCE:
           </div>
         </section>
 
-        {/* Hero Section */}
-        <section className="relative pt-2 pb-6">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        {/* =========================================================
+            REFACTORED HERO SECTION
+            Typography, contrast compliance & framed portrait card
+            ========================================================= */}
+        <section className="relative pt-6 pb-12 font-sans overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            
+            {/* Left Column: Typography & Content Hierarchy */}
             <div className="lg:col-span-7 space-y-6 z-10">
-              <div className="space-y-2">
-                <div className="flex items-center gap-2 text-xs font-mono text-cyan-800 dark:text-cyan-400 font-bold uppercase tracking-widest">
-                  <MapPin className="w-3.5 h-3.5" />
-                  <span>Kisumu, Kenya • Full-Stack Software Engineer</span>
-                </div>
-                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-950 dark:text-white leading-[1.12]">
-                  <ScrambleText text="Christian Amos Otieno" />
-                </h1>
+              
+              {/* Eyebrow: Geist/JetBrains Mono, uppercase, tracking */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-800/60 font-mono text-xs uppercase tracking-[0.08em] text-cyan-300">
+                <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                <span>Kisumu, Kenya &bull; Full-Stack Software Engineer</span>
               </div>
 
+              {/* Main Heading: Sans-serif Inter / Geist Sans, high contrast */}
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-950 dark:text-white leading-[1.12]">
+                Christian Amos <br className="hidden sm:inline" />
+                <span className="bg-gradient-to-r from-slate-950 via-slate-800 to-slate-600 dark:from-white dark:via-slate-100 dark:to-slate-400 bg-clip-text text-transparent">
+                  Otieno
+                </span>
+              </h1>
+
+              {/* Persona-Driven Primary Paragraph (WCAG AA Compliant text-slate-300 / 700) */}
               {audiencePersona === "tech-lead" ? (
-                <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed max-w-xl">
-                  Systems-focused software engineer specializing in low-overhead network protocols in <span className="text-slate-950 dark:text-white font-semibold">Go</span>, high-throughput spatial indexing in <span className="text-slate-950 dark:text-white font-semibold">PostGIS</span>, and deterministic interfaces in <span className="text-slate-950 dark:text-white font-semibold">Next.js & TypeScript</span>.
+                <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed max-w-xl font-normal">
+                  Systems-focused software engineer specializing in low-overhead network
+                  protocols in <span className="text-slate-950 dark:text-white font-medium">Go</span>, high-throughput spatial indexing
+                  in <span className="text-slate-950 dark:text-white font-medium">PostGIS</span>, and deterministic interfaces in{" "}
+                  <span className="text-slate-950 dark:text-white font-medium">Next.js &amp; TypeScript</span>.
                 </p>
               ) : (
-                <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed max-w-xl">
-                  Full-stack software developer experienced in building production web applications, real-time media systems, and robust database architectures. Currently completing an intensive engineering apprenticeship at Zone01 Kisumu.
+                <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed max-w-xl font-normal">
+                  Full-stack software developer experienced in building production web
+                  applications, real-time media services, and resilient database architectures.
+                  Currently completing an intensive engineering apprenticeship at Zone01 Kisumu.
                 </p>
               )}
 
+              {/* Secondary Subtext (Accessible #94a3b8 / slate-400) */}
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
-                Background in biotechnology and analytical modeling from Aga Khan University, applying empirical rigor to distributed computing, memory alignment, and system architecture.
+                Background in biotechnology and analytical modeling from Aga Khan University,
+                applying empirical rigor to distributed computing, memory alignment, and system
+                architecture.
               </p>
 
+              {/* CTA & Social Cluster */}
               <div className="pt-2 flex flex-wrap items-center gap-4">
+                {/* Primary CTA: Title-case, clean sans-serif */}
                 <a
                   href="#projects"
                   onClick={() => playHapticClick(90, 0.02)}
-                  className="px-6 py-3 bg-gradient-to-r from-cyan-500 via-cyan-400 to-sky-400 text-slate-950 font-bold rounded-lg transition-all transform hover:-translate-y-0.5 text-sm font-mono tracking-wide shadow-[0_0_20px_rgba(6,182,212,0.45)] hover:shadow-[0_0_28px_rgba(34,211,238,0.7)]"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-sm tracking-normal text-slate-950 bg-gradient-to-r from-cyan-400 via-cyan-300 to-sky-300 hover:from-cyan-300 hover:to-sky-200 transition-all duration-200 shadow-[0_0_20px_rgba(6,182,212,0.35)] hover:shadow-[0_0_28px_rgba(34,211,238,0.55)] hover:-translate-y-0.5 active:translate-y-0"
                 >
-                  Explore Projects & Demos &rarr;
+                  <span>Explore Projects &amp; Demos</span>
+                  <ArrowRight className="w-4 h-4 text-slate-950" />
                 </a>
+
+                {/* Secondary CTA: Title-case, clean sans-serif */}
                 <button
+                  type="button"
                   onClick={() => {
                     playHapticClick(110, 0.02);
                     setIsResumeOpen(true);
                   }}
-                  className="px-5 py-2.5 bg-white dark:bg-[#0d1527] border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium rounded-lg hover:border-cyan-500/60 dark:hover:border-slate-700 hover:text-slate-950 dark:hover:text-white transition text-sm flex items-center gap-2 shadow-2xs"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-lg font-medium text-sm tracking-normal text-slate-800 dark:text-slate-200 bg-white/60 dark:bg-white/[0.04] hover:bg-white/90 dark:hover:bg-white/[0.08] border border-slate-300 dark:border-white/[0.08] hover:border-cyan-500/50 transition-all duration-200"
                 >
                   <FileCode className="w-4 h-4 text-cyan-700 dark:text-cyan-400" />
-                  Resume / CV
+                  <span>Resume / CV</span>
                 </button>
 
-                <div className="flex items-center gap-3 pl-3 border-l border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400">
+                {/* Social Profiles */}
+                <div className="flex items-center gap-3 pl-2 sm:pl-3 border-l border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-slate-400">
                   <a
                     href="https://github.com/Christian3788"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-slate-950 dark:hover:text-white transition p-1"
+                    className="p-2 rounded-lg hover:text-slate-950 dark:hover:text-white transition-colors"
                     title="GitHub Profile"
+                    aria-label="GitHub Profile"
                   >
                     <GithubIcon className="w-5 h-5" />
                   </a>
@@ -1258,8 +1255,9 @@ EDUCATION & EXPERIENCE:
                     href="https://www.linkedin.com/in/christian-otieno-9a9806229/"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-sky-700 dark:hover:text-sky-400 transition p-1"
+                    className="p-2 rounded-lg hover:text-sky-700 dark:hover:text-sky-400 transition-colors"
                     title="LinkedIn Profile"
+                    aria-label="LinkedIn Profile"
                   >
                     <LinkedinIcon className="w-5 h-5" />
                   </a>
@@ -1267,8 +1265,9 @@ EDUCATION & EXPERIENCE:
                     href="https://dev.to/christian-otieno"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-cyan-800 dark:hover:text-cyan-400 transition p-1 text-xs font-mono font-bold"
+                    className="px-2.5 py-1 rounded-md hover:text-cyan-800 dark:hover:text-cyan-300 font-mono text-xs font-bold"
                     title="DEV.to Articles"
+                    aria-label="DEV.to Articles"
                   >
                     DEV
                   </a>
@@ -1276,30 +1275,41 @@ EDUCATION & EXPERIENCE:
               </div>
             </div>
 
-            {/* Custom Focal-Anchored Portrait Container */}
+            {/* Right Column: Refactored Portrait Card */}
             <div className="lg:col-span-5 flex justify-center lg:justify-end">
-              <div className="relative w-64 h-[360px] sm:w-72 sm:h-[400px] lg:w-[320px] lg:h-[440px]">
-                <div
-                  className="relative w-full h-full rounded-2xl overflow-hidden"
-                  style={{
-                    maskImage:
-                      "radial-gradient(ellipse 90% 90% at 50% 45%, black 50%, transparent 98%)",
-                    WebkitMaskImage:
-                      "radial-gradient(ellipse 90% 90% at 50% 45%, black 50%, transparent 98%)",
-                  }}
-                >
+              <div className="relative group">
+                {/* Ambient Cool-Cyan Backlight Glow */}
+                <div 
+                  className="absolute -inset-1.5 rounded-3xl bg-gradient-to-tr from-cyan-500/25 via-sky-500/15 to-transparent blur-2xl opacity-75 group-hover:opacity-100 transition duration-700 pointer-events-none"
+                  aria-hidden="true"
+                />
+
+                {/* Explicit Portrait Card Wrapper */}
+                <div className="relative w-[280px] h-[370px] sm:w-[320px] sm:h-[420px] lg:w-[340px] lg:h-[450px] rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.02] backdrop-blur-xs overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-[1.01]">
                   <Image
                     src="/profile.jpg"
-                    alt="Christian Amos Otieno"
+                    alt="Christian Amos Otieno - Software Engineer"
                     fill
                     priority
-                    sizes="(max-width: 768px) 100vw, 360px"
-                    className="object-cover object-[50%_15%] filter contrast-[1.03]"
+                    sizes="(max-width: 640px) 280px, (max-width: 1024px) 320px, 340px"
+                    className="object-cover object-[50%_15%] contrast-[1.05] brightness-95"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#f8fafc] dark:from-[#070b14] via-transparent to-transparent opacity-50 dark:opacity-85" />
+
+                  {/* Seamless Bottom Vignette Gradient */}
+                  <div 
+                    className="absolute inset-0 bg-gradient-to-t from-[#f8fafc] dark:from-[#070b14] via-transparent to-transparent pointer-events-none opacity-80" 
+                    aria-hidden="true"
+                  />
+
+                  {/* Top Cyan Rim Light */}
+                  <div 
+                    className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent pointer-events-none" 
+                    aria-hidden="true"
+                  />
                 </div>
               </div>
             </div>
+
           </div>
         </section>
 
@@ -1329,7 +1339,7 @@ EDUCATION & EXPERIENCE:
                 key={skill}
                 className="px-3 py-1.5 bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-md text-xs sm:text-sm font-mono font-medium hover:border-cyan-600 dark:hover:border-cyan-500/50 hover:text-cyan-800 dark:hover:text-cyan-300 transition-colors cursor-default shadow-2xs"
               >
-                <ScrambleText text={skill} />
+                {skill}
               </span>
             ))}
           </div>
@@ -1395,7 +1405,7 @@ EDUCATION & EXPERIENCE:
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
                     <div>
                       <h3 className="text-xl font-bold text-slate-950 dark:text-white">
-                        <ScrambleText text={proj.title} />
+                        {proj.title}
                       </h3>
                       <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
                         {proj.description}
@@ -1791,7 +1801,7 @@ EDUCATION & EXPERIENCE:
                         className={`w-10 h-8 rounded border flex items-center justify-center font-bold transition-all ${
                           channelBuffer[i] !== undefined
                             ? "bg-cyan-100 dark:bg-cyan-950 border-cyan-500 text-cyan-950 dark:text-cyan-300"
-                            : "bg-slate-200 dark:bg-slate-900 border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-500"
+                            : "bg-slate-200 dark:bg-slate-900 border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-50"
                         }`}
                       >
                         {channelBuffer[i] ?? "∅"}
@@ -2021,7 +2031,7 @@ EDUCATION & EXPERIENCE:
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <h3 className="text-base font-semibold text-slate-950 dark:text-slate-100 group-hover:text-cyan-800 dark:group-hover:text-cyan-400 transition">
-                    <ScrambleText text={art.title} />
+                    {art.title}
                   </h3>
                   <span className="text-xs font-mono text-slate-500">{art.date}</span>
                 </div>
