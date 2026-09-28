@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import Image from "next/image";
@@ -43,6 +43,7 @@ import {
   Code2,
   ChevronDown,
   ArrowRight,
+  ShieldCheck,
 } from "lucide-react";
 
 function GithubIcon({ className = "w-4 h-4" }: { className?: string }) {
@@ -381,7 +382,7 @@ export default function Home() {
 
   const [gisCoord, setGisCoord] = useState({ x: 50, y: 50 });
   const [isGistMode, setIsGistMode] = useState(true);
-  const [showSqlExplain, setShowSqlExplain] = useState(true);
+  const [showSqlExplain, setShowSqlExplain] = useState(false);
 
   const [isBenchmarking, setIsBenchmarking] = useState(false);
   const [benchmarkResults, setBenchmarkResults] = useState<{
@@ -975,7 +976,7 @@ EDUCATION & EXPERIENCE:
         style={{ width: `${scrollProgress}%` }}
       />
 
-      {/* Subtle Matrix / Starfield Background */}
+      {/* Background Starfield */}
       <div className="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:24px_24px] opacity-35 dark:hidden" />
       <canvas
         ref={starfieldCanvasRef}
@@ -994,9 +995,9 @@ EDUCATION & EXPERIENCE:
         }}
       />
 
-      {/* Top Navigation */}
+      {/* Navigation */}
       <header className="sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-[#070b14]/85 border-b border-slate-200/90 dark:border-slate-800 transition-colors shadow-xs">
-        <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <a
             href="#"
             onClick={() => playHapticClick(80, 0.02)}
@@ -1007,32 +1008,16 @@ EDUCATION & EXPERIENCE:
 
           <div className="flex items-center gap-6">
             <nav className="flex items-center gap-5 sm:gap-6 text-sm font-medium text-slate-700 dark:text-slate-300">
-              <a
-                href="#about"
-                onClick={() => playHapticClick(80, 0.02)}
-                className="hover:text-slate-950 dark:hover:text-cyan-300 transition"
-              >
+              <a href="#about" onClick={() => playHapticClick(80, 0.02)} className="hover:text-slate-950 dark:hover:text-cyan-300 transition">
                 About
               </a>
-              <a
-                href="#projects"
-                onClick={() => playHapticClick(80, 0.02)}
-                className="hover:text-slate-950 dark:hover:text-cyan-300 transition"
-              >
+              <a href="#projects" onClick={() => playHapticClick(80, 0.02)} className="hover:text-slate-950 dark:hover:text-cyan-300 transition">
                 Projects
               </a>
-              <a
-                href="#systems-lab"
-                onClick={() => playHapticClick(80, 0.02)}
-                className="hover:text-slate-950 dark:hover:text-cyan-300 transition hidden sm:inline"
-              >
+              <a href="#systems-lab" onClick={() => playHapticClick(80, 0.02)} className="hover:text-slate-950 dark:hover:text-cyan-300 transition hidden sm:inline">
                 Systems Lab
               </a>
-              <a
-                href="#articles"
-                onClick={() => playHapticClick(80, 0.02)}
-                className="hover:text-slate-950 dark:hover:text-cyan-300 transition hidden md:inline"
-              >
+              <a href="#articles" onClick={() => playHapticClick(80, 0.02)} className="hover:text-slate-950 dark:hover:text-cyan-300 transition hidden md:inline">
                 Writing
               </a>
               <button
@@ -1080,11 +1065,7 @@ EDUCATION & EXPERIENCE:
                   className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#0d1527] text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition shadow-2xs"
                   title={`Switch to ${isLight ? "Dark" : "Light"} Mode`}
                 >
-                  {isLight ? (
-                    <Moon className="w-4 h-4 text-slate-800" />
-                  ) : (
-                    <Sun className="w-4 h-4 text-amber-300" />
-                  )}
+                  {isLight ? <Moon className="w-4 h-4 text-slate-800" /> : <Sun className="w-4 h-4 text-amber-300" />}
                 </button>
               )}
             </div>
@@ -1092,8 +1073,8 @@ EDUCATION & EXPERIENCE:
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="relative z-10 max-w-5xl mx-auto px-6 py-12 space-y-20 lg:space-y-24">
+      {/* Main Container */}
+      <main className="relative z-10 max-w-6xl mx-auto px-6 py-10 space-y-16 lg:space-y-20">
         {/* Active Focus Ticker & Perspective Switcher */}
         <section className="space-y-3">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-slate-800 rounded-xl p-3.5 shadow-xs font-mono text-xs">
@@ -1167,23 +1148,16 @@ EDUCATION & EXPERIENCE:
           </div>
         </section>
 
-        {/* =========================================================
-            REFACTORED HERO SECTION
-            Typography, contrast compliance & framed portrait card
-            ========================================================= */}
-        <section className="relative pt-6 pb-12 font-sans overflow-hidden">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            
-            {/* Left Column: Typography & Content Hierarchy */}
+        {/* Hero Section (7 : 5 Split) */}
+        <section className="relative pt-4 pb-8 font-sans overflow-hidden">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            {/* Left Column (7 Cols) */}
             <div className="lg:col-span-7 space-y-6 z-10">
-              
-              {/* Eyebrow: Geist/JetBrains Mono, uppercase, tracking */}
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/40 border border-cyan-800/60 font-mono text-xs uppercase tracking-[0.08em] text-cyan-300">
                 <MapPin className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
                 <span>Kisumu, Kenya &bull; Full-Stack Software Engineer</span>
               </div>
 
-              {/* Main Heading: Sans-serif Inter / Geist Sans, high contrast */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-950 dark:text-white leading-[1.12]">
                 Christian Amos <br className="hidden sm:inline" />
                 <span className="bg-gradient-to-r from-slate-950 via-slate-800 to-slate-600 dark:from-white dark:via-slate-100 dark:to-slate-400 bg-clip-text text-transparent">
@@ -1191,7 +1165,6 @@ EDUCATION & EXPERIENCE:
                 </span>
               </h1>
 
-              {/* Persona-Driven Primary Paragraph (WCAG AA Compliant text-slate-300 / 700) */}
               {audiencePersona === "tech-lead" ? (
                 <p className="text-base sm:text-lg text-slate-700 dark:text-slate-300 leading-relaxed max-w-xl font-normal">
                   Systems-focused software engineer specializing in low-overhead network
@@ -1207,39 +1180,34 @@ EDUCATION & EXPERIENCE:
                 </p>
               )}
 
-              {/* Secondary Subtext (Accessible #94a3b8 / slate-400) */}
               <p className="text-sm text-slate-600 dark:text-slate-400 leading-relaxed max-w-xl">
                 Background in biotechnology and analytical modeling from Aga Khan University,
                 applying empirical rigor to distributed computing, memory alignment, and system
                 architecture.
               </p>
 
-              {/* CTA & Social Cluster */}
               <div className="pt-2 flex flex-wrap items-center gap-4">
-                {/* Primary CTA: Title-case, clean sans-serif */}
                 <a
                   href="#projects"
                   onClick={() => playHapticClick(90, 0.02)}
-                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-sm tracking-normal text-slate-950 bg-gradient-to-r from-cyan-400 via-cyan-300 to-sky-300 hover:from-cyan-300 hover:to-sky-200 transition-all duration-200 shadow-[0_0_20px_rgba(6,182,212,0.35)] hover:shadow-[0_0_28px_rgba(34,211,238,0.55)] hover:-translate-y-0.5 active:translate-y-0"
+                  className="inline-flex items-center gap-2 px-6 py-3 rounded-lg font-medium text-sm text-slate-950 bg-gradient-to-r from-cyan-400 via-cyan-300 to-sky-300 hover:from-cyan-300 hover:to-sky-200 transition-all duration-200 shadow-[0_0_20px_rgba(6,182,212,0.35)] hover:shadow-[0_0_28px_rgba(34,211,238,0.55)] hover:-translate-y-0.5"
                 >
                   <span>Explore Projects &amp; Demos</span>
                   <ArrowRight className="w-4 h-4 text-slate-950" />
                 </a>
 
-                {/* Secondary CTA: Title-case, clean sans-serif */}
                 <button
                   type="button"
                   onClick={() => {
                     playHapticClick(110, 0.02);
                     setIsResumeOpen(true);
                   }}
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-lg font-medium text-sm tracking-normal text-slate-800 dark:text-slate-200 bg-white/60 dark:bg-white/[0.04] hover:bg-white/90 dark:hover:bg-white/[0.08] border border-slate-300 dark:border-white/[0.08] hover:border-cyan-500/50 transition-all duration-200"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-lg font-medium text-sm text-slate-800 dark:text-slate-200 bg-white/60 dark:bg-white/[0.04] hover:bg-white/90 dark:hover:bg-white/[0.08] border border-slate-300 dark:border-white/[0.08] hover:border-cyan-500/50 transition-all duration-200"
                 >
                   <FileCode className="w-4 h-4 text-cyan-700 dark:text-cyan-400" />
                   <span>Resume / CV</span>
                 </button>
 
-                {/* Social Profiles */}
                 <div className="flex items-center gap-3 pl-2 sm:pl-3 border-l border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-slate-400">
                   <a
                     href="https://github.com/Christian3788"
@@ -1247,7 +1215,6 @@ EDUCATION & EXPERIENCE:
                     rel="noreferrer"
                     className="p-2 rounded-lg hover:text-slate-950 dark:hover:text-white transition-colors"
                     title="GitHub Profile"
-                    aria-label="GitHub Profile"
                   >
                     <GithubIcon className="w-5 h-5" />
                   </a>
@@ -1257,7 +1224,6 @@ EDUCATION & EXPERIENCE:
                     rel="noreferrer"
                     className="p-2 rounded-lg hover:text-sky-700 dark:hover:text-sky-400 transition-colors"
                     title="LinkedIn Profile"
-                    aria-label="LinkedIn Profile"
                   >
                     <LinkedinIcon className="w-5 h-5" />
                   </a>
@@ -1267,7 +1233,6 @@ EDUCATION & EXPERIENCE:
                     rel="noreferrer"
                     className="px-2.5 py-1 rounded-md hover:text-cyan-800 dark:hover:text-cyan-300 font-mono text-xs font-bold"
                     title="DEV.to Articles"
-                    aria-label="DEV.to Articles"
                   >
                     DEV
                   </a>
@@ -1275,41 +1240,62 @@ EDUCATION & EXPERIENCE:
               </div>
             </div>
 
-            {/* Right Column: Refactored Portrait Card */}
+            {/* Right Column (5 Cols) with Floating Zone01 Verification Stamp */}
             <div className="lg:col-span-5 flex justify-center lg:justify-end">
               <div className="relative group">
-                {/* Ambient Cool-Cyan Backlight Glow */}
                 <div 
                   className="absolute -inset-1.5 rounded-3xl bg-gradient-to-tr from-cyan-500/25 via-sky-500/15 to-transparent blur-2xl opacity-75 group-hover:opacity-100 transition duration-700 pointer-events-none"
                   aria-hidden="true"
                 />
 
-                {/* Explicit Portrait Card Wrapper */}
                 <div className="relative w-[280px] h-[370px] sm:w-[320px] sm:h-[420px] lg:w-[340px] lg:h-[450px] rounded-2xl border border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.02] backdrop-blur-xs overflow-hidden shadow-2xl transition-transform duration-500 group-hover:scale-[1.01]">
                   <Image
                     src="/profile.jpg"
-                    alt="Christian Amos Otieno - Software Engineer"
+                    alt="Christian Amos Otieno"
                     fill
                     priority
                     sizes="(max-width: 640px) 280px, (max-width: 1024px) 320px, 340px"
                     className="object-cover object-[50%_15%] contrast-[1.05] brightness-95"
                   />
 
-                  {/* Seamless Bottom Vignette Gradient */}
                   <div 
                     className="absolute inset-0 bg-gradient-to-t from-[#f8fafc] dark:from-[#070b14] via-transparent to-transparent pointer-events-none opacity-80" 
                     aria-hidden="true"
                   />
 
-                  {/* Top Cyan Rim Light */}
-                  <div 
-                    className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-400/30 to-transparent pointer-events-none" 
-                    aria-hidden="true"
-                  />
+                  {/* Zone01 Kisumu Peer-Defended Floating Badge */}
+                  <div className="absolute bottom-3 right-3 z-20 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-[#070b14]/90 border border-cyan-500/50 backdrop-blur-md shadow-lg font-mono text-[10px] text-cyan-300">
+                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+                    <ShieldCheck className="w-3 h-3 text-cyan-400" />
+                    <span>Zone01 Kisumu &bull; Peer-Defended</span>
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+        </section>
 
+        {/* Quantified Engineering Proof Strip (4 Columns) */}
+        <section className="grid grid-cols-2 lg:grid-cols-4 gap-3.5 font-mono">
+          <div className="p-4 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0d1527] shadow-xs">
+            <span className="text-[10px] text-slate-500 uppercase tracking-widest block font-semibold">Systems Endurance</span>
+            <span className="text-2xl font-extrabold text-slate-950 dark:text-cyan-400 mt-1 block">200+ Hrs</span>
+            <span className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 block">Go Concurrency &amp; Piscines</span>
+          </div>
+          <div className="p-4 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0d1527] shadow-xs">
+            <span className="text-[10px] text-slate-500 uppercase tracking-widest block font-semibold">Audio Streaming</span>
+            <span className="text-2xl font-extrabold text-slate-950 dark:text-cyan-400 mt-1 block">0 Spikes</span>
+            <span className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 block">HTTP 206 64KB Chunks</span>
+          </div>
+          <div className="p-4 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0d1527] shadow-xs">
+            <span className="text-[10px] text-slate-500 uppercase tracking-widest block font-semibold">Spatial Query</span>
+            <span className="text-2xl font-extrabold text-slate-950 dark:text-cyan-400 mt-1 block">3.12 ms</span>
+            <span className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 block">PostGIS GiST R-Tree Scan</span>
+          </div>
+          <div className="p-4 rounded-xl border border-slate-200/90 dark:border-slate-800 bg-white dark:bg-[#0d1527] shadow-xs">
+            <span className="text-[10px] text-slate-500 uppercase tracking-widest block font-semibold">Peer Norms</span>
+            <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 mt-1 block">100%</span>
+            <span className="text-xs text-slate-600 dark:text-slate-400 mt-0.5 block">Peer-Reviewed &amp; Audited</span>
           </div>
         </section>
 
@@ -1345,7 +1331,7 @@ EDUCATION & EXPERIENCE:
           </div>
         </section>
 
-        {/* Projects */}
+        {/* Asymmetric Bento Project Grid (8:4 and 6:6) */}
         <section id="projects" className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
             <div>
@@ -1391,31 +1377,23 @@ EDUCATION & EXPERIENCE:
             ))}
           </div>
 
-          <div className="grid gap-8">
-            {filteredProjects.map((proj) => {
-              const currentTab = activeTabs[proj.id] || "overview";
-              const isAnatomyOpen = expandedAnatomy[proj.id] || false;
-
-              return (
-                <div
-                  key={proj.id}
-                  className="p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800 rounded-2xl bg-white dark:bg-[#0d1527] hover:border-cyan-400/60 dark:hover:border-cyan-400/50 hover:shadow-lg dark:hover:shadow-[0_0_30px_-8px_rgba(6,182,212,0.25)] transition-all duration-300 space-y-5"
-                >
-                  {/* Top Bar */}
+          {/* Asymmetric Bento Rows */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            {/* ROW 1: PRIMARY - LYRIC (8 Cols) */}
+            {filteredProjects.find((p) => p.id === "lyric") && (
+              <div className="lg:col-span-8 p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800 rounded-2xl bg-white dark:bg-[#0d1527] hover:border-cyan-400/50 hover:shadow-lg transition-all space-y-5 flex flex-col justify-between">
+                <div className="space-y-4">
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
                     <div>
                       <h3 className="text-xl font-bold text-slate-950 dark:text-white">
-                        {proj.title}
+                        LYRIC – Music Streaming Platform
                       </h3>
-                      <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 max-w-2xl leading-relaxed">
-                        {proj.description}
+                      <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
+                        Audio streaming engine with HTTP 206 range requests, synchronized group playback, and an interactive waveform visualizer.
                       </p>
                       <div className="mt-3 flex flex-wrap gap-1.5">
-                        {proj.tags.map((tag) => (
-                          <span
-                            key={tag}
-                            className="text-xs bg-slate-100 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium px-2 py-0.5 rounded font-mono"
-                          >
+                        {["Go", "Next.js", "WebSockets", "MinIO", "Redis"].map((tag) => (
+                          <span key={tag} className="text-xs bg-slate-100 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium px-2 py-0.5 rounded font-mono">
                             {tag}
                           </span>
                         ))}
@@ -1423,288 +1401,223 @@ EDUCATION & EXPERIENCE:
                     </div>
 
                     <div className="flex items-center gap-2 self-start sm:self-auto">
-                      {proj.hasAudioVisualizer && (
-                        <button
-                          onClick={toggleAudioPreview}
-                          className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-full border transition font-mono font-semibold ${
-                            isPlayingAudio
-                              ? "bg-rose-50 dark:bg-rose-950/60 border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300"
-                              : "bg-cyan-50 dark:bg-cyan-950/60 border-cyan-300 dark:border-cyan-800 text-cyan-900 dark:text-cyan-300 hover:border-cyan-500"
-                          }`}
-                        >
-                          {isPlayingAudio ? (
-                            <>
-                              <Square className="w-3.5 h-3.5 fill-current" />
-                              <span>Stop Wave</span>
-                            </>
-                          ) : (
-                            <>
-                              <Play className="w-3.5 h-3.5 fill-current" />
-                              <span>Live Audio Stream</span>
-                            </>
-                          )}
-                        </button>
-                      )}
-
+                      <button
+                        onClick={toggleAudioPreview}
+                        className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-full border transition font-mono font-semibold ${
+                          isPlayingAudio
+                            ? "bg-rose-50 dark:bg-rose-950/60 border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300"
+                            : "bg-cyan-50 dark:bg-cyan-950/60 border-cyan-300 dark:border-cyan-800 text-cyan-900 dark:text-cyan-300 hover:border-cyan-500"
+                        }`}
+                      >
+                        {isPlayingAudio ? <Square className="w-3.5 h-3.5 fill-current" /> : <Play className="w-3.5 h-3.5 fill-current" />}
+                        <span>{isPlayingAudio ? "Stop Stream" : "Live Stream"}</span>
+                      </button>
                       <a
-                        href={proj.githubUrl}
+                        href="https://github.com/Christian3788"
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:border-cyan-600 transition"
+                        className="flex items-center gap-1 px-3 py-1.5 bg-slate-100 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:border-cyan-600"
                       >
                         Code <ExternalLink className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
                       </a>
                     </div>
                   </div>
 
-                  {/* Audio Waveform Canvas */}
-                  {proj.hasAudioVisualizer && (
-                    <div className="p-3 bg-slate-50 dark:bg-[#070b14] rounded-xl border border-slate-200 dark:border-slate-800 space-y-1.5">
-                      <div className="flex justify-between text-[10px] font-mono text-slate-500">
-                        <span>HTTP 206 Byte Range Chunking Stream (64KB Allocations)</span>
-                        <span>{isPlayingAudio ? "FFT Active" : "Click 'Live Audio Stream'"}</span>
-                      </div>
-                      <canvas ref={canvasRef} width={500} height={36} className="w-full h-9 rounded bg-slate-200/50 dark:bg-[#0d1527]" />
+                  {/* Live Waveform Canvas */}
+                  <div className="p-3 bg-slate-50 dark:bg-[#070b14] rounded-xl border border-slate-200 dark:border-slate-800 space-y-1.5">
+                    <div className="flex justify-between text-[10px] font-mono text-slate-500">
+                      <span>HTTP 206 Byte Range Chunking Stream (64KB Allocations)</span>
+                      <span>{isPlayingAudio ? "FFT Active" : "Click 'Live Stream'"}</span>
+                    </div>
+                    <canvas ref={canvasRef} width={500} height={36} className="w-full h-9 rounded bg-slate-200/50 dark:bg-[#0d1527]" />
+                  </div>
+                </div>
+
+                {/* Tabbed Inspector */}
+                <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-[#070b14]/50">
+                  <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-3 bg-slate-100/70 dark:bg-[#0d1527] text-xs font-mono">
+                    <div className="flex gap-2">
+                      {["overview", "code", "architecture"].map((tab) => (
+                        <button
+                          key={tab}
+                          onClick={() => setActiveTabs((prev) => ({ ...prev, lyric: tab as "overview" | "code" | "architecture" }))}
+                          className={`py-2 px-3 border-b-2 font-medium capitalize transition ${
+                            activeTabs.lyric === tab
+                              ? "border-cyan-600 dark:border-cyan-400 text-cyan-900 dark:text-cyan-300 font-bold"
+                              : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200"
+                          }`}
+                        >
+                          {tab}
+                        </button>
+                      ))}
+                    </div>
+                    <button
+                      onClick={() => handleCopy("git clone https://github.com/Christian3788/lyric.git", "clone-lyric")}
+                      className="text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200 flex items-center gap-1 text-[11px]"
+                    >
+                      {copiedKey === "clone-lyric" ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                      <span>{copiedKey === "clone-lyric" ? "Copied" : "Clone"}</span>
+                    </button>
+                  </div>
+
+                  {activeTabs.lyric === "overview" && (
+                    <div className="p-4 font-mono text-xs text-slate-700 dark:text-slate-300 space-y-2">
+                      <p className="font-semibold text-cyan-800 dark:text-cyan-400">Piscine Quest &bull; Go Range Streamer</p>
+                      <p>Serves 64KB byte-range buffers directly without full heap buffering; custom WebSocket hub coordinates synchronized playback states across peers.</p>
                     </div>
                   )}
 
-                  {/* Collapsible 3-Part Engineering Anatomy Accordion */}
-                  <div className="border border-slate-200/80 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/70 dark:bg-[#070b14]/50">
-                    <button
-                      onClick={() => {
-                        playHapticClick(80, 0.02);
-                        setExpandedAnatomy((prev) => ({ ...prev, [proj.id]: !isAnatomyOpen }));
-                      }}
-                      className="w-full px-4 py-2.5 flex items-center justify-between text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#0d1527] transition"
-                    >
-                      <span className="flex items-center gap-2">
-                        <span className="text-cyan-700 dark:text-cyan-400 font-extrabold">&gt;</span>
-                        <span>Engineering Anatomy: Problem • Constraint • Architecture</span>
-                      </span>
-                      <ChevronDown
-                        className={`w-4 h-4 text-slate-500 transition-transform duration-200 ${
-                          isAnatomyOpen ? "rotate-180" : ""
-                        }`}
-                      />
-                    </button>
+                  {activeTabs.lyric === "code" && (
+                    <div className="p-4 bg-[#070b14] text-cyan-300 text-xs font-mono overflow-x-auto">
+                      <pre>{projects[0].codeSnippet}</pre>
+                    </div>
+                  )}
 
-                    {isAnatomyOpen && (
-                      <div className="p-4 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
-                        <div className="p-3 bg-white dark:bg-[#0d1527] rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
-                          <span className="text-[10px] uppercase font-bold text-rose-700 dark:text-rose-400 block">
-                            [1] The Problem
-                          </span>
-                          <p className="text-slate-700 dark:text-slate-300 font-sans leading-relaxed text-xs">
-                            {proj.problem}
-                          </p>
-                        </div>
+                  {activeTabs.lyric === "architecture" && (
+                    <div className="p-4 font-mono text-xs text-slate-700 dark:text-slate-300">
+                      <p className="text-cyan-800 dark:text-cyan-400 font-bold mb-1">Trade-off Decision:</p>
+                      <p>{projects[0].architecture.tradeoffs}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
 
-                        <div className="p-3 bg-white dark:bg-[#0d1527] rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
-                          <span className="text-[10px] uppercase font-bold text-amber-700 dark:text-amber-400 block">
-                            [2] Engineering Constraint
-                          </span>
-                          <p className="text-slate-700 dark:text-slate-300 font-sans leading-relaxed text-xs">
-                            {proj.constraint}
-                          </p>
-                        </div>
-
-                        <div className="p-3 bg-white dark:bg-[#0d1527] rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
-                          <span className="text-[10px] uppercase font-bold text-cyan-800 dark:text-cyan-400 block">
-                            [3] Architectural Solution
-                          </span>
-                          <p className="text-slate-700 dark:text-slate-300 font-sans leading-relaxed text-xs">
-                            {proj.solution}
-                          </p>
-                        </div>
-                      </div>
-                    )}
+            {/* ROW 1: SECONDARY - SPATIAL RISK (4 Cols) */}
+            {filteredProjects.find((p) => p.id === "spatial-risk") && (
+              <div className="lg:col-span-4 p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800 rounded-2xl bg-white dark:bg-[#0d1527] hover:border-cyan-400/50 hover:shadow-lg transition-all space-y-4 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="border-b border-slate-100 dark:border-slate-800 pb-3">
+                    <h3 className="text-xl font-bold text-slate-950 dark:text-white">Spatial Risk Engine</h3>
+                    <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">PostGIS vulnerability scoring with GiST indexing.</p>
                   </div>
 
-                  {/* Tabbed Inspector Navigation */}
-                  <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-[#070b14]/50">
-                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-3 bg-slate-100/70 dark:bg-[#0d1527] text-xs font-mono">
-                      <div className="flex gap-2">
-                        {[
-                          { id: "overview", label: "Interactive Demo / Simulator" },
-                          { id: "code", label: "Core Implementation Snippet" },
-                          { id: "architecture", label: "System Topology & Trade-offs" },
-                        ].map((t) => (
-                          <button
-                            key={t.id}
-                            onClick={() => {
-                              playHapticClick(80, 0.02);
-                              setActiveTabs((prev) => ({ ...prev, [proj.id]: t.id as "overview" | "code" | "architecture" }));
-                            }}
-                            className={`py-2 px-3 border-b-2 font-medium transition ${
-                              currentTab === t.id
-                                ? "border-cyan-600 dark:border-cyan-400 text-cyan-900 dark:text-cyan-300 font-bold"
-                                : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200"
-                            }`}
-                          >
-                            {t.label}
-                          </button>
-                        ))}
-                      </div>
+                  <div className="flex justify-between items-center text-xs font-mono text-slate-700 dark:text-slate-400">
+                    <span className="flex items-center gap-1 text-cyan-800 dark:text-cyan-400 font-bold text-[11px]">
+                      <Crosshair className="w-3.5 h-3.5" /> ST_DWithin Grid
+                    </span>
+                    <button
+                      onClick={() => setIsGistMode(!isGistMode)}
+                      className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border ${
+                        isGistMode
+                          ? "bg-cyan-100 dark:bg-cyan-950 text-cyan-900 dark:text-cyan-300 border-cyan-400"
+                          : "bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 border-amber-400"
+                      }`}
+                    >
+                      {isGistMode ? "GiST (3.12ms)" : "Seq (118ms)"}
+                    </button>
+                  </div>
 
-                      <button
-                        onClick={() => handleCopy(proj.cloneCommand, `clone-${proj.id}`)}
-                        className="text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200 flex items-center gap-1 transition py-1 text-[11px] font-medium"
-                      >
-                        {copiedKey === `clone-${proj.id}` ? (
-                          <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        ) : (
-                          <Copy className="w-3.5 h-3.5" />
-                        )}
-                        <span>{copiedKey === `clone-${proj.id}` ? "Copied" : "Copy Clone"}</span>
-                      </button>
+                  <div
+                    onClick={handleGisCanvasClick}
+                    className="relative h-24 w-full bg-slate-100 dark:bg-[#070b14] rounded-lg border border-dashed border-slate-300 dark:border-slate-800 cursor-crosshair overflow-hidden"
+                  >
+                    <div
+                      className={`absolute w-5 h-5 -ml-2.5 -mt-2.5 rounded-full border-2 ${
+                        isGistMode ? "border-cyan-600 bg-cyan-500/20" : "border-amber-600 bg-amber-500/20"
+                      } animate-ping`}
+                      style={{ left: `${gisCoord.x}%`, top: `${gisCoord.y}%` }}
+                    />
+                    <div
+                      className={`absolute w-2 h-2 -ml-1 -mt-1 rounded-full ${
+                        isGistMode ? "bg-cyan-600 dark:bg-cyan-400" : "bg-amber-600 dark:bg-amber-400"
+                      }`}
+                      style={{ left: `${gisCoord.x}%`, top: `${gisCoord.y}%` }}
+                    />
+                  </div>
+
+                  <div className="flex justify-between text-[11px] font-mono text-slate-500">
+                    <span>Coord: ({gisCoord.x}, {gisCoord.y})</span>
+                    <button onClick={() => setShowSqlExplain(!showSqlExplain)} className="text-cyan-700 dark:text-cyan-400 hover:underline">
+                      {showSqlExplain ? "Hide EXPLAIN" : "View EXPLAIN"}
+                    </button>
+                  </div>
+
+                  {showSqlExplain && (
+                    <div className="p-2.5 bg-[#070b14] text-cyan-300 text-[10px] font-mono rounded border border-slate-800">
+                      Bitmap Heap Scan on hazard_polygons: 3.12ms | Buffers: 14 hits
                     </div>
+                  )}
+                </div>
 
-                    {/* Tab 1: Interactive Demo (GIS Simulator or Topology Overview) */}
-                    {currentTab === "overview" && (
-                      <div className="p-4 space-y-3">
-                        {proj.hasGisSimulator ? (
-                          <div className="space-y-3">
-                            <div className="flex justify-between items-center text-xs font-mono text-slate-700 dark:text-slate-400">
-                              <span className="flex items-center gap-1 text-cyan-800 dark:text-cyan-400 font-bold">
-                                <Crosshair className="w-3.5 h-3.5" /> Interactive Spatial Query Sandbox (Click Grid)
-                              </span>
-                              <div className="flex gap-2">
-                                <button
-                                  onClick={() => setIsGistMode(!isGistMode)}
-                                  className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border ${
-                                    isGistMode
-                                      ? "bg-cyan-100 dark:bg-cyan-950 text-cyan-900 dark:text-cyan-300 border-cyan-400"
-                                      : "bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 border-amber-400"
-                                  }`}
-                                >
-                                  {isGistMode ? "GiST R-Tree Index" : "Sequential Scan"}
-                                </button>
-                                <button
-                                  onClick={() => setShowSqlExplain(!showSqlExplain)}
-                                  className="text-[10px] text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-white"
-                                >
-                                  Toggle EXPLAIN Plan
-                                </button>
-                              </div>
-                            </div>
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs font-mono">
+                  <span className="text-slate-500">GiST Polygon Scan</span>
+                  <a href="https://github.com/Christian3788" target="_blank" rel="noreferrer" className="text-cyan-700 dark:text-cyan-400 font-bold hover:underline">
+                    Code &rarr;
+                  </a>
+                </div>
+              </div>
+            )}
 
-                            <div
-                              onClick={handleGisCanvasClick}
-                              className="relative h-20 w-full bg-slate-100 dark:bg-[#070b14] rounded-lg border border-dashed border-slate-300 dark:border-slate-800 cursor-crosshair overflow-hidden"
-                            >
-                              <div
-                                className={`absolute w-6 h-6 -ml-3 -mt-3 rounded-full border-2 ${
-                                  isGistMode ? "border-cyan-600 bg-cyan-500/20" : "border-amber-600 bg-amber-500/20"
-                                } animate-ping`}
-                                style={{ left: `${gisCoord.x}%`, top: `${gisCoord.y}%` }}
-                              />
-                              <div
-                                className={`absolute w-2.5 h-2.5 -ml-1.5 -mt-1.5 rounded-full ${
-                                  isGistMode ? "bg-cyan-600 dark:bg-cyan-400" : "bg-amber-600 dark:bg-amber-400"
-                                }`}
-                                style={{ left: `${gisCoord.x}%`, top: `${gisCoord.y}%` }}
-                              />
-                            </div>
+            {/* ROW 2: BALANCED - VECTOR-VANGUARD (6 Cols) */}
+            {filteredProjects.find((p) => p.id === "vector-vanguard") && (
+              <div className="lg:col-span-6 p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800 rounded-2xl bg-white dark:bg-[#0d1527] hover:border-cyan-400/50 hover:shadow-lg transition-all space-y-4 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-3">
+                    <div>
+                      <h3 className="text-xl font-bold text-slate-950 dark:text-white">Vector-Vanguard</h3>
+                      <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">High-dimensional similarity index with SIMD-style 4-way unrolled Go distance evaluators.</p>
+                    </div>
+                    <a href="https://github.com/Christian3788/Vector-Vanguard" target="_blank" rel="noreferrer" className="text-cyan-700 dark:text-cyan-400">
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
 
-                            {showSqlExplain && (
-                              <div className="p-3 bg-[#070b14] text-slate-100 rounded-lg font-mono text-[11px] space-y-1 border border-slate-800">
-                                <span className="text-cyan-400 block font-bold">PostgreSQL Query Planner Output:</span>
-                                {isGistMode ? (
-                                  <pre className="text-cyan-300 whitespace-pre-wrap">
-                                    Bitmap Heap Scan on urban_hazard_layers (cost=0.28..8.30 rows=12)<br />
-                                    &nbsp;&nbsp;-&gt; Bitmap Index Scan on idx_hazard_gist<br />
-                                    Execution Time: 3.12ms | Buffers: shared hit=14
-                                  </pre>
-                                ) : (
-                                  <pre className="text-amber-300 whitespace-pre-wrap">
-                                    Seq Scan on urban_hazard_layers (cost=0.00..1240.00 rows=14800)<br />
-                                    &nbsp;&nbsp;Filter: ST_DWithin(geom, $1, 5000)<br />
-                                    Execution Time: 118.40ms | Buffers: shared read=480
-                                  </pre>
-                                )}
-                              </div>
-                            )}
-                          </div>
-                        ) : (
-                          <div className="p-4 bg-white dark:bg-[#0d1527] rounded-lg border border-slate-200 dark:border-slate-800 font-mono text-xs space-y-2">
-                            <span className="text-cyan-800 dark:text-cyan-400 font-bold block">
-                              Architecture Highlights:
-                            </span>
-                            <ul className="list-disc list-inside space-y-1 text-slate-700 dark:text-slate-300">
-                              {proj.architecture.highlights.map((h, i) => (
-                                <li key={i}>{h}</li>
-                              ))}
-                            </ul>
-                            <div className="pt-2 text-slate-600 dark:text-slate-400 text-[11px] italic">
-                              "{proj.architecture.tradeoffs}"
-                            </div>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {/* Tab 2: Code Snippet */}
-                    {currentTab === "code" && (
-                      <div className="p-4 bg-[#070b14] text-slate-100 overflow-x-auto text-xs font-mono">
-                        <pre className="text-cyan-300 leading-relaxed">{proj.codeSnippet}</pre>
-                      </div>
-                    )}
-
-                    {/* Tab 3: System Topology */}
-                    {currentTab === "architecture" && (
-                      <div className="p-4 space-y-3 font-mono text-xs">
-                        <div className="relative w-full h-32 bg-white dark:bg-[#070b14] rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
-                          <svg className="absolute inset-0 w-full h-full">
-                            {proj.architecture.connections.map((conn) => {
-                              const from = proj.architecture.nodes.find((n) => n.id === conn.from);
-                              const to = proj.architecture.nodes.find((n) => n.id === conn.to);
-                              if (!from || !to) return null;
-
-                              const path = `M ${from.x + 40} ${from.y} C ${
-                                (from.x + to.x) / 2
-                              } ${from.y}, ${(from.x + to.x) / 2} ${to.y}, ${to.x - 30} ${to.y}`;
-
-                              return (
-                                <path
-                                  key={`${conn.from}-${conn.to}`}
-                                  d={path}
-                                  fill="none"
-                                  stroke={isLight ? "#0891b2" : "#22d3ee"}
-                                  strokeWidth="2"
-                                  strokeDasharray="4 6"
-                                  className="animate-[dash_1.5s_linear_infinite]"
-                                />
-                              );
-                            })}
-                          </svg>
-
-                          {proj.architecture.nodes.map((node) => (
-                            <div
-                              key={node.id}
-                              className="absolute -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded text-[11px] font-mono border bg-white dark:bg-[#0d1527] border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-xs"
-                              style={{ left: node.x, top: node.y }}
-                            >
-                              {node.label}
-                            </div>
-                          ))}
-                        </div>
-
-                        <div className="p-3 bg-white dark:bg-[#0d1527] rounded-lg border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs">
-                          <strong className="text-cyan-800 dark:text-cyan-400 block mb-1">
-                            Core Trade-off Decision:
-                          </strong>
-                          {proj.architecture.tradeoffs}
-                        </div>
-                      </div>
-                    )}
+                  <div className="p-3 bg-[#070b14] rounded-lg text-cyan-300 font-mono text-[11px] overflow-x-auto">
+                    <pre>{`// 4-Way Loop Unrolled Euclidean Distance
+for i := 0; i < n; i += 4 {
+    d0, d1 := a[i]-b[i], a[i+1]-b[i+1]
+    d2, d3 := a[i+2]-b[i+2], a[i+3]-b[i+3]
+    sum += d0*d0 + d1*d1 + d2*d2 + d3*d3
+}`}</pre>
                   </div>
                 </div>
-              );
-            })}
+
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs font-mono">
+                  <span className="text-slate-500">Go &bull; Python &bull; Vector Search</span>
+                  <button onClick={() => handleCopy("git clone https://github.com/Christian3788/Vector-Vanguard.git", "clone-vector")} className="text-cyan-700 dark:text-cyan-400 font-bold hover:underline">
+                    {copiedKey === "clone-vector" ? "Copied" : "Copy Clone"}
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* ROW 2: BALANCED - KIJIJISHARE (6 Cols) */}
+            {filteredProjects.find((p) => p.id === "kijijishare") && (
+              <div className="lg:col-span-6 p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800 rounded-2xl bg-white dark:bg-[#0d1527] hover:border-cyan-400/50 hover:shadow-lg transition-all space-y-4 flex flex-col justify-between">
+                <div className="space-y-3">
+                  <div className="flex justify-between items-start border-b border-slate-100 dark:border-slate-800 pb-3">
+                    <div>
+                      <h3 className="text-xl font-bold text-slate-950 dark:text-white">kijijiShare</h3>
+                      <p className="mt-1 text-xs text-slate-600 dark:text-slate-300">Hyperlocal circular economy resource sharing platform with strict serialized reservation transactions.</p>
+                    </div>
+                    <a href="https://github.com/Christian3788/kijijiShare" target="_blank" rel="noreferrer" className="text-cyan-700 dark:text-cyan-400">
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </div>
+
+                  <div className="p-3 bg-[#070b14] rounded-lg text-cyan-300 font-mono text-[11px] overflow-x-auto">
+                    <pre>{`// Atomic Double-Booking Claim Transaction
+return await prisma.$transaction(async (tx) => {
+  const item = await tx.item.findUnique({ where: { id } });
+  if (item.status !== "AVAILABLE") throw new Error();
+  return tx.item.update({ where: { id }, data: { status: "RESERVED" } });
+});`}</pre>
+                  </div>
+                </div>
+
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-between items-center text-xs font-mono">
+                  <span className="text-slate-500">TypeScript &bull; Next.js &bull; Prisma</span>
+                  <button onClick={() => handleCopy("git clone https://github.com/Christian3788/kijijiShare.git", "clone-kijiji")} className="text-cyan-700 dark:text-cyan-400 font-bold hover:underline">
+                    {copiedKey === "clone-kijiji" ? "Copied" : "Copy Clone"}
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </section>
 
-        {/* Systems Lab */}
+        {/* Systems Lab (2x2 Grid) */}
         <section id="systems-lab" className="space-y-6">
           <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
@@ -1952,6 +1865,82 @@ EDUCATION & EXPERIENCE:
           </div>
         </section>
 
+        {/* Dual-Lane Row: DEV.to Writing (6) + Gravitational Lensing (6) */}
+        <section className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Lane 1: Engineering Writing (6 Cols) */}
+          <div id="articles" className="lg:col-span-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+              <h2 className="text-xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
+                <FileText className="w-5 h-5 text-slate-600 dark:text-slate-400" /> Engineering Writing
+              </h2>
+              <a
+                href="https://dev.to/christian-otieno"
+                target="_blank"
+                rel="noreferrer"
+                className="text-xs font-mono text-cyan-800 dark:text-cyan-400 hover:underline flex items-center gap-1 font-bold"
+              >
+                dev.to/christian-otieno <ArrowUpRight className="w-3.5 h-3.5" />
+              </a>
+            </div>
+
+            <div className="space-y-3">
+              {articles.map((art) => (
+                <a
+                  key={art.title}
+                  href={art.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block p-4 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0d1527] hover:border-cyan-400/50 transition group shadow-xs"
+                >
+                  <div className="flex items-center justify-between gap-1">
+                    <h3 className="text-sm font-semibold text-slate-950 dark:text-slate-100 group-hover:text-cyan-800 dark:group-hover:text-cyan-400 transition">
+                      {art.title}
+                    </h3>
+                    <span className="text-[10px] font-mono text-slate-500">{art.date}</span>
+                  </div>
+                  <p className="mt-1 text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{art.summary}</p>
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Lane 2: Gravitational Lensing Canvas & Pursuits (6 Cols) */}
+          <div id="interests" className="lg:col-span-6 space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
+              <h2 className="text-xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
+                <Compass className="w-5 h-5 text-slate-600 dark:text-slate-400" /> Numerical Physics Simulation
+              </h2>
+              <span className="text-[11px] font-mono text-cyan-800 dark:text-cyan-400 font-bold">Drag to Deflect Light &darr;</span>
+            </div>
+
+            <div
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                setLensPos({
+                  x: Math.round(e.clientX - rect.left),
+                  y: Math.round(e.clientY - rect.top),
+                });
+              }}
+              className="relative rounded-xl border border-slate-200/90 dark:border-slate-800 overflow-hidden bg-white dark:bg-[#070b14] p-3 cursor-move shadow-xs space-y-2"
+            >
+              <div className="flex justify-between items-center text-[11px] font-mono text-slate-700 dark:text-slate-300">
+                <span>Relativistic Deflection: alpha = 4GM / c^2 xi</span>
+                <span className="text-slate-500">Lens ({lensPos.x}, {lensPos.y})</span>
+              </div>
+              <canvas ref={lensingCanvasRef} width={500} height={135} className="w-full h-32 rounded bg-slate-100 dark:bg-[#0d1527]" />
+            </div>
+
+            <div className="grid grid-cols-2 gap-2.5">
+              {hobbies.slice(0, 2).map((h) => (
+                <div key={h.title} className="p-3 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0d1527] text-xs">
+                  <span className="font-bold text-slate-950 dark:text-white block truncate">{h.title}</span>
+                  <span className="text-[10px] text-slate-500 block mt-0.5">{h.badge}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* Vector Engine Benchmark */}
         <section id="benchmark" className="p-6 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0d1527] space-y-4 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
@@ -2002,117 +1991,6 @@ EDUCATION & EXPERIENCE:
               </span>
               <span className="text-[10px] text-slate-500 block mt-1">Zero heap allocations</span>
             </div>
-          </div>
-        </section>
-
-        {/* Technical Writing & Notes */}
-        <section id="articles" className="space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-3">
-            <h2 className="text-xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
-              <FileText className="w-5 h-5 text-slate-600 dark:text-slate-400" /> Engineering Writing & Notes
-            </h2>
-            <a
-              href="https://dev.to/christian-otieno"
-              target="_blank"
-              rel="noreferrer"
-              className="text-xs font-mono text-cyan-800 dark:text-cyan-400 hover:underline flex items-center gap-1 font-bold"
-            >
-              dev.to/christian-otieno <ArrowUpRight className="w-3.5 h-3.5" />
-            </a>
-          </div>
-          <div className="space-y-4">
-            {articles.map((art) => (
-              <a
-                key={art.title}
-                href={art.link}
-                target="_blank"
-                rel="noreferrer"
-                className="block p-5 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0d1527] hover:border-cyan-400/50 transition group shadow-xs hover:shadow-md"
-              >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                  <h3 className="text-base font-semibold text-slate-950 dark:text-slate-100 group-hover:text-cyan-800 dark:group-hover:text-cyan-400 transition">
-                    {art.title}
-                  </h3>
-                  <span className="text-xs font-mono text-slate-500">{art.date}</span>
-                </div>
-                <p className="mt-2 text-sm text-slate-700 dark:text-slate-300 leading-relaxed">{art.summary}</p>
-                <div className="mt-3 flex gap-2">
-                  {art.tags.map((t) => (
-                    <span key={t} className="text-xs font-mono text-slate-600 dark:text-slate-400 font-medium">
-                      #{t}
-                    </span>
-                  ))}
-                </div>
-              </a>
-            ))}
-          </div>
-        </section>
-
-        {/* Technical Interests & Lensing Canvas */}
-        <section id="interests" className="space-y-6">
-          <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
-            <div>
-              <h2 className="text-xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
-                <Compass className="w-5 h-5 text-slate-600 dark:text-slate-400" /> Technical Interests & Modeling Pursuits
-              </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
-                Independent exploration in computational physics, complex systems, and formal logic.
-              </p>
-            </div>
-            <span className="text-[11px] font-mono text-cyan-800 dark:text-cyan-400 font-bold">
-              Interactive Gravitational Lensing (Drag to Lens) &darr;
-            </span>
-          </div>
-
-          <div
-            onMouseMove={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              setLensPos({
-                x: Math.round(e.clientX - rect.left),
-                y: Math.round(e.clientY - rect.top),
-              });
-            }}
-            className="relative rounded-xl border border-slate-200/90 dark:border-slate-800 overflow-hidden bg-white dark:bg-[#070b14] p-3 cursor-move shadow-xs"
-          >
-            <div className="flex justify-between items-center text-xs font-mono text-slate-700 dark:text-slate-300 mb-2 px-1 font-medium">
-              <span>Relativistic Light Deflection Raytracer (alpha = 4GM / c^2 xi)</span>
-              <span className="text-slate-500">Lens Pos: ({lensPos.x}, {lensPos.y})</span>
-            </div>
-            <canvas
-              ref={lensingCanvasRef}
-              width={540}
-              height={140}
-              className="w-full h-28 rounded bg-slate-100 dark:bg-[#0d1527]"
-            />
-          </div>
-
-          <div className="grid gap-4 sm:grid-cols-2">
-            {hobbies.map((hobby) => {
-              const Icon = hobby.icon;
-              return (
-                <div
-                  key={hobby.title}
-                  className="p-5 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0d1527] hover:border-cyan-500/40 transition flex flex-col justify-between shadow-xs"
-                >
-                  <div>
-                    <div className="flex items-center justify-between gap-2 mb-2">
-                      <div className="flex items-center gap-2">
-                        <Icon className="w-4 h-4 text-cyan-800 dark:text-cyan-400" />
-                        <h3 className="text-sm sm:text-base font-semibold text-slate-950 dark:text-slate-100">
-                          {hobby.title}
-                        </h3>
-                      </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium">
-                        {hobby.badge}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed mt-2">
-                      {hobby.description}
-                    </p>
-                  </div>
-                </div>
-              );
-            })}
           </div>
         </section>
 
@@ -2187,9 +2065,7 @@ EDUCATION & EXPERIENCE:
           className="flex items-center gap-1 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition font-semibold"
         >
           <Mail className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
-          <span>
-            {copiedKey === "quick-copy" ? "Copied!" : "Email"}
-          </span>
+          <span>{copiedKey === "quick-copy" ? "Copied!" : "Email"}</span>
         </button>
       </aside>
 
@@ -2217,10 +2093,10 @@ EDUCATION & EXPERIENCE:
 
             <div className="p-2 max-h-72 overflow-y-auto space-y-1">
               <span className="text-[10px] text-slate-500 px-3 uppercase tracking-wider block py-1 font-semibold">
-                Navigation & Shortcuts
+                Navigation &amp; Shortcuts
               </span>
               {[
-                { label: "View Projects Grid", href: "#projects" },
+                { label: "View Projects Bento Grid", href: "#projects" },
                 { label: "Explore Systems Engineering Lab", href: "#systems-lab" },
                 { label: "Run In-Browser Vector Benchmark", href: "#benchmark" },
                 { label: "View Engineering Notes & Writing", href: "#articles" },
@@ -2310,7 +2186,7 @@ EDUCATION & EXPERIENCE:
                 <p className="text-slate-700 dark:text-slate-300 mt-2 text-xs leading-relaxed font-mono">
                   <strong className="text-slate-950 dark:text-slate-100">Languages:</strong> Go (Golang), TypeScript, JavaScript (ES6+), Python, SQL, HTML5, CSS3<br />
                   <strong className="text-slate-950 dark:text-slate-100">Frameworks:</strong> Next.js, React, Node.js, Prisma ORM, NextAuth, Tailwind CSS<br />
-                  <strong className="text-slate-950 dark:text-slate-100">Databases & DevOps:</strong> PostgreSQL, PostGIS, Redis, Docker, Git, Linux/Bash Scripting
+                  <strong className="text-slate-950 dark:text-slate-100">Databases &amp; DevOps:</strong> PostgreSQL, PostGIS, Redis, Docker, Git, Linux/Bash Scripting
                 </p>
               </div>
 
@@ -2348,14 +2224,14 @@ EDUCATION & EXPERIENCE:
 
               <div>
                 <h4 className="font-semibold text-slate-950 dark:text-white uppercase text-xs tracking-wider border-b border-slate-200 dark:border-slate-800 pb-1">
-                  Professional Experience & Education
+                  Professional Experience &amp; Education
                 </h4>
                 <div className="text-xs text-slate-700 dark:text-slate-300 space-y-1 mt-2">
                   <p>
                     <strong className="text-slate-950 dark:text-slate-100">Apprentice Software Engineer</strong> – Zone01 Kisumu (2026 – Present)
                   </p>
                   <p>
-                    <strong className="text-slate-950 dark:text-slate-100">Neuro-Analytics & Brain-Data Integration</strong> – Skills for Africa (2023 – 2024)
+                    <strong className="text-slate-950 dark:text-slate-100">Neuro-Analytics &amp; Brain-Data Integration</strong> – Skills for Africa (2023 – 2024)
                   </p>
                   <p>
                     <strong className="text-slate-950 dark:text-slate-100">B.Sc. in Microbiology and Biotechnology</strong> – Aga Khan University (2019 – 2022)
@@ -2369,7 +2245,7 @@ EDUCATION & EXPERIENCE:
                 onClick={downloadDynamicResume}
                 className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-cyan-500 to-sky-400 text-slate-950 text-xs font-bold rounded-md transition shadow-[0_0_15px_rgba(6,182,212,0.4)]"
               >
-                <Download className="w-3.5 h-3.5" /> Compile & Download CV
+                <Download className="w-3.5 h-3.5" /> Compile &amp; Download CV
               </button>
               <button
                 onClick={() => {
@@ -2387,7 +2263,7 @@ EDUCATION & EXPERIENCE:
 
       {/* Footer */}
       <footer className="relative z-10 border-t border-slate-200 dark:border-slate-800 py-10 text-center text-xs font-mono text-slate-600 dark:text-slate-400 pb-20">
-        © {new Date().getFullYear()} Christian Amos Otieno. Built with Go, Next.js & Tailwind CSS.
+        &copy; {new Date().getFullYear()} Christian Amos Otieno. Built with Go, Next.js &amp; Tailwind CSS.
       </footer>
     </div>
   );
