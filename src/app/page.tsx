@@ -754,7 +754,7 @@ export default function Home() {
     const GM = 1400;
 
     const renderLensing = () => {
-      ctx.fillStyle = isLight ? "#f8fafc" : "#020617";
+      ctx.fillStyle = isLight ? "#f8fafc" : "#070b14";
       ctx.fillRect(0, 0, canvas.width, canvas.height);
 
       for (let x = gridSpacing; x < canvas.width; x += gridSpacing) {
@@ -775,7 +775,7 @@ export default function Home() {
 
       ctx.beginPath();
       ctx.arc(lensPos.x, lensPos.y, 8, 0, Math.PI * 2);
-      ctx.fillStyle = isLight ? "#0f172a" : "#020617";
+      ctx.fillStyle = isLight ? "#0f172a" : "#070b14";
       ctx.strokeStyle = isLight ? "#0891b2" : "#22d3ee";
       ctx.lineWidth = 2;
       ctx.fill();
@@ -998,10 +998,10 @@ EDUCATION & EXPERIENCE:
   });
 
   return (
-    <div className="relative min-h-screen bg-[#f8fafc] dark:bg-[#020617] text-slate-900 dark:text-slate-100 font-sans selection:bg-cyan-500 selection:text-slate-950 antialiased overflow-x-hidden transition-colors duration-200">
+    <div className="relative min-h-screen bg-[#f8fafc] dark:bg-[#070b14] text-slate-900 dark:text-slate-100 font-sans selection:bg-cyan-500 selection:text-slate-950 antialiased overflow-x-hidden transition-colors duration-200">
       {/* Top 2px Phosphor Cyan Scroll Progress Bar */}
       <div
-        className="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-cyan-600 via-cyan-400 to-sky-300 z-50 transition-all duration-75"
+        className="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-cyan-600 via-cyan-400 to-sky-300 z-50 transition-all duration-75 shadow-[0_0_8px_rgba(6,182,212,0.8)]"
         style={{ width: `${scrollProgress}%` }}
       />
 
@@ -1025,12 +1025,12 @@ EDUCATION & EXPERIENCE:
       />
 
       {/* Top Navigation */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-[#020617]/85 border-b border-slate-200/90 dark:border-slate-800 transition-colors shadow-xs">
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-[#070b14]/85 border-b border-slate-200/90 dark:border-slate-800 transition-colors shadow-xs">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <a
             href="#"
             onClick={() => playHapticClick(80, 0.02)}
-            className="font-mono font-bold text-base tracking-wider text-cyan-800 dark:text-cyan-400 flex items-center gap-1.5"
+            className="font-mono font-extrabold text-base tracking-wider bg-gradient-to-r from-cyan-400 via-cyan-300 to-sky-300 bg-clip-text text-transparent flex items-center gap-1.5"
           >
             <ScrambleText text="christian.dev" />
           </a>
@@ -1040,28 +1040,28 @@ EDUCATION & EXPERIENCE:
               <a
                 href="#about"
                 onClick={() => playHapticClick(80, 0.02)}
-                className="hover:text-slate-950 dark:hover:text-white transition"
+                className="hover:text-slate-950 dark:hover:text-cyan-300 transition"
               >
                 About
               </a>
               <a
                 href="#projects"
                 onClick={() => playHapticClick(80, 0.02)}
-                className="hover:text-slate-950 dark:hover:text-white transition"
+                className="hover:text-slate-950 dark:hover:text-cyan-300 transition"
               >
                 Projects
               </a>
               <a
                 href="#systems-lab"
                 onClick={() => playHapticClick(80, 0.02)}
-                className="hover:text-slate-950 dark:hover:text-white transition hidden sm:inline"
+                className="hover:text-slate-950 dark:hover:text-cyan-300 transition hidden sm:inline"
               >
                 Systems Lab
               </a>
               <a
                 href="#articles"
                 onClick={() => playHapticClick(80, 0.02)}
-                className="hover:text-slate-950 dark:hover:text-white transition hidden md:inline"
+                className="hover:text-slate-950 dark:hover:text-cyan-300 transition hidden md:inline"
               >
                 Writing
               </a>
@@ -1070,7 +1070,7 @@ EDUCATION & EXPERIENCE:
                   playHapticClick(110, 0.02);
                   setIsResumeOpen(true);
                 }}
-                className="hover:text-cyan-800 dark:hover:text-cyan-400 font-semibold transition"
+                className="text-cyan-700 dark:text-cyan-400 hover:text-cyan-800 dark:hover:text-cyan-300 font-bold transition"
               >
                 Resume
               </button>
@@ -1082,7 +1082,7 @@ EDUCATION & EXPERIENCE:
                   playHapticClick(110, 0.02);
                   setIsCommandOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 rounded-md text-xs font-mono text-slate-800 dark:text-slate-300 transition shadow-2xs"
+                className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#0d1527] border border-slate-300 dark:border-slate-800 hover:border-slate-400 dark:hover:border-cyan-500/50 rounded-md text-xs font-mono text-slate-800 dark:text-slate-300 transition shadow-2xs"
                 title="Open Command Palette (Ctrl+K)"
               >
                 <Command className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
@@ -1094,7 +1094,7 @@ EDUCATION & EXPERIENCE:
                 className={`p-1.5 rounded-lg border transition ${
                   soundEnabled
                     ? "bg-cyan-50 dark:bg-cyan-950/60 border-cyan-300 dark:border-cyan-800 text-cyan-800 dark:text-cyan-400 shadow-2xs"
-                    : "bg-white dark:bg-[#0b0f19] border-slate-300 dark:border-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 shadow-2xs"
+                    : "bg-white dark:bg-[#0d1527] border-slate-300 dark:border-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 shadow-2xs"
                 }`}
                 title={soundEnabled ? "Mute UI Sound Haptics" : "Enable UI Sound Haptics"}
               >
@@ -1107,7 +1107,7 @@ EDUCATION & EXPERIENCE:
                     playHapticClick(140, 0.02);
                     setTheme(isLight ? "dark" : "light");
                   }}
-                  className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#0b0f19] text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition shadow-2xs"
+                  className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#0d1527] text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition shadow-2xs"
                   title={`Switch to ${isLight ? "Dark" : "Light"} Mode`}
                 >
                   {isLight ? (
@@ -1126,7 +1126,7 @@ EDUCATION & EXPERIENCE:
       <main className="relative z-10 max-w-5xl mx-auto px-6 py-12 space-y-20 lg:space-y-24">
         {/* Active Focus Ticker & Perspective Switcher */}
         <section className="space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl p-3.5 shadow-xs font-mono text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-slate-800 rounded-xl p-3.5 shadow-xs font-mono text-xs">
             <div className="flex items-center gap-2.5 overflow-x-auto">
               <span className="flex h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
               <span className="font-bold text-slate-950 dark:text-slate-100 uppercase tracking-wider text-[11px]">
@@ -1138,7 +1138,7 @@ EDUCATION & EXPERIENCE:
             </div>
 
             {/* Persona Switcher */}
-            <div className="flex items-center gap-1 self-start sm:self-auto bg-slate-100 dark:bg-[#020617] p-1 rounded-lg border border-slate-200 dark:border-slate-800">
+            <div className="flex items-center gap-1 self-start sm:self-auto bg-slate-100 dark:bg-[#070b14] p-1 rounded-lg border border-slate-200 dark:border-slate-800">
               <button
                 onClick={() => {
                   playHapticClick(90, 0.02);
@@ -1146,7 +1146,7 @@ EDUCATION & EXPERIENCE:
                 }}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium transition ${
                   audiencePersona === "tech-lead"
-                    ? "bg-white dark:bg-[#1e293b] text-cyan-900 dark:text-cyan-300 font-bold shadow-2xs"
+                    ? "bg-cyan-500/15 border border-cyan-400/50 text-cyan-900 dark:text-cyan-300 font-bold shadow-2xs"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200"
                 }`}
               >
@@ -1160,7 +1160,7 @@ EDUCATION & EXPERIENCE:
                 }}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium transition ${
                   audiencePersona === "recruiter"
-                    ? "bg-white dark:bg-[#1e293b] text-cyan-900 dark:text-cyan-300 font-bold shadow-2xs"
+                    ? "bg-cyan-500/15 border border-cyan-400/50 text-cyan-900 dark:text-cyan-300 font-bold shadow-2xs"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200"
                 }`}
               >
@@ -1172,7 +1172,7 @@ EDUCATION & EXPERIENCE:
 
           {/* GitHub Activity & Node Ping Bar */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5 font-mono text-xs">
-            <div className="sm:col-span-3 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-xs">
+            <div className="sm:col-span-3 bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-xs">
               <div className="flex items-center gap-2">
                 <Radio className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400 animate-pulse" />
                 <span className="font-semibold text-slate-950 dark:text-slate-100">GitHub:</span>
@@ -1187,7 +1187,7 @@ EDUCATION & EXPERIENCE:
             <button
               onClick={triggerPeerPing}
               disabled={isPingingPeer}
-              className="bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl p-3 flex items-center justify-center gap-2 hover:border-cyan-600 dark:hover:border-cyan-400 transition shadow-xs"
+              className="bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-slate-800 rounded-xl p-3 flex items-center justify-center gap-2 hover:border-cyan-500/50 dark:hover:border-cyan-400 transition shadow-xs"
             >
               <Network className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
               <span className="text-slate-800 dark:text-slate-200 font-semibold">
@@ -1229,16 +1229,16 @@ EDUCATION & EXPERIENCE:
                 <a
                   href="#projects"
                   onClick={() => playHapticClick(90, 0.02)}
-                  className="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 font-semibold rounded-lg transition text-sm shadow-xs glow-cyan"
+                  className="px-6 py-3 bg-gradient-to-r from-cyan-500 via-cyan-400 to-sky-400 text-slate-950 font-bold rounded-lg transition-all transform hover:-translate-y-0.5 text-sm font-mono tracking-wide shadow-[0_0_20px_rgba(6,182,212,0.45)] hover:shadow-[0_0_28px_rgba(34,211,238,0.7)]"
                 >
-                  Explore Projects & Demos
+                  Explore Projects & Demos &rarr;
                 </a>
                 <button
                   onClick={() => {
                     playHapticClick(110, 0.02);
                     setIsResumeOpen(true);
                   }}
-                  className="px-5 py-2.5 bg-white dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium rounded-lg hover:border-cyan-600 dark:hover:border-slate-700 hover:text-slate-950 dark:hover:text-white transition text-sm flex items-center gap-2 shadow-2xs"
+                  className="px-5 py-2.5 bg-white dark:bg-[#0d1527] border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium rounded-lg hover:border-cyan-500/60 dark:hover:border-slate-700 hover:text-slate-950 dark:hover:text-white transition text-sm flex items-center gap-2 shadow-2xs"
                 >
                   <FileCode className="w-4 h-4 text-cyan-700 dark:text-cyan-400" />
                   Resume / CV
@@ -1296,7 +1296,7 @@ EDUCATION & EXPERIENCE:
                     sizes="(max-width: 768px) 100vw, 360px"
                     className="object-cover object-[50%_15%] filter contrast-[1.03]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#f8fafc] dark:from-[#020617] via-transparent to-transparent opacity-50 dark:opacity-85" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#f8fafc] dark:from-[#070b14] via-transparent to-transparent opacity-50 dark:opacity-85" />
                 </div>
               </div>
             </div>
@@ -1327,7 +1327,7 @@ EDUCATION & EXPERIENCE:
             {skills.map((skill) => (
               <span
                 key={skill}
-                className="px-3 py-1.5 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-md text-xs sm:text-sm font-mono font-medium hover:border-cyan-600 dark:hover:border-cyan-500/50 hover:text-cyan-800 dark:hover:text-cyan-300 transition-colors cursor-default shadow-2xs"
+                className="px-3 py-1.5 bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-md text-xs sm:text-sm font-mono font-medium hover:border-cyan-600 dark:hover:border-cyan-500/50 hover:text-cyan-800 dark:hover:text-cyan-300 transition-colors cursor-default shadow-2xs"
               >
                 <ScrambleText text={skill} />
               </span>
@@ -1357,7 +1357,7 @@ EDUCATION & EXPERIENCE:
                 placeholder="Search projects or tags..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-xs sm:text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-600 dark:focus:border-slate-700 font-sans shadow-2xs"
+                className="w-full bg-white dark:bg-[#0d1527] border border-slate-300 dark:border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-xs sm:text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-600 dark:focus:border-slate-700 font-sans shadow-2xs"
               />
             </div>
           </div>
@@ -1373,7 +1373,7 @@ EDUCATION & EXPERIENCE:
                 className={`text-xs px-3 py-1 rounded-md font-mono transition-colors shadow-2xs ${
                   selectedTag === tag
                     ? "bg-cyan-600 text-white dark:bg-cyan-500 dark:text-slate-950 font-bold"
-                    : "bg-white dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-800 hover:text-slate-950 dark:hover:text-white"
+                    : "bg-white dark:bg-[#0d1527] text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-800 hover:text-slate-950 dark:hover:text-white"
                 }`}
               >
                 {tag}
@@ -1389,7 +1389,7 @@ EDUCATION & EXPERIENCE:
               return (
                 <div
                   key={proj.id}
-                  className="p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800 rounded-2xl bg-white dark:bg-[#0b0f19] hover:border-cyan-500/50 dark:hover:border-cyan-500/40 hover:shadow-lg dark:hover:shadow-[0_0_30px_-8px_rgba(6,182,212,0.15)] transition-all duration-300 space-y-5"
+                  className="p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800 rounded-2xl bg-white dark:bg-[#0d1527] hover:border-cyan-400/60 dark:hover:border-cyan-400/50 hover:shadow-lg dark:hover:shadow-[0_0_30px_-8px_rgba(6,182,212,0.25)] transition-all duration-300 space-y-5"
                 >
                   {/* Top Bar */}
                   <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
@@ -1404,7 +1404,7 @@ EDUCATION & EXPERIENCE:
                         {proj.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="text-xs bg-slate-100 dark:bg-[#020617] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium px-2 py-0.5 rounded font-mono"
+                            className="text-xs bg-slate-100 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium px-2 py-0.5 rounded font-mono"
                           >
                             {tag}
                           </span>
@@ -1440,7 +1440,7 @@ EDUCATION & EXPERIENCE:
                         href={proj.githubUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-[#020617] border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:border-cyan-600 transition"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:border-cyan-600 transition"
                       >
                         Code <ExternalLink className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
                       </a>
@@ -1449,23 +1449,23 @@ EDUCATION & EXPERIENCE:
 
                   {/* Audio Waveform Canvas */}
                   {proj.hasAudioVisualizer && (
-                    <div className="p-3 bg-slate-50 dark:bg-[#020617] rounded-xl border border-slate-200 dark:border-slate-800 space-y-1.5">
+                    <div className="p-3 bg-slate-50 dark:bg-[#070b14] rounded-xl border border-slate-200 dark:border-slate-800 space-y-1.5">
                       <div className="flex justify-between text-[10px] font-mono text-slate-500">
                         <span>HTTP 206 Byte Range Chunking Stream (64KB Allocations)</span>
                         <span>{isPlayingAudio ? "FFT Active" : "Click 'Live Audio Stream'"}</span>
                       </div>
-                      <canvas ref={canvasRef} width={500} height={36} className="w-full h-9 rounded bg-slate-200/50 dark:bg-[#0b0f19]" />
+                      <canvas ref={canvasRef} width={500} height={36} className="w-full h-9 rounded bg-slate-200/50 dark:bg-[#0d1527]" />
                     </div>
                   )}
 
                   {/* Collapsible 3-Part Engineering Anatomy Accordion */}
-                  <div className="border border-slate-200/80 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/70 dark:bg-[#020617]/50">
+                  <div className="border border-slate-200/80 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/70 dark:bg-[#070b14]/50">
                     <button
                       onClick={() => {
                         playHapticClick(80, 0.02);
                         setExpandedAnatomy((prev) => ({ ...prev, [proj.id]: !isAnatomyOpen }));
                       }}
-                      className="w-full px-4 py-2.5 flex items-center justify-between text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#0b0f19] transition"
+                      className="w-full px-4 py-2.5 flex items-center justify-between text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#0d1527] transition"
                     >
                       <span className="flex items-center gap-2">
                         <span className="text-cyan-700 dark:text-cyan-400 font-extrabold">&gt;</span>
@@ -1480,7 +1480,7 @@ EDUCATION & EXPERIENCE:
 
                     {isAnatomyOpen && (
                       <div className="p-4 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
-                        <div className="p-3 bg-white dark:bg-[#0b0f19] rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
+                        <div className="p-3 bg-white dark:bg-[#0d1527] rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
                           <span className="text-[10px] uppercase font-bold text-rose-700 dark:text-rose-400 block">
                             [1] The Problem
                           </span>
@@ -1489,7 +1489,7 @@ EDUCATION & EXPERIENCE:
                           </p>
                         </div>
 
-                        <div className="p-3 bg-white dark:bg-[#0b0f19] rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
+                        <div className="p-3 bg-white dark:bg-[#0d1527] rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
                           <span className="text-[10px] uppercase font-bold text-amber-700 dark:text-amber-400 block">
                             [2] Engineering Constraint
                           </span>
@@ -1498,7 +1498,7 @@ EDUCATION & EXPERIENCE:
                           </p>
                         </div>
 
-                        <div className="p-3 bg-white dark:bg-[#0b0f19] rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
+                        <div className="p-3 bg-white dark:bg-[#0d1527] rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
                           <span className="text-[10px] uppercase font-bold text-cyan-800 dark:text-cyan-400 block">
                             [3] Architectural Solution
                           </span>
@@ -1511,8 +1511,8 @@ EDUCATION & EXPERIENCE:
                   </div>
 
                   {/* Tabbed Inspector Navigation */}
-                  <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-[#020617]/50">
-                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-3 bg-slate-100/70 dark:bg-[#0b0f19] text-xs font-mono">
+                  <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-[#070b14]/50">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-3 bg-slate-100/70 dark:bg-[#0d1527] text-xs font-mono">
                       <div className="flex gap-2">
                         {[
                           { id: "overview", label: "Interactive Demo / Simulator" },
@@ -1580,7 +1580,7 @@ EDUCATION & EXPERIENCE:
 
                             <div
                               onClick={handleGisCanvasClick}
-                              className="relative h-20 w-full bg-slate-100 dark:bg-[#020617] rounded-lg border border-dashed border-slate-300 dark:border-slate-800 cursor-crosshair overflow-hidden"
+                              className="relative h-20 w-full bg-slate-100 dark:bg-[#070b14] rounded-lg border border-dashed border-slate-300 dark:border-slate-800 cursor-crosshair overflow-hidden"
                             >
                               <div
                                 className={`absolute w-6 h-6 -ml-3 -mt-3 rounded-full border-2 ${
@@ -1597,7 +1597,7 @@ EDUCATION & EXPERIENCE:
                             </div>
 
                             {showSqlExplain && (
-                              <div className="p-3 bg-[#020617] text-slate-100 rounded-lg font-mono text-[11px] space-y-1 border border-slate-800">
+                              <div className="p-3 bg-[#070b14] text-slate-100 rounded-lg font-mono text-[11px] space-y-1 border border-slate-800">
                                 <span className="text-cyan-400 block font-bold">PostgreSQL Query Planner Output:</span>
                                 {isGistMode ? (
                                   <pre className="text-cyan-300 whitespace-pre-wrap">
@@ -1616,7 +1616,7 @@ EDUCATION & EXPERIENCE:
                             )}
                           </div>
                         ) : (
-                          <div className="p-4 bg-white dark:bg-[#0b0f19] rounded-lg border border-slate-200 dark:border-slate-800 font-mono text-xs space-y-2">
+                          <div className="p-4 bg-white dark:bg-[#0d1527] rounded-lg border border-slate-200 dark:border-slate-800 font-mono text-xs space-y-2">
                             <span className="text-cyan-800 dark:text-cyan-400 font-bold block">
                               Architecture Highlights:
                             </span>
@@ -1635,7 +1635,7 @@ EDUCATION & EXPERIENCE:
 
                     {/* Tab 2: Code Snippet */}
                     {currentTab === "code" && (
-                      <div className="p-4 bg-[#020617] text-slate-100 overflow-x-auto text-xs font-mono">
+                      <div className="p-4 bg-[#070b14] text-slate-100 overflow-x-auto text-xs font-mono">
                         <pre className="text-cyan-300 leading-relaxed">{proj.codeSnippet}</pre>
                       </div>
                     )}
@@ -1643,7 +1643,7 @@ EDUCATION & EXPERIENCE:
                     {/* Tab 3: System Topology */}
                     {currentTab === "architecture" && (
                       <div className="p-4 space-y-3 font-mono text-xs">
-                        <div className="relative w-full h-32 bg-white dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
+                        <div className="relative w-full h-32 bg-white dark:bg-[#070b14] rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
                           <svg className="absolute inset-0 w-full h-full">
                             {proj.architecture.connections.map((conn) => {
                               const from = proj.architecture.nodes.find((n) => n.id === conn.from);
@@ -1671,7 +1671,7 @@ EDUCATION & EXPERIENCE:
                           {proj.architecture.nodes.map((node) => (
                             <div
                               key={node.id}
-                              className="absolute -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded text-[11px] font-mono border bg-white dark:bg-[#0b0f19] border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-xs"
+                              className="absolute -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded text-[11px] font-mono border bg-white dark:bg-[#0d1527] border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-xs"
                               style={{ left: node.x, top: node.y }}
                             >
                               {node.label}
@@ -1679,7 +1679,7 @@ EDUCATION & EXPERIENCE:
                           ))}
                         </div>
 
-                        <div className="p-3 bg-white dark:bg-[#0b0f19] rounded-lg border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs">
+                        <div className="p-3 bg-white dark:bg-[#0d1527] rounded-lg border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs">
                           <strong className="text-cyan-800 dark:text-cyan-400 block mb-1">
                             Core Trade-off Decision:
                           </strong>
@@ -1710,7 +1710,7 @@ EDUCATION & EXPERIENCE:
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* WORKBENCH 1: Memory Slab Allocator */}
-            <div className="p-5 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-cyan-500/40 transition">
+            <div className="p-5 bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-cyan-500/40 transition">
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
                   <span className="text-cyan-900 dark:text-cyan-400 flex items-center gap-1.5 font-bold">
@@ -1722,7 +1722,7 @@ EDUCATION & EXPERIENCE:
                   Contiguous heap allocations with 64-byte alignment headers, showing fragmentation and free list sweeps.
                 </p>
 
-                <div className="grid grid-cols-8 gap-1.5 p-3 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800 my-3">
+                <div className="grid grid-cols-8 gap-1.5 p-3 bg-slate-50 dark:bg-[#070b14] rounded-lg border border-slate-200 dark:border-slate-800 my-3">
                   {memoryHeap.map((slab) => (
                     <div
                       key={slab.id}
@@ -1754,7 +1754,7 @@ EDUCATION & EXPERIENCE:
                 </button>
                 <button
                   onClick={sweepGarbageCollection}
-                  className="px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-[#020617] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-md transition"
+                  className="px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-md transition"
                 >
                   gc_sweep()
                 </button>
@@ -1762,7 +1762,7 @@ EDUCATION & EXPERIENCE:
             </div>
 
             {/* WORKBENCH 2: Go Goroutine & Channel Concurrency */}
-            <div className="p-5 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-cyan-500/40 transition">
+            <div className="p-5 bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-cyan-500/40 transition">
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
                   <span className="text-cyan-900 dark:text-cyan-400 flex items-center gap-1.5 font-bold">
@@ -1782,7 +1782,7 @@ EDUCATION & EXPERIENCE:
                   Worker goroutines reading and writing to a synchronized Go channel (`ch := make(chan int, {channelCapacity})`).
                 </p>
 
-                <div className="p-3 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800 my-3 flex items-center justify-between font-mono text-xs">
+                <div className="p-3 bg-slate-50 dark:bg-[#070b14] rounded-lg border border-slate-200 dark:border-slate-800 my-3 flex items-center justify-between font-mono text-xs">
                   <span className="text-slate-600 dark:text-slate-400 font-semibold">Producer &rarr;</span>
                   <div className="flex gap-2">
                     {Array.from({ length: channelCapacity }).map((_, i) => (
@@ -1827,7 +1827,7 @@ EDUCATION & EXPERIENCE:
                     setGoroutineStatus("idle");
                     setDeadlockError(null);
                   }}
-                  className="px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-[#020617] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-md transition"
+                  className="px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-md transition"
                 >
                   Reset Hub
                 </button>
@@ -1835,7 +1835,7 @@ EDUCATION & EXPERIENCE:
             </div>
 
             {/* WORKBENCH 3: TCP Handshake */}
-            <div className="p-5 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-cyan-500/40 transition">
+            <div className="p-5 bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-cyan-500/40 transition">
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
                   <span className="text-cyan-900 dark:text-cyan-400 flex items-center gap-1.5 font-bold">
@@ -1847,7 +1847,7 @@ EDUCATION & EXPERIENCE:
                   SYN / SYN-ACK / ACK progression stepping through congestion window controls and socket lifecycles.
                 </p>
 
-                <div className="p-3 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800 my-3 font-mono text-xs space-y-2">
+                <div className="p-3 bg-slate-50 dark:bg-[#070b14] rounded-lg border border-slate-200 dark:border-slate-800 my-3 font-mono text-xs space-y-2">
                   <div className="flex justify-between items-center text-slate-700 dark:text-slate-300">
                     <span className="text-cyan-800 dark:text-cyan-400 font-bold">CLIENT</span>
                     <span>Socket Protocol Stream</span>
@@ -1874,7 +1874,7 @@ EDUCATION & EXPERIENCE:
             </div>
 
             {/* WORKBENCH 4: Bloom Filter */}
-            <div className="p-5 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-cyan-500/40 transition">
+            <div className="p-5 bg-white dark:bg-[#0d1527] border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-cyan-500/40 transition">
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
                   <span className="text-cyan-900 dark:text-cyan-400 flex items-center gap-1.5 font-bold">
@@ -1886,7 +1886,7 @@ EDUCATION & EXPERIENCE:
                   Calculates 3 modulo hash offsets per key to guarantee zero false-negatives before hitting disk.
                 </p>
 
-                <div className="grid grid-cols-16 gap-1 p-2 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800 my-3">
+                <div className="grid grid-cols-16 gap-1 p-2 bg-slate-50 dark:bg-[#070b14] rounded-lg border border-slate-200 dark:border-slate-800 my-3">
                   {bloomArray.map((bit, idx) => (
                     <div
                       key={idx}
@@ -1907,7 +1907,7 @@ EDUCATION & EXPERIENCE:
                     type="text"
                     value={bloomInput}
                     onChange={(e) => setBloomInput(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-[#020617] border border-slate-300 dark:border-slate-800 rounded px-2.5 py-1 text-xs font-mono text-slate-900 dark:text-slate-200 focus:outline-none"
+                    className="w-full bg-slate-50 dark:bg-[#070b14] border border-slate-300 dark:border-slate-800 rounded px-2.5 py-1 text-xs font-mono text-slate-900 dark:text-slate-200 focus:outline-none"
                     placeholder="Enter key to hash..."
                   />
                   {bloomMatch !== null && (
@@ -1943,7 +1943,7 @@ EDUCATION & EXPERIENCE:
         </section>
 
         {/* Vector Engine Benchmark */}
-        <section id="benchmark" className="p-6 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b0f19] space-y-4 shadow-xs">
+        <section id="benchmark" className="p-6 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0d1527] space-y-4 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
             <div>
               <h2 className="text-xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
@@ -1956,7 +1956,7 @@ EDUCATION & EXPERIENCE:
             <button
               onClick={runVectorBenchmark}
               disabled={isBenchmarking}
-              className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 text-xs font-mono font-bold rounded-lg disabled:opacity-50 transition flex items-center gap-2 self-start sm:self-auto shadow-xs glow-cyan"
+              className="px-4 py-2 bg-gradient-to-r from-cyan-500 to-sky-400 text-slate-950 text-xs font-mono font-bold rounded-lg disabled:opacity-50 transition-all transform hover:-translate-y-0.5 flex items-center gap-2 self-start sm:self-auto shadow-[0_0_15px_rgba(6,182,212,0.4)]"
             >
               {isBenchmarking ? (
                 <>
@@ -1971,21 +1971,21 @@ EDUCATION & EXPERIENCE:
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
-            <div className="p-3 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800">
+            <div className="p-3 bg-slate-50 dark:bg-[#070b14] rounded-lg border border-slate-200 dark:border-slate-800">
               <span className="text-slate-600 dark:text-slate-400 block mb-1 font-semibold">Standard Loop</span>
               <span className="text-lg font-bold text-slate-950 dark:text-slate-100">
                 {benchmarkResults ? `${benchmarkResults.jsTime} ms` : "–"}
               </span>
               <span className="text-[10px] text-slate-500 block mt-1">Direct indexing</span>
             </div>
-            <div className="p-3 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800">
+            <div className="p-3 bg-slate-50 dark:bg-[#070b14] rounded-lg border border-slate-200 dark:border-slate-800">
               <span className="text-slate-600 dark:text-slate-400 block mb-1 font-semibold">Unrolled SIMD-Style Vector</span>
               <span className="text-lg font-bold text-cyan-800 dark:text-cyan-400">
                 {benchmarkResults ? `${benchmarkResults.optTime} ms` : "–"}
               </span>
               <span className="text-[10px] text-slate-500 block mt-1">4-way parallel stride</span>
             </div>
-            <div className="p-3 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800">
+            <div className="p-3 bg-slate-50 dark:bg-[#070b14] rounded-lg border border-slate-200 dark:border-slate-800">
               <span className="text-slate-600 dark:text-slate-400 block mb-1 font-semibold">Measured Speedup</span>
               <span className="text-lg font-bold text-emerald-800 dark:text-emerald-400">
                 {benchmarkResults ? benchmarkResults.speedup : "–"}
@@ -2017,7 +2017,7 @@ EDUCATION & EXPERIENCE:
                 href={art.link}
                 target="_blank"
                 rel="noreferrer"
-                className="block p-5 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b0f19] hover:border-cyan-500/50 dark:hover:border-cyan-500/40 transition group shadow-xs hover:shadow-md"
+                className="block p-5 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0d1527] hover:border-cyan-400/50 transition group shadow-xs hover:shadow-md"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
                   <h3 className="text-base font-semibold text-slate-950 dark:text-slate-100 group-hover:text-cyan-800 dark:group-hover:text-cyan-400 transition">
@@ -2062,7 +2062,7 @@ EDUCATION & EXPERIENCE:
                 y: Math.round(e.clientY - rect.top),
               });
             }}
-            className="relative rounded-xl border border-slate-200/90 dark:border-slate-800 overflow-hidden bg-white dark:bg-[#020617] p-3 cursor-move shadow-xs"
+            className="relative rounded-xl border border-slate-200/90 dark:border-slate-800 overflow-hidden bg-white dark:bg-[#070b14] p-3 cursor-move shadow-xs"
           >
             <div className="flex justify-between items-center text-xs font-mono text-slate-700 dark:text-slate-300 mb-2 px-1 font-medium">
               <span>Relativistic Light Deflection Raytracer (alpha = 4GM / c^2 xi)</span>
@@ -2072,7 +2072,7 @@ EDUCATION & EXPERIENCE:
               ref={lensingCanvasRef}
               width={540}
               height={140}
-              className="w-full h-28 rounded bg-slate-100 dark:bg-[#0b0f19]"
+              className="w-full h-28 rounded bg-slate-100 dark:bg-[#0d1527]"
             />
           </div>
 
@@ -2082,7 +2082,7 @@ EDUCATION & EXPERIENCE:
               return (
                 <div
                   key={hobby.title}
-                  className="p-5 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b0f19] hover:border-cyan-500/40 transition flex flex-col justify-between shadow-xs"
+                  className="p-5 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0d1527] hover:border-cyan-500/40 transition flex flex-col justify-between shadow-xs"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-2">
@@ -2092,7 +2092,7 @@ EDUCATION & EXPERIENCE:
                           {hobby.title}
                         </h3>
                       </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-[#020617] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-[#070b14] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium">
                         {hobby.badge}
                       </span>
                     </div>
@@ -2115,7 +2115,7 @@ EDUCATION & EXPERIENCE:
           <div className="flex flex-wrap gap-4 pt-2">
             <button
               onClick={() => handleCopy("christianamos67@gmail.com", "email-copy")}
-              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200 hover:border-cyan-600 dark:hover:border-slate-700 transition shadow-2xs"
+              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0d1527] border border-slate-300 dark:border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200 hover:border-cyan-600 dark:hover:border-slate-700 transition shadow-2xs"
             >
               {copiedKey === "email-copy" ? (
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
@@ -2129,7 +2129,7 @@ EDUCATION & EXPERIENCE:
               href="https://github.com/Christian3788"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-700 transition shadow-2xs"
+              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0d1527] border border-slate-300 dark:border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-700 transition shadow-2xs"
             >
               <GithubIcon className="w-4 h-4" /> GitHub
             </a>
@@ -2137,7 +2137,7 @@ EDUCATION & EXPERIENCE:
               href="https://www.linkedin.com/in/christian-otieno-9a9806229/"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-700 transition text-sky-700 dark:text-sky-400 shadow-2xs"
+              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0d1527] border border-slate-300 dark:border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-700 transition text-sky-700 dark:text-sky-400 shadow-2xs"
             >
               <LinkedinIcon className="w-4 h-4" /> LinkedIn
             </a>
@@ -2146,7 +2146,7 @@ EDUCATION & EXPERIENCE:
       </main>
 
       {/* Floating Action Dock */}
-      <aside aria-label="Quick Actions" className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 bg-white/95 dark:bg-[#0b0f19]/95 backdrop-blur-md border border-slate-300/90 dark:border-slate-800 rounded-full px-3.5 py-1.5 sm:px-4 sm:py-2 shadow-xl flex items-center gap-2.5 sm:gap-3 text-xs font-mono">
+      <aside aria-label="Quick Actions" className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 bg-white/95 dark:bg-[#0d1527]/95 backdrop-blur-md border border-slate-300/90 dark:border-slate-800 rounded-full px-3.5 py-1.5 sm:px-4 sm:py-2 shadow-xl flex items-center gap-2.5 sm:gap-3 text-xs font-mono">
         <button
           onClick={() => {
             playHapticClick(90, 0.02);
@@ -2186,8 +2186,8 @@ EDUCATION & EXPERIENCE:
       {/* Command Palette Drawer */}
       {isCommandOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 dark:bg-black/80 backdrop-blur-xs flex items-start justify-center pt-24 p-4">
-          <div className="w-full max-w-lg bg-white dark:bg-[#020617] border border-slate-300 dark:border-slate-800 rounded-xl overflow-hidden shadow-2xl font-mono text-xs">
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0b0f19]">
+          <div className="w-full max-w-lg bg-white dark:bg-[#070b14] border border-slate-300 dark:border-slate-800 rounded-xl overflow-hidden shadow-2xl font-mono text-xs">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0d1527]">
               <Command className="w-4 h-4 text-cyan-800 dark:text-cyan-400" />
               <input
                 type="text"
@@ -2223,7 +2223,7 @@ EDUCATION & EXPERIENCE:
                     playHapticClick(90, 0.02);
                     setIsCommandOpen(false);
                   }}
-                  className="block px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-[#0b0f19] text-slate-800 dark:text-slate-300 hover:text-cyan-800 dark:hover:text-cyan-400 transition font-medium"
+                  className="block px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-[#0d1527] text-slate-800 dark:text-slate-300 hover:text-cyan-800 dark:hover:text-cyan-400 transition font-medium"
                 >
                   {cmd.label}
                 </a>
@@ -2238,7 +2238,7 @@ EDUCATION & EXPERIENCE:
                   setIsCommandOpen(false);
                   setIsResumeOpen(true);
                 }}
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-[#0b0f19] text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition flex items-center justify-between font-medium"
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-[#0d1527] text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition flex items-center justify-between font-medium"
               >
                 <span>Open Resume Drawer</span>
                 <span className="text-slate-500 text-[10px]">Action</span>
@@ -2248,7 +2248,7 @@ EDUCATION & EXPERIENCE:
                   handleCopy("christianamos67@gmail.com", "email-copy");
                   setIsCommandOpen(false);
                 }}
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-[#0b0f19] text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition flex items-center justify-between font-medium"
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-[#0d1527] text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition flex items-center justify-between font-medium"
               >
                 <span>Copy Email (christianamos67@gmail.com)</span>
                 <span className="text-slate-500 text-[10px]">Clipboard</span>
@@ -2261,7 +2261,7 @@ EDUCATION & EXPERIENCE:
       {/* Resume Modal */}
       {isResumeOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 dark:bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="w-full max-w-3xl bg-white dark:bg-[#020617] border border-slate-300 dark:border-slate-800 rounded-xl overflow-hidden shadow-2xl p-6 space-y-6">
+          <div className="w-full max-w-3xl bg-white dark:bg-[#070b14] border border-slate-300 dark:border-slate-800 rounded-xl overflow-hidden shadow-2xl p-6 space-y-6">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <div>
                 <span className="text-xs font-mono text-cyan-800 dark:text-cyan-400 uppercase tracking-wider font-bold">
@@ -2357,7 +2357,7 @@ EDUCATION & EXPERIENCE:
             <div className="flex justify-between items-center pt-3 border-t border-slate-200 dark:border-slate-800">
               <button
                 onClick={downloadDynamicResume}
-                className="flex items-center gap-1.5 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 text-xs font-semibold rounded-md transition shadow-2xs glow-cyan"
+                className="flex items-center gap-1.5 px-4 py-2 bg-gradient-to-r from-cyan-500 to-sky-400 text-slate-950 text-xs font-bold rounded-md transition shadow-[0_0_15px_rgba(6,182,212,0.4)]"
               >
                 <Download className="w-3.5 h-3.5" /> Compile & Download CV
               </button>
@@ -2366,7 +2366,7 @@ EDUCATION & EXPERIENCE:
                   playHapticClick(90, 0.02);
                   setIsResumeOpen(false);
                 }}
-                className="px-4 py-2 bg-slate-100 dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 text-xs font-mono text-slate-800 dark:text-slate-300 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 font-medium"
+                className="px-4 py-2 bg-slate-100 dark:bg-[#0d1527] border border-slate-300 dark:border-slate-800 text-xs font-mono text-slate-800 dark:text-slate-300 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 font-medium"
               >
                 Close
               </button>
