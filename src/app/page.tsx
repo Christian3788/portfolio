@@ -121,9 +121,9 @@ const projects: Project[] = [
     id: "lyric",
     title: "LYRIC – Music Streaming Platform",
     description: "Audio streaming engine with HTTP 206 range requests, synchronized group playback, and an interactive waveform visualizer.",
-    problem: "Streaming multi-megabyte lossless audio to intermittent mobile connections without buffer-induced memory exhaustion.",
-    constraint: "Serving concurrent listeners on limited RAM without buffering full files into heap or suffering scrubbing stalls.",
-    solution: "Built a Go HTTP 206 range streamer with 64KB chunk pipelines and WebSocket room synchronization; cut memory overhead by 78%.",
+    problem: "Streaming multi-megabyte lossless audio to mobile networks without buffer-induced server memory spikes.",
+    constraint: "Serving concurrent listeners on limited RAM without buffering full files into heap or suffering scrubbing latency.",
+    solution: "Engineered a Go HTTP 206 range streamer with 64KB chunk pipelines and WebSocket room synchronization; cut memory overhead by 78%.",
     tags: ["Go", "Next.js", "WebSockets", "MinIO", "Redis", "Prisma"],
     githubUrl: "https://github.com/Christian3788",
     cloneCommand: "git clone https://github.com/Christian3788/lyric.git",
@@ -157,16 +157,16 @@ func StreamAudioHandler(w http.ResponseWriter, r *http.Request) {
         "Go HTTP 206 Range Streamer serves 64KB byte-range buffers without loading full files into heap.",
         "Custom WebSocket Hub coordinates synchronous playback states across room peers.",
       ],
-      tradeoffs: "Selected byte-range HTTP 206 chunking over HLS to minimize transcode processing overhead and ensure sub-40ms seek latency.",
+      tradeoffs: "Selected byte-range HTTP 206 chunking over HLS to minimize transcode overhead and enable sub-40ms seek latency.",
     },
   },
   {
     id: "spatial-risk",
     title: "Spatial Risk Analytics Engine",
     description: "Geographic vulnerability scoring engine utilizing PostGIS spatial indexing, IPCC vulnerability modeling formulas, and coordinate bounding queries.",
-    problem: "Computing multi-layer spatial risk scores across tens of thousands of urban polygon zones within interactive browser latency limits.",
+    problem: "Computing multi-layer spatial risk scores across tens of thousands of urban polygon zones within user-interactive time limits.",
     constraint: "Brute-force nested spatial loops lock Node.js event loops and degrade to multi-second execution times.",
-    solution: "Shifted geometric intersections to PostGIS GiST indexed queries; reduced query execution time from 118ms to 3.12ms.",
+    solution: "Shifted all geometric intersections to PostGIS GiST indexed queries; reduced query execution time from 118ms down to 3.12ms.",
     tags: ["PostGIS", "Next.js", "Prisma", "TypeScript"],
     githubUrl: "https://github.com/Christian3788",
     cloneCommand: "git clone https://github.com/Christian3788/spatial-risk.git",
@@ -203,7 +203,7 @@ WHERE ST_DWithin(
     id: "vector-vanguard",
     title: "Vector-Vanguard",
     description: "Vector search engine and high-dimensional similarity index built to perform nearest-neighbor lookups, metric space embeddings, and high-throughput vector queries.",
-    problem: "Performing high-frequency similarity search across high-dimensional dense float vectors without external vector database overhead.",
+    problem: "Performing high-frequency similarity search across high-dimensional dense float vectors without external vector DB infrastructure.",
     constraint: "Standard distance calculations incur heavy CPU cache misses and garbage collection pauses under high read concurrency.",
     solution: "Designed contiguous float buffers with SIMD-style 4-way loop unrolling in Go; achieved sub-millisecond retrieval across dense vector spaces.",
     tags: ["Go", "Python", "Vector Search", "Algorithms", "Docker"],
@@ -366,7 +366,7 @@ export default function Home() {
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [soundEnabled, setSoundEnabled] = useState(false);
 
-  // Persona Perspective: Tech Lead vs Recruiter
+  // Persona Perspective
   const [audiencePersona, setAudiencePersona] = useState<"tech-lead" | "recruiter">("tech-lead");
 
   // Tabbed Project Deep-Dive State
@@ -618,7 +618,7 @@ export default function Home() {
       canvas.height = window.innerHeight;
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      ctx.fillStyle = isLight ? "rgba(15, 118, 110, 0.28)" : "rgba(45, 212, 191, 0.45)";
+      ctx.fillStyle = isLight ? "rgba(8, 145, 178, 0.28)" : "rgba(34, 211, 238, 0.45)";
       stars.forEach((s) => {
         s.x += s.vx;
         s.y += s.vy;
@@ -768,15 +768,15 @@ export default function Home() {
 
           ctx.beginPath();
           ctx.arc(drawX, drawY, 1.3, 0, Math.PI * 2);
-          ctx.fillStyle = dist < 22 ? "#e11d48" : isLight ? "#0f766e" : "#38bdf8";
+          ctx.fillStyle = dist < 22 ? "#f43f5e" : isLight ? "#0891b2" : "#22d3ee";
           ctx.fill();
         }
       }
 
       ctx.beginPath();
       ctx.arc(lensPos.x, lensPos.y, 8, 0, Math.PI * 2);
-      ctx.fillStyle = isLight ? "#0f172a" : "#000000";
-      ctx.strokeStyle = isLight ? "#0d9488" : "#2dd4bf";
+      ctx.fillStyle = isLight ? "#0f172a" : "#020617";
+      ctx.strokeStyle = isLight ? "#0891b2" : "#22d3ee";
       ctx.lineWidth = 2;
       ctx.fill();
       ctx.stroke();
@@ -890,7 +890,7 @@ export default function Home() {
 
       for (let i = 0; i < bufferLength; i++) {
         const barHeight = (dataArray[i] / 255) * canvas.height;
-        ctx.fillStyle = isLight ? "#0f766e" : "#2dd4bf";
+        ctx.fillStyle = isLight ? "#0891b2" : "#22d3ee";
         ctx.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
         x += barWidth + 2;
       }
@@ -998,10 +998,10 @@ EDUCATION & EXPERIENCE:
   });
 
   return (
-    <div className="relative min-h-screen bg-[#fafafa] dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-teal-500 selection:text-slate-950 antialiased overflow-x-hidden transition-colors duration-200">
-      {/* Top 2px Scroll Progress Bar */}
+    <div className="relative min-h-screen bg-[#f8fafc] dark:bg-[#020617] text-slate-900 dark:text-slate-100 font-sans selection:bg-cyan-500 selection:text-slate-950 antialiased overflow-x-hidden transition-colors duration-200">
+      {/* Top 2px Phosphor Cyan Scroll Progress Bar */}
       <div
-        className="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-teal-600 via-teal-400 to-emerald-400 z-50 transition-all duration-75"
+        className="fixed top-0 left-0 h-[2px] bg-gradient-to-r from-cyan-600 via-cyan-400 to-sky-300 z-50 transition-all duration-75"
         style={{ width: `${scrollProgress}%` }}
       />
 
@@ -1014,7 +1014,7 @@ EDUCATION & EXPERIENCE:
 
       {/* Spring Interactive Cursor */}
       <motion.div
-        className="fixed top-0 left-0 w-4 h-4 rounded-full pointer-events-none z-50 border border-teal-600/80 dark:border-teal-400/80 bg-teal-500/10 dark:bg-teal-400/20 hidden md:block"
+        className="fixed top-0 left-0 w-4 h-4 rounded-full pointer-events-none z-50 border border-cyan-600/80 dark:border-cyan-400/80 bg-cyan-500/10 dark:bg-cyan-400/20 hidden md:block"
         style={{
           x: cursorX,
           y: cursorY,
@@ -1025,12 +1025,12 @@ EDUCATION & EXPERIENCE:
       />
 
       {/* Top Navigation */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-slate-950/85 border-b border-slate-200/90 dark:border-slate-900 transition-colors shadow-xs">
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/90 dark:bg-[#020617]/85 border-b border-slate-200/90 dark:border-slate-800 transition-colors shadow-xs">
         <div className="max-w-5xl mx-auto px-6 h-16 flex items-center justify-between">
           <a
             href="#"
             onClick={() => playHapticClick(80, 0.02)}
-            className="font-mono font-bold text-base tracking-wider text-teal-800 dark:text-teal-400 flex items-center gap-1.5"
+            className="font-mono font-bold text-base tracking-wider text-cyan-800 dark:text-cyan-400 flex items-center gap-1.5"
           >
             <ScrambleText text="christian.dev" />
           </a>
@@ -1070,7 +1070,7 @@ EDUCATION & EXPERIENCE:
                   playHapticClick(110, 0.02);
                   setIsResumeOpen(true);
                 }}
-                className="hover:text-teal-800 dark:hover:text-teal-400 font-semibold transition"
+                className="hover:text-cyan-800 dark:hover:text-cyan-400 font-semibold transition"
               >
                 Resume
               </button>
@@ -1082,10 +1082,10 @@ EDUCATION & EXPERIENCE:
                   playHapticClick(110, 0.02);
                   setIsCommandOpen(true);
                 }}
-                className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 rounded-md text-xs font-mono text-slate-800 dark:text-slate-300 transition shadow-2xs"
+                className="flex items-center gap-1.5 px-2.5 py-1 bg-white dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 hover:border-slate-400 dark:hover:border-slate-700 rounded-md text-xs font-mono text-slate-800 dark:text-slate-300 transition shadow-2xs"
                 title="Open Command Palette (Ctrl+K)"
               >
-                <Command className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
+                <Command className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
                 <span className="hidden sm:inline">Ctrl+K</span>
               </button>
 
@@ -1093,8 +1093,8 @@ EDUCATION & EXPERIENCE:
                 onClick={toggleSound}
                 className={`p-1.5 rounded-lg border transition ${
                   soundEnabled
-                    ? "bg-teal-50 dark:bg-teal-950/60 border-teal-300 dark:border-teal-800 text-teal-800 dark:text-teal-400 shadow-2xs"
-                    : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 shadow-2xs"
+                    ? "bg-cyan-50 dark:bg-cyan-950/60 border-cyan-300 dark:border-cyan-800 text-cyan-800 dark:text-cyan-400 shadow-2xs"
+                    : "bg-white dark:bg-[#0b0f19] border-slate-300 dark:border-slate-800 text-slate-500 hover:text-slate-800 dark:hover:text-slate-300 shadow-2xs"
                 }`}
                 title={soundEnabled ? "Mute UI Sound Haptics" : "Enable UI Sound Haptics"}
               >
@@ -1107,7 +1107,7 @@ EDUCATION & EXPERIENCE:
                     playHapticClick(140, 0.02);
                     setTheme(isLight ? "dark" : "light");
                   }}
-                  className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition shadow-2xs"
+                  className="p-1.5 rounded-lg border border-slate-300 dark:border-slate-800 bg-white dark:bg-[#0b0f19] text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition shadow-2xs"
                   title={`Switch to ${isLight ? "Dark" : "Light"} Mode`}
                 >
                   {isLight ? (
@@ -1126,9 +1126,9 @@ EDUCATION & EXPERIENCE:
       <main className="relative z-10 max-w-5xl mx-auto px-6 py-12 space-y-20 lg:space-y-24">
         {/* Active Focus Ticker & Perspective Switcher */}
         <section className="space-y-3">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 rounded-xl p-3.5 shadow-xs font-mono text-xs">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl p-3.5 shadow-xs font-mono text-xs">
             <div className="flex items-center gap-2.5 overflow-x-auto">
-              <span className="flex h-2 w-2 rounded-full bg-teal-500 animate-ping" />
+              <span className="flex h-2 w-2 rounded-full bg-cyan-400 animate-ping" />
               <span className="font-bold text-slate-950 dark:text-slate-100 uppercase tracking-wider text-[11px]">
                 Active Focus:
               </span>
@@ -1138,7 +1138,7 @@ EDUCATION & EXPERIENCE:
             </div>
 
             {/* Persona Switcher */}
-            <div className="flex items-center gap-1 self-start sm:self-auto bg-slate-100 dark:bg-slate-950 p-1 rounded-lg border border-slate-200 dark:border-slate-800">
+            <div className="flex items-center gap-1 self-start sm:self-auto bg-slate-100 dark:bg-[#020617] p-1 rounded-lg border border-slate-200 dark:border-slate-800">
               <button
                 onClick={() => {
                   playHapticClick(90, 0.02);
@@ -1146,11 +1146,11 @@ EDUCATION & EXPERIENCE:
                 }}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium transition ${
                   audiencePersona === "tech-lead"
-                    ? "bg-white dark:bg-slate-800 text-teal-900 dark:text-teal-300 font-bold shadow-2xs"
+                    ? "bg-white dark:bg-[#1e293b] text-cyan-900 dark:text-cyan-300 font-bold shadow-2xs"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200"
                 }`}
               >
-                <Code2 className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
+                <Code2 className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
                 <span>Tech Lead View</span>
               </button>
               <button
@@ -1160,11 +1160,11 @@ EDUCATION & EXPERIENCE:
                 }}
                 className={`flex items-center gap-1.5 px-2.5 py-1 rounded text-[11px] font-medium transition ${
                   audiencePersona === "recruiter"
-                    ? "bg-white dark:bg-slate-800 text-teal-900 dark:text-teal-300 font-bold shadow-2xs"
+                    ? "bg-white dark:bg-[#1e293b] text-cyan-900 dark:text-cyan-300 font-bold shadow-2xs"
                     : "text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200"
                 }`}
               >
-                <Briefcase className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
+                <Briefcase className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
                 <span>Recruiter View</span>
               </button>
             </div>
@@ -1172,11 +1172,11 @@ EDUCATION & EXPERIENCE:
 
           {/* GitHub Activity & Node Ping Bar */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-2.5 font-mono text-xs">
-            <div className="sm:col-span-3 bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-xs">
+            <div className="sm:col-span-3 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 shadow-xs">
               <div className="flex items-center gap-2">
-                <Radio className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400 animate-pulse" />
+                <Radio className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400 animate-pulse" />
                 <span className="font-semibold text-slate-950 dark:text-slate-100">GitHub:</span>
-                <span className="text-teal-800 dark:text-teal-400 font-bold">{gitEvents[0]?.repo || "portfolio"}</span>
+                <span className="text-cyan-800 dark:text-cyan-400 font-bold">{gitEvents[0]?.repo || "portfolio"}</span>
                 <span className="text-slate-600 dark:text-slate-400 text-[11px] truncate max-w-xs sm:max-w-md">
                   — {gitEvents[0]?.message || "Recent system updates"}
                 </span>
@@ -1187,9 +1187,9 @@ EDUCATION & EXPERIENCE:
             <button
               onClick={triggerPeerPing}
               disabled={isPingingPeer}
-              className="bg-white dark:bg-slate-900/60 border border-slate-200/90 dark:border-slate-800/80 rounded-xl p-3 flex items-center justify-center gap-2 hover:border-teal-600 dark:hover:border-teal-400 transition shadow-xs"
+              className="bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl p-3 flex items-center justify-center gap-2 hover:border-cyan-600 dark:hover:border-cyan-400 transition shadow-xs"
             >
-              <Network className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
+              <Network className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
               <span className="text-slate-800 dark:text-slate-200 font-semibold">
                 {isPingingPeer ? "Pinging..." : peerLatency ? `RTT: ${peerLatency}ms` : "Ping Peer Mesh"}
               </span>
@@ -1197,12 +1197,12 @@ EDUCATION & EXPERIENCE:
           </div>
         </section>
 
-        {/* 1. Optimized Hero Section with Custom Portrait Anchoring */}
+        {/* Hero Section */}
         <section className="relative pt-2 pb-6">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
             <div className="lg:col-span-7 space-y-6 z-10">
               <div className="space-y-2">
-                <div className="flex items-center gap-2 text-xs font-mono text-teal-800 dark:text-teal-400 font-bold uppercase tracking-widest">
+                <div className="flex items-center gap-2 text-xs font-mono text-cyan-800 dark:text-cyan-400 font-bold uppercase tracking-widest">
                   <MapPin className="w-3.5 h-3.5" />
                   <span>Kisumu, Kenya • Full-Stack Software Engineer</span>
                 </div>
@@ -1229,7 +1229,7 @@ EDUCATION & EXPERIENCE:
                 <a
                   href="#projects"
                   onClick={() => playHapticClick(90, 0.02)}
-                  className="px-5 py-2.5 bg-teal-600 hover:bg-teal-700 dark:bg-teal-400 dark:hover:bg-teal-300 text-white dark:text-slate-950 font-semibold rounded-lg transition text-sm shadow-xs"
+                  className="px-5 py-2.5 bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 font-semibold rounded-lg transition text-sm shadow-xs glow-cyan"
                 >
                   Explore Projects & Demos
                 </a>
@@ -1238,9 +1238,9 @@ EDUCATION & EXPERIENCE:
                     playHapticClick(110, 0.02);
                     setIsResumeOpen(true);
                   }}
-                  className="px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium rounded-lg hover:border-teal-600 dark:hover:border-slate-700 hover:text-slate-950 dark:hover:text-white transition text-sm flex items-center gap-2 shadow-2xs"
+                  className="px-5 py-2.5 bg-white dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium rounded-lg hover:border-cyan-600 dark:hover:border-slate-700 hover:text-slate-950 dark:hover:text-white transition text-sm flex items-center gap-2 shadow-2xs"
                 >
-                  <FileCode className="w-4 h-4 text-teal-700 dark:text-teal-400" />
+                  <FileCode className="w-4 h-4 text-cyan-700 dark:text-cyan-400" />
                   Resume / CV
                 </button>
 
@@ -1267,7 +1267,7 @@ EDUCATION & EXPERIENCE:
                     href="https://dev.to/christian-otieno"
                     target="_blank"
                     rel="noreferrer"
-                    className="hover:text-teal-800 dark:hover:text-teal-400 transition p-1 text-xs font-mono font-bold"
+                    className="hover:text-cyan-800 dark:hover:text-cyan-400 transition p-1 text-xs font-mono font-bold"
                     title="DEV.to Articles"
                   >
                     DEV
@@ -1296,7 +1296,7 @@ EDUCATION & EXPERIENCE:
                     sizes="(max-width: 768px) 100vw, 360px"
                     className="object-cover object-[50%_15%] filter contrast-[1.03]"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#fafafa] dark:from-slate-950 via-transparent to-transparent opacity-50 dark:opacity-85" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#f8fafc] dark:from-[#020617] via-transparent to-transparent opacity-50 dark:opacity-85" />
                 </div>
               </div>
             </div>
@@ -1327,7 +1327,7 @@ EDUCATION & EXPERIENCE:
             {skills.map((skill) => (
               <span
                 key={skill}
-                className="px-3 py-1.5 bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-md text-xs sm:text-sm font-mono font-medium hover:border-teal-600 dark:hover:border-teal-500/50 hover:text-teal-800 dark:hover:text-teal-300 transition-colors cursor-default shadow-2xs"
+                className="px-3 py-1.5 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 text-slate-800 dark:text-slate-200 rounded-md text-xs sm:text-sm font-mono font-medium hover:border-cyan-600 dark:hover:border-cyan-500/50 hover:text-cyan-800 dark:hover:text-cyan-300 transition-colors cursor-default shadow-2xs"
               >
                 <ScrambleText text={skill} />
               </span>
@@ -1335,13 +1335,13 @@ EDUCATION & EXPERIENCE:
           </div>
         </section>
 
-        {/* 2 & 4. Projects with Collapsible Anatomy Accordion & Tactile Hover Lift */}
+        {/* Projects */}
         <section id="projects" className="space-y-6">
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 border-b border-slate-200 dark:border-slate-800 pb-4">
             <div>
               <div className="flex items-center gap-2">
                 <h2 className="text-xl font-bold text-slate-950 dark:text-white">Featured Projects</h2>
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-teal-100 dark:bg-teal-950 text-teal-900 dark:text-teal-300 font-bold border border-teal-300 dark:border-teal-800">
+                <span className="text-[11px] font-mono px-2 py-0.5 rounded bg-cyan-100 dark:bg-cyan-950/80 text-cyan-900 dark:text-cyan-300 font-bold border border-cyan-300 dark:border-cyan-800">
                   {audiencePersona === "tech-lead" ? "Deep Systems Anatomy" : "Production Deliverables"}
                 </span>
               </div>
@@ -1357,7 +1357,7 @@ EDUCATION & EXPERIENCE:
                 placeholder="Search projects or tags..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-xs sm:text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-teal-600 dark:focus:border-slate-700 font-sans shadow-2xs"
+                className="w-full bg-white dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 rounded-lg pl-9 pr-3 py-1.5 text-xs sm:text-sm text-slate-900 dark:text-slate-200 placeholder-slate-400 focus:outline-none focus:border-cyan-600 dark:focus:border-slate-700 font-sans shadow-2xs"
               />
             </div>
           </div>
@@ -1372,8 +1372,8 @@ EDUCATION & EXPERIENCE:
                 }}
                 className={`text-xs px-3 py-1 rounded-md font-mono transition-colors shadow-2xs ${
                   selectedTag === tag
-                    ? "bg-teal-600 text-white dark:bg-teal-400 dark:text-slate-950 font-bold"
-                    : "bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-800 hover:text-slate-950 dark:hover:text-white"
+                    ? "bg-cyan-600 text-white dark:bg-cyan-500 dark:text-slate-950 font-bold"
+                    : "bg-white dark:bg-[#0b0f19] text-slate-700 dark:text-slate-300 border border-slate-200/90 dark:border-slate-800 hover:text-slate-950 dark:hover:text-white"
                 }`}
               >
                 {tag}
@@ -1389,10 +1389,10 @@ EDUCATION & EXPERIENCE:
               return (
                 <div
                   key={proj.id}
-                  className="p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800/90 rounded-2xl bg-white dark:bg-slate-900/30 hover:border-teal-500/50 dark:hover:border-teal-500/40 hover:shadow-lg dark:hover:shadow-[0_0_30px_-8px_rgba(45,212,191,0.12)] transition-all duration-300 space-y-5"
+                  className="p-6 sm:p-7 border border-slate-200/90 dark:border-slate-800 rounded-2xl bg-white dark:bg-[#0b0f19] hover:border-cyan-500/50 dark:hover:border-cyan-500/40 hover:shadow-lg dark:hover:shadow-[0_0_30px_-8px_rgba(6,182,212,0.15)] transition-all duration-300 space-y-5"
                 >
                   {/* Top Bar */}
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-slate-100 dark:border-slate-800/80 pb-4">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
                     <div>
                       <h3 className="text-xl font-bold text-slate-950 dark:text-white">
                         <ScrambleText text={proj.title} />
@@ -1404,7 +1404,7 @@ EDUCATION & EXPERIENCE:
                         {proj.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="text-xs bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium px-2 py-0.5 rounded font-mono"
+                            className="text-xs bg-slate-100 dark:bg-[#020617] border border-slate-200 dark:border-slate-800 text-slate-800 dark:text-slate-200 font-medium px-2 py-0.5 rounded font-mono"
                           >
                             {tag}
                           </span>
@@ -1419,7 +1419,7 @@ EDUCATION & EXPERIENCE:
                           className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-full border transition font-mono font-semibold ${
                             isPlayingAudio
                               ? "bg-rose-50 dark:bg-rose-950/60 border-rose-300 dark:border-rose-800 text-rose-700 dark:text-rose-300"
-                              : "bg-teal-50 dark:bg-teal-950/60 border-teal-300 dark:border-teal-800/60 text-teal-900 dark:text-teal-300 hover:border-teal-500"
+                              : "bg-cyan-50 dark:bg-cyan-950/60 border-cyan-300 dark:border-cyan-800 text-cyan-900 dark:text-cyan-300 hover:border-cyan-500"
                           }`}
                         >
                           {isPlayingAudio ? (
@@ -1440,35 +1440,35 @@ EDUCATION & EXPERIENCE:
                         href={proj.githubUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:border-teal-600 transition"
+                        className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 dark:bg-[#020617] border border-slate-200 dark:border-slate-800 rounded-lg text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:border-cyan-600 transition"
                       >
-                        Code <ExternalLink className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
+                        Code <ExternalLink className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
                       </a>
                     </div>
                   </div>
 
                   {/* Audio Waveform Canvas */}
                   {proj.hasAudioVisualizer && (
-                    <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-xl border border-slate-200 dark:border-slate-800/80 space-y-1.5">
+                    <div className="p-3 bg-slate-50 dark:bg-[#020617] rounded-xl border border-slate-200 dark:border-slate-800 space-y-1.5">
                       <div className="flex justify-between text-[10px] font-mono text-slate-500">
                         <span>HTTP 206 Byte Range Chunking Stream (64KB Allocations)</span>
                         <span>{isPlayingAudio ? "FFT Active" : "Click 'Live Audio Stream'"}</span>
                       </div>
-                      <canvas ref={canvasRef} width={500} height={36} className="w-full h-9 rounded bg-slate-200/50 dark:bg-slate-900/50" />
+                      <canvas ref={canvasRef} width={500} height={36} className="w-full h-9 rounded bg-slate-200/50 dark:bg-[#0b0f19]" />
                     </div>
                   )}
 
-                  {/* 2. Collapsible 3-Part Engineering Anatomy Accordion */}
-                  <div className="border border-slate-200/80 dark:border-slate-800/80 rounded-xl overflow-hidden bg-slate-50/70 dark:bg-slate-950/40">
+                  {/* Collapsible 3-Part Engineering Anatomy Accordion */}
+                  <div className="border border-slate-200/80 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/70 dark:bg-[#020617]/50">
                     <button
                       onClick={() => {
                         playHapticClick(80, 0.02);
                         setExpandedAnatomy((prev) => ({ ...prev, [proj.id]: !isAnatomyOpen }));
                       }}
-                      className="w-full px-4 py-2.5 flex items-center justify-between text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-900/60 transition"
+                      className="w-full px-4 py-2.5 flex items-center justify-between text-xs font-mono font-bold text-slate-800 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-[#0b0f19] transition"
                     >
                       <span className="flex items-center gap-2">
-                        <span className="text-teal-700 dark:text-teal-400 font-extrabold">&gt;</span>
+                        <span className="text-cyan-700 dark:text-cyan-400 font-extrabold">&gt;</span>
                         <span>Engineering Anatomy: Problem • Constraint • Architecture</span>
                       </span>
                       <ChevronDown
@@ -1480,7 +1480,7 @@ EDUCATION & EXPERIENCE:
 
                     {isAnatomyOpen && (
                       <div className="p-4 border-t border-slate-200 dark:border-slate-800 grid grid-cols-1 md:grid-cols-3 gap-3 font-mono text-xs">
-                        <div className="p-3 bg-white dark:bg-slate-900/80 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
+                        <div className="p-3 bg-white dark:bg-[#0b0f19] rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
                           <span className="text-[10px] uppercase font-bold text-rose-700 dark:text-rose-400 block">
                             [1] The Problem
                           </span>
@@ -1489,7 +1489,7 @@ EDUCATION & EXPERIENCE:
                           </p>
                         </div>
 
-                        <div className="p-3 bg-white dark:bg-slate-900/80 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
+                        <div className="p-3 bg-white dark:bg-[#0b0f19] rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
                           <span className="text-[10px] uppercase font-bold text-amber-700 dark:text-amber-400 block">
                             [2] Engineering Constraint
                           </span>
@@ -1498,8 +1498,8 @@ EDUCATION & EXPERIENCE:
                           </p>
                         </div>
 
-                        <div className="p-3 bg-white dark:bg-slate-900/80 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
-                          <span className="text-[10px] uppercase font-bold text-teal-800 dark:text-teal-400 block">
+                        <div className="p-3 bg-white dark:bg-[#0b0f19] rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
+                          <span className="text-[10px] uppercase font-bold text-cyan-800 dark:text-cyan-400 block">
                             [3] Architectural Solution
                           </span>
                           <p className="text-slate-700 dark:text-slate-300 font-sans leading-relaxed text-xs">
@@ -1511,8 +1511,8 @@ EDUCATION & EXPERIENCE:
                   </div>
 
                   {/* Tabbed Inspector Navigation */}
-                  <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-slate-950/50">
-                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-3 bg-slate-100/70 dark:bg-slate-900/70 text-xs font-mono">
+                  <div className="border border-slate-200 dark:border-slate-800 rounded-xl overflow-hidden bg-slate-50/50 dark:bg-[#020617]/50">
+                    <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 px-3 bg-slate-100/70 dark:bg-[#0b0f19] text-xs font-mono">
                       <div className="flex gap-2">
                         {[
                           { id: "overview", label: "Interactive Demo / Simulator" },
@@ -1527,7 +1527,7 @@ EDUCATION & EXPERIENCE:
                             }}
                             className={`py-2 px-3 border-b-2 font-medium transition ${
                               currentTab === t.id
-                                ? "border-teal-600 dark:border-teal-400 text-teal-900 dark:text-teal-300 font-bold"
+                                ? "border-cyan-600 dark:border-cyan-400 text-cyan-900 dark:text-cyan-300 font-bold"
                                 : "border-transparent text-slate-600 dark:text-slate-400 hover:text-slate-950 dark:hover:text-slate-200"
                             }`}
                           >
@@ -1555,7 +1555,7 @@ EDUCATION & EXPERIENCE:
                         {proj.hasGisSimulator ? (
                           <div className="space-y-3">
                             <div className="flex justify-between items-center text-xs font-mono text-slate-700 dark:text-slate-400">
-                              <span className="flex items-center gap-1 text-teal-800 dark:text-teal-400 font-bold">
+                              <span className="flex items-center gap-1 text-cyan-800 dark:text-cyan-400 font-bold">
                                 <Crosshair className="w-3.5 h-3.5" /> Interactive Spatial Query Sandbox (Click Grid)
                               </span>
                               <div className="flex gap-2">
@@ -1563,7 +1563,7 @@ EDUCATION & EXPERIENCE:
                                   onClick={() => setIsGistMode(!isGistMode)}
                                   className={`px-2 py-0.5 rounded text-[10px] uppercase font-bold border ${
                                     isGistMode
-                                      ? "bg-teal-100 dark:bg-teal-950 text-teal-900 dark:text-teal-300 border-teal-400"
+                                      ? "bg-cyan-100 dark:bg-cyan-950 text-cyan-900 dark:text-cyan-300 border-cyan-400"
                                       : "bg-amber-100 dark:bg-amber-950 text-amber-900 dark:text-amber-300 border-amber-400"
                                   }`}
                                 >
@@ -1580,27 +1580,27 @@ EDUCATION & EXPERIENCE:
 
                             <div
                               onClick={handleGisCanvasClick}
-                              className="relative h-20 w-full bg-slate-100 dark:bg-slate-900/80 rounded-lg border border-dashed border-slate-300 dark:border-slate-800 cursor-crosshair overflow-hidden"
+                              className="relative h-20 w-full bg-slate-100 dark:bg-[#020617] rounded-lg border border-dashed border-slate-300 dark:border-slate-800 cursor-crosshair overflow-hidden"
                             >
                               <div
                                 className={`absolute w-6 h-6 -ml-3 -mt-3 rounded-full border-2 ${
-                                  isGistMode ? "border-teal-600 bg-teal-500/20" : "border-amber-600 bg-amber-500/20"
+                                  isGistMode ? "border-cyan-600 bg-cyan-500/20" : "border-amber-600 bg-amber-500/20"
                                 } animate-ping`}
                                 style={{ left: `${gisCoord.x}%`, top: `${gisCoord.y}%` }}
                               />
                               <div
                                 className={`absolute w-2.5 h-2.5 -ml-1.5 -mt-1.5 rounded-full ${
-                                  isGistMode ? "bg-teal-600 dark:bg-teal-400" : "bg-amber-600 dark:bg-amber-400"
+                                  isGistMode ? "bg-cyan-600 dark:bg-cyan-400" : "bg-amber-600 dark:bg-amber-400"
                                 }`}
                                 style={{ left: `${gisCoord.x}%`, top: `${gisCoord.y}%` }}
                               />
                             </div>
 
                             {showSqlExplain && (
-                              <div className="p-3 bg-slate-900 text-slate-100 rounded-lg font-mono text-[11px] space-y-1">
-                                <span className="text-teal-400 block font-bold">PostgreSQL Query Planner Output:</span>
+                              <div className="p-3 bg-[#020617] text-slate-100 rounded-lg font-mono text-[11px] space-y-1 border border-slate-800">
+                                <span className="text-cyan-400 block font-bold">PostgreSQL Query Planner Output:</span>
                                 {isGistMode ? (
-                                  <pre className="text-teal-300 whitespace-pre-wrap">
+                                  <pre className="text-cyan-300 whitespace-pre-wrap">
                                     Bitmap Heap Scan on urban_hazard_layers (cost=0.28..8.30 rows=12)<br />
                                     &nbsp;&nbsp;-&gt; Bitmap Index Scan on idx_hazard_gist<br />
                                     Execution Time: 3.12ms | Buffers: shared hit=14
@@ -1616,8 +1616,8 @@ EDUCATION & EXPERIENCE:
                             )}
                           </div>
                         ) : (
-                          <div className="p-4 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 font-mono text-xs space-y-2">
-                            <span className="text-teal-800 dark:text-teal-400 font-bold block">
+                          <div className="p-4 bg-white dark:bg-[#0b0f19] rounded-lg border border-slate-200 dark:border-slate-800 font-mono text-xs space-y-2">
+                            <span className="text-cyan-800 dark:text-cyan-400 font-bold block">
                               Architecture Highlights:
                             </span>
                             <ul className="list-disc list-inside space-y-1 text-slate-700 dark:text-slate-300">
@@ -1635,15 +1635,15 @@ EDUCATION & EXPERIENCE:
 
                     {/* Tab 2: Code Snippet */}
                     {currentTab === "code" && (
-                      <div className="p-4 bg-slate-950 text-slate-100 overflow-x-auto text-xs font-mono">
-                        <pre className="text-teal-300 leading-relaxed">{proj.codeSnippet}</pre>
+                      <div className="p-4 bg-[#020617] text-slate-100 overflow-x-auto text-xs font-mono">
+                        <pre className="text-cyan-300 leading-relaxed">{proj.codeSnippet}</pre>
                       </div>
                     )}
 
                     {/* Tab 3: System Topology */}
                     {currentTab === "architecture" && (
                       <div className="p-4 space-y-3 font-mono text-xs">
-                        <div className="relative w-full h-32 bg-white dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
+                        <div className="relative w-full h-32 bg-white dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800 overflow-hidden">
                           <svg className="absolute inset-0 w-full h-full">
                             {proj.architecture.connections.map((conn) => {
                               const from = proj.architecture.nodes.find((n) => n.id === conn.from);
@@ -1659,7 +1659,7 @@ EDUCATION & EXPERIENCE:
                                   key={`${conn.from}-${conn.to}`}
                                   d={path}
                                   fill="none"
-                                  stroke={isLight ? "#0f766e" : "#2dd4bf"}
+                                  stroke={isLight ? "#0891b2" : "#22d3ee"}
                                   strokeWidth="2"
                                   strokeDasharray="4 6"
                                   className="animate-[dash_1.5s_linear_infinite]"
@@ -1671,7 +1671,7 @@ EDUCATION & EXPERIENCE:
                           {proj.architecture.nodes.map((node) => (
                             <div
                               key={node.id}
-                              className="absolute -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded text-[11px] font-mono border bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-xs"
+                              className="absolute -translate-x-1/2 -translate-y-1/2 px-2.5 py-1 rounded text-[11px] font-mono border bg-white dark:bg-[#0b0f19] border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-200 shadow-xs"
                               style={{ left: node.x, top: node.y }}
                             >
                               {node.label}
@@ -1679,8 +1679,8 @@ EDUCATION & EXPERIENCE:
                           ))}
                         </div>
 
-                        <div className="p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs">
-                          <strong className="text-teal-800 dark:text-teal-400 block mb-1">
+                        <div className="p-3 bg-white dark:bg-[#0b0f19] rounded-lg border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs">
+                          <strong className="text-cyan-800 dark:text-cyan-400 block mb-1">
                             Core Trade-off Decision:
                           </strong>
                           {proj.architecture.tradeoffs}
@@ -1699,21 +1699,21 @@ EDUCATION & EXPERIENCE:
           <div className="border-b border-slate-200 dark:border-slate-800 pb-3 flex flex-col sm:flex-row sm:items-end justify-between gap-2">
             <div>
               <h2 className="text-xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
-                <Cpu className="w-5 h-5 text-teal-800 dark:text-teal-400" /> Systems Engineering Interactive Lab
+                <Cpu className="w-5 h-5 text-cyan-800 dark:text-cyan-400" /> Systems Engineering Interactive Lab
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
                 Live interactive visualizers exploring operating system memory, Go channel concurrency, TCP flow, and probabilistic hashing.
               </p>
             </div>
-            <span className="text-[11px] font-mono text-teal-800 dark:text-teal-400 font-bold">Low-Level CS Internals</span>
+            <span className="text-[11px] font-mono text-cyan-800 dark:text-cyan-400 font-bold">Low-Level CS Internals</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* WORKBENCH 1: Memory Slab Allocator */}
-            <div className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800/90 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-teal-500/40 transition">
+            <div className="p-5 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-cyan-500/40 transition">
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="text-teal-900 dark:text-teal-400 flex items-center gap-1.5 font-bold">
+                  <span className="text-cyan-900 dark:text-cyan-400 flex items-center gap-1.5 font-bold">
                     <HardDrive className="w-4 h-4" /> 1. Virtual Memory Slab Allocator
                   </span>
                   <span className="text-slate-700 dark:text-slate-400 font-semibold">Ptr: {lastMalloc}</span>
@@ -1722,13 +1722,13 @@ EDUCATION & EXPERIENCE:
                   Contiguous heap allocations with 64-byte alignment headers, showing fragmentation and free list sweeps.
                 </p>
 
-                <div className="grid grid-cols-8 gap-1.5 p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800/80 my-3">
+                <div className="grid grid-cols-8 gap-1.5 p-3 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800 my-3">
                   {memoryHeap.map((slab) => (
                     <div
                       key={slab.id}
                       className={`h-5 rounded-sm transition-all border ${
                         slab.allocated
-                          ? "bg-teal-600 dark:bg-teal-500/80 border-teal-700 dark:border-teal-400 shadow-2xs"
+                          ? "bg-cyan-600 dark:bg-cyan-500/80 border-cyan-700 dark:border-cyan-400 shadow-2xs"
                           : "bg-slate-200 dark:bg-slate-900 border-slate-300 dark:border-slate-800"
                       }`}
                       title={`Address: 0x0${(slab.id * 64).toString(16).toUpperCase()} (${
@@ -1742,19 +1742,19 @@ EDUCATION & EXPERIENCE:
               <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
                 <button
                   onClick={allocateMemoryBlock}
-                  className="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white dark:bg-teal-400 dark:hover:bg-teal-300 dark:text-slate-950 font-bold rounded-md transition shadow-2xs"
+                  className="px-3 py-1 bg-cyan-600 hover:bg-cyan-700 text-white dark:bg-cyan-500 dark:hover:bg-cyan-400 dark:text-slate-950 font-bold rounded-md transition shadow-2xs"
                 >
                   malloc(64B)
                 </button>
                 <button
                   onClick={freeMemoryBlock}
-                  className="px-3 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 rounded-md transition"
+                  className="px-3 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-[#1e293b] dark:hover:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 rounded-md transition"
                 >
                   free()
                 </button>
                 <button
                   onClick={sweepGarbageCollection}
-                  className="px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-md transition"
+                  className="px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-[#020617] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-md transition"
                 >
                   gc_sweep()
                 </button>
@@ -1762,17 +1762,17 @@ EDUCATION & EXPERIENCE:
             </div>
 
             {/* WORKBENCH 2: Go Goroutine & Channel Concurrency */}
-            <div className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800/90 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-teal-500/40 transition">
+            <div className="p-5 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-cyan-500/40 transition">
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="text-teal-900 dark:text-teal-400 flex items-center gap-1.5 font-bold">
+                  <span className="text-cyan-900 dark:text-cyan-400 flex items-center gap-1.5 font-bold">
                     <Workflow className="w-4 h-4" /> 2. Go Channel Deadlock Simulator
                   </span>
                   <span
                     className={`px-2 py-0.5 rounded text-[10px] uppercase font-mono font-bold ${
                       goroutineStatus === "deadlocked"
                         ? "bg-rose-100 dark:bg-rose-950 border border-rose-300 dark:border-rose-800 text-rose-800 dark:text-rose-300 animate-pulse"
-                        : "bg-slate-100 dark:bg-slate-800 text-teal-900 dark:text-teal-300"
+                        : "bg-slate-100 dark:bg-[#1e293b] text-cyan-900 dark:text-cyan-300"
                     }`}
                   >
                     {goroutineStatus}
@@ -1782,7 +1782,7 @@ EDUCATION & EXPERIENCE:
                   Worker goroutines reading and writing to a synchronized Go channel (`ch := make(chan int, {channelCapacity})`).
                 </p>
 
-                <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800/80 my-3 flex items-center justify-between font-mono text-xs">
+                <div className="p-3 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800 my-3 flex items-center justify-between font-mono text-xs">
                   <span className="text-slate-600 dark:text-slate-400 font-semibold">Producer &rarr;</span>
                   <div className="flex gap-2">
                     {Array.from({ length: channelCapacity }).map((_, i) => (
@@ -1790,7 +1790,7 @@ EDUCATION & EXPERIENCE:
                         key={i}
                         className={`w-10 h-8 rounded border flex items-center justify-center font-bold transition-all ${
                           channelBuffer[i] !== undefined
-                            ? "bg-teal-100 dark:bg-teal-950 border-teal-500 text-teal-950 dark:text-teal-300"
+                            ? "bg-cyan-100 dark:bg-cyan-950 border-cyan-500 text-cyan-950 dark:text-cyan-300"
                             : "bg-slate-200 dark:bg-slate-900 border-slate-300 dark:border-slate-800 text-slate-600 dark:text-slate-500"
                         }`}
                       >
@@ -1811,13 +1811,13 @@ EDUCATION & EXPERIENCE:
               <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-xs">
                 <button
                   onClick={produceChannelMessage}
-                  className="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white dark:bg-teal-400 dark:hover:bg-teal-300 dark:text-slate-950 font-bold rounded-md transition shadow-2xs"
+                  className="px-3 py-1 bg-cyan-600 hover:bg-cyan-700 text-white dark:bg-cyan-500 dark:hover:bg-cyan-400 dark:text-slate-950 font-bold rounded-md transition shadow-2xs"
                 >
                   ch &lt;- val
                 </button>
                 <button
                   onClick={consumeChannelMessage}
-                  className="px-3 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 rounded-md transition"
+                  className="px-3 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-[#1e293b] dark:hover:bg-slate-700 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 rounded-md transition"
                 >
                   &lt;- ch
                 </button>
@@ -1827,7 +1827,7 @@ EDUCATION & EXPERIENCE:
                     setGoroutineStatus("idle");
                     setDeadlockError(null);
                   }}
-                  className="px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-md transition"
+                  className="px-3 py-1 bg-slate-50 hover:bg-slate-100 dark:bg-[#020617] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 rounded-md transition"
                 >
                   Reset Hub
                 </button>
@@ -1835,10 +1835,10 @@ EDUCATION & EXPERIENCE:
             </div>
 
             {/* WORKBENCH 3: TCP Handshake */}
-            <div className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800/90 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-teal-500/40 transition">
+            <div className="p-5 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-cyan-500/40 transition">
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="text-teal-900 dark:text-teal-400 flex items-center gap-1.5 font-bold">
+                  <span className="text-cyan-900 dark:text-cyan-400 flex items-center gap-1.5 font-bold">
                     <Wifi className="w-4 h-4" /> 3. TCP 3-Way Handshake Pipeline
                   </span>
                   <span className="text-slate-700 dark:text-slate-400 font-semibold">State: {tcpState}</span>
@@ -1847,9 +1847,9 @@ EDUCATION & EXPERIENCE:
                   SYN / SYN-ACK / ACK progression stepping through congestion window controls and socket lifecycles.
                 </p>
 
-                <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800/80 my-3 font-mono text-xs space-y-2">
+                <div className="p-3 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800 my-3 font-mono text-xs space-y-2">
                   <div className="flex justify-between items-center text-slate-700 dark:text-slate-300">
-                    <span className="text-teal-800 dark:text-teal-400 font-bold">CLIENT</span>
+                    <span className="text-cyan-800 dark:text-cyan-400 font-bold">CLIENT</span>
                     <span>Socket Protocol Stream</span>
                     <span className="text-sky-800 dark:text-sky-400 font-bold">SERVER</span>
                   </div>
@@ -1865,7 +1865,7 @@ EDUCATION & EXPERIENCE:
               <div className="flex items-center justify-between pt-1 font-mono text-xs">
                 <button
                   onClick={stepTcpHandshake}
-                  className="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white dark:bg-teal-400 dark:hover:bg-teal-300 dark:text-slate-950 font-bold rounded-md transition shadow-2xs"
+                  className="px-3 py-1 bg-cyan-600 hover:bg-cyan-700 text-white dark:bg-cyan-500 dark:hover:bg-cyan-400 dark:text-slate-950 font-bold rounded-md transition shadow-2xs"
                 >
                   Step Handshake &rarr;
                 </button>
@@ -1874,10 +1874,10 @@ EDUCATION & EXPERIENCE:
             </div>
 
             {/* WORKBENCH 4: Bloom Filter */}
-            <div className="p-5 bg-white dark:bg-slate-900/40 border border-slate-200/90 dark:border-slate-800/90 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-teal-500/40 transition">
+            <div className="p-5 bg-white dark:bg-[#0b0f19] border border-slate-200/90 dark:border-slate-800 rounded-xl space-y-4 flex flex-col justify-between shadow-xs hover:border-cyan-500/40 transition">
               <div>
                 <div className="flex items-center justify-between text-xs font-mono mb-2">
-                  <span className="text-teal-900 dark:text-teal-400 flex items-center gap-1.5 font-bold">
+                  <span className="text-cyan-900 dark:text-cyan-400 flex items-center gap-1.5 font-bold">
                     <Binary className="w-4 h-4" /> 4. Probabilistic Bloom Filter Probe
                   </span>
                   <span className="text-slate-700 dark:text-slate-400 font-semibold">32-bit Array (k=3)</span>
@@ -1886,13 +1886,13 @@ EDUCATION & EXPERIENCE:
                   Calculates 3 modulo hash offsets per key to guarantee zero false-negatives before hitting disk.
                 </p>
 
-                <div className="grid grid-cols-16 gap-1 p-2 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800/80 my-3">
+                <div className="grid grid-cols-16 gap-1 p-2 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800 my-3">
                   {bloomArray.map((bit, idx) => (
                     <div
                       key={idx}
                       className={`h-4 rounded-[2px] transition-all flex items-center justify-center text-[9px] font-mono ${
                         bit === 1
-                          ? "bg-teal-600 dark:bg-teal-400 text-white dark:text-slate-950 font-bold"
+                          ? "bg-cyan-600 dark:bg-cyan-400 text-white dark:text-slate-950 font-bold"
                           : "bg-slate-200 dark:bg-slate-900 text-slate-600 dark:text-slate-500"
                       }`}
                       title={`Bit #${idx}: ${bit}`}
@@ -1907,7 +1907,7 @@ EDUCATION & EXPERIENCE:
                     type="text"
                     value={bloomInput}
                     onChange={(e) => setBloomInput(e.target.value)}
-                    className="w-full bg-slate-50 dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded px-2.5 py-1 text-xs font-mono text-slate-900 dark:text-slate-200 focus:outline-none"
+                    className="w-full bg-slate-50 dark:bg-[#020617] border border-slate-300 dark:border-slate-800 rounded px-2.5 py-1 text-xs font-mono text-slate-900 dark:text-slate-200 focus:outline-none"
                     placeholder="Enter key to hash..."
                   />
                   {bloomMatch !== null && (
@@ -1927,13 +1927,13 @@ EDUCATION & EXPERIENCE:
               <div className="flex items-center gap-2 pt-1 font-mono text-xs">
                 <button
                   onClick={handleBloomInsert}
-                  className="px-3 py-1 bg-teal-600 hover:bg-teal-700 text-white dark:bg-teal-400 dark:hover:bg-teal-300 dark:text-slate-950 font-bold rounded-md transition shadow-2xs"
+                  className="px-3 py-1 bg-cyan-600 hover:bg-cyan-700 text-white dark:bg-cyan-500 dark:hover:bg-cyan-400 dark:text-slate-950 font-bold rounded-md transition shadow-2xs"
                 >
                   Insert Key
                 </button>
                 <button
                   onClick={handleBloomCheck}
-                  className="px-3 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 rounded-md transition"
+                  className="px-3 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-[#1e293b] border border-slate-300 dark:border-slate-700 text-slate-800 dark:text-slate-300 rounded-md transition"
                 >
                   Check Key
                 </button>
@@ -1943,11 +1943,11 @@ EDUCATION & EXPERIENCE:
         </section>
 
         {/* Vector Engine Benchmark */}
-        <section id="benchmark" className="p-6 border border-slate-200/90 dark:border-slate-800/90 rounded-xl bg-white dark:bg-slate-900/40 space-y-4 shadow-xs">
+        <section id="benchmark" className="p-6 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b0f19] space-y-4 shadow-xs">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-3">
             <div>
               <h2 className="text-xl font-bold text-slate-950 dark:text-white flex items-center gap-2">
-                <Gauge className="w-5 h-5 text-teal-800 dark:text-teal-400" /> In-Browser Vector Engine Benchmark
+                <Gauge className="w-5 h-5 text-cyan-800 dark:text-cyan-400" /> In-Browser Vector Engine Benchmark
               </h2>
               <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
                 Stress-testing Euclidean distance across 50,000 iterations of 128-dimensional dense float vectors in memory.
@@ -1956,7 +1956,7 @@ EDUCATION & EXPERIENCE:
             <button
               onClick={runVectorBenchmark}
               disabled={isBenchmarking}
-              className="px-4 py-2 bg-teal-600 hover:bg-teal-700 dark:bg-teal-400 dark:hover:bg-teal-300 text-white dark:text-slate-950 text-xs font-mono font-bold rounded-lg disabled:opacity-50 transition flex items-center gap-2 self-start sm:self-auto shadow-xs"
+              className="px-4 py-2 bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 text-xs font-mono font-bold rounded-lg disabled:opacity-50 transition flex items-center gap-2 self-start sm:self-auto shadow-xs glow-cyan"
             >
               {isBenchmarking ? (
                 <>
@@ -1971,21 +1971,21 @@ EDUCATION & EXPERIENCE:
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 font-mono text-xs">
-            <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
+            <div className="p-3 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800">
               <span className="text-slate-600 dark:text-slate-400 block mb-1 font-semibold">Standard Loop</span>
               <span className="text-lg font-bold text-slate-950 dark:text-slate-100">
                 {benchmarkResults ? `${benchmarkResults.jsTime} ms` : "–"}
               </span>
               <span className="text-[10px] text-slate-500 block mt-1">Direct indexing</span>
             </div>
-            <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
+            <div className="p-3 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800">
               <span className="text-slate-600 dark:text-slate-400 block mb-1 font-semibold">Unrolled SIMD-Style Vector</span>
-              <span className="text-lg font-bold text-teal-800 dark:text-teal-400">
+              <span className="text-lg font-bold text-cyan-800 dark:text-cyan-400">
                 {benchmarkResults ? `${benchmarkResults.optTime} ms` : "–"}
               </span>
               <span className="text-[10px] text-slate-500 block mt-1">4-way parallel stride</span>
             </div>
-            <div className="p-3 bg-slate-50 dark:bg-slate-950 rounded-lg border border-slate-200 dark:border-slate-800">
+            <div className="p-3 bg-slate-50 dark:bg-[#020617] rounded-lg border border-slate-200 dark:border-slate-800">
               <span className="text-slate-600 dark:text-slate-400 block mb-1 font-semibold">Measured Speedup</span>
               <span className="text-lg font-bold text-emerald-800 dark:text-emerald-400">
                 {benchmarkResults ? benchmarkResults.speedup : "–"}
@@ -2005,7 +2005,7 @@ EDUCATION & EXPERIENCE:
               href="https://dev.to/christian-otieno"
               target="_blank"
               rel="noreferrer"
-              className="text-xs font-mono text-teal-800 dark:text-teal-400 hover:underline flex items-center gap-1 font-bold"
+              className="text-xs font-mono text-cyan-800 dark:text-cyan-400 hover:underline flex items-center gap-1 font-bold"
             >
               dev.to/christian-otieno <ArrowUpRight className="w-3.5 h-3.5" />
             </a>
@@ -2017,10 +2017,10 @@ EDUCATION & EXPERIENCE:
                 href={art.link}
                 target="_blank"
                 rel="noreferrer"
-                className="block p-5 border border-slate-200/90 dark:border-slate-800/80 rounded-xl bg-white dark:bg-slate-900/20 hover:border-teal-500/50 dark:hover:border-teal-500/40 transition group shadow-xs hover:shadow-md"
+                className="block p-5 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b0f19] hover:border-cyan-500/50 dark:hover:border-cyan-500/40 transition group shadow-xs hover:shadow-md"
               >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1">
-                  <h3 className="text-base font-semibold text-slate-950 dark:text-slate-100 group-hover:text-teal-800 dark:group-hover:text-teal-400 transition">
+                  <h3 className="text-base font-semibold text-slate-950 dark:text-slate-100 group-hover:text-cyan-800 dark:group-hover:text-cyan-400 transition">
                     <ScrambleText text={art.title} />
                   </h3>
                   <span className="text-xs font-mono text-slate-500">{art.date}</span>
@@ -2049,7 +2049,7 @@ EDUCATION & EXPERIENCE:
                 Independent exploration in computational physics, complex systems, and formal logic.
               </p>
             </div>
-            <span className="text-[11px] font-mono text-teal-800 dark:text-teal-400 font-bold">
+            <span className="text-[11px] font-mono text-cyan-800 dark:text-cyan-400 font-bold">
               Interactive Gravitational Lensing (Drag to Lens) &darr;
             </span>
           </div>
@@ -2062,7 +2062,7 @@ EDUCATION & EXPERIENCE:
                 y: Math.round(e.clientY - rect.top),
               });
             }}
-            className="relative rounded-xl border border-slate-200/90 dark:border-slate-800 overflow-hidden bg-white dark:bg-slate-950 p-3 cursor-move shadow-xs"
+            className="relative rounded-xl border border-slate-200/90 dark:border-slate-800 overflow-hidden bg-white dark:bg-[#020617] p-3 cursor-move shadow-xs"
           >
             <div className="flex justify-between items-center text-xs font-mono text-slate-700 dark:text-slate-300 mb-2 px-1 font-medium">
               <span>Relativistic Light Deflection Raytracer (alpha = 4GM / c^2 xi)</span>
@@ -2072,7 +2072,7 @@ EDUCATION & EXPERIENCE:
               ref={lensingCanvasRef}
               width={540}
               height={140}
-              className="w-full h-28 rounded bg-slate-100 dark:bg-slate-950"
+              className="w-full h-28 rounded bg-slate-100 dark:bg-[#0b0f19]"
             />
           </div>
 
@@ -2082,17 +2082,17 @@ EDUCATION & EXPERIENCE:
               return (
                 <div
                   key={hobby.title}
-                  className="p-5 border border-slate-200/90 dark:border-slate-800/80 rounded-xl bg-white dark:bg-slate-900/20 hover:border-slate-300 dark:hover:border-slate-700 transition flex flex-col justify-between shadow-xs"
+                  className="p-5 border border-slate-200/90 dark:border-slate-800 rounded-xl bg-white dark:bg-[#0b0f19] hover:border-cyan-500/40 transition flex flex-col justify-between shadow-xs"
                 >
                   <div>
                     <div className="flex items-center justify-between gap-2 mb-2">
                       <div className="flex items-center gap-2">
-                        <Icon className="w-4 h-4 text-teal-800 dark:text-teal-400" />
+                        <Icon className="w-4 h-4 text-cyan-800 dark:text-cyan-400" />
                         <h3 className="text-sm sm:text-base font-semibold text-slate-950 dark:text-slate-100">
                           {hobby.title}
                         </h3>
                       </div>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium">
+                      <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-100 dark:bg-[#020617] border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 font-medium">
                         {hobby.badge}
                       </span>
                     </div>
@@ -2115,12 +2115,12 @@ EDUCATION & EXPERIENCE:
           <div className="flex flex-wrap gap-4 pt-2">
             <button
               onClick={() => handleCopy("christianamos67@gmail.com", "email-copy")}
-              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200 hover:border-teal-600 dark:hover:border-slate-700 transition shadow-2xs"
+              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200 hover:border-cyan-600 dark:hover:border-slate-700 transition shadow-2xs"
             >
               {copiedKey === "email-copy" ? (
                 <Check className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
               ) : (
-                <Mail className="w-4 h-4 text-teal-800 dark:text-teal-400" />
+                <Mail className="w-4 h-4 text-cyan-800 dark:text-cyan-400" />
               )}
               <span>{copiedKey === "email-copy" ? "Copied Email!" : "christianamos67@gmail.com"}</span>
             </button>
@@ -2129,7 +2129,7 @@ EDUCATION & EXPERIENCE:
               href="https://github.com/Christian3788"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-700 transition shadow-2xs"
+              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-700 transition shadow-2xs"
             >
               <GithubIcon className="w-4 h-4" /> GitHub
             </a>
@@ -2137,7 +2137,7 @@ EDUCATION & EXPERIENCE:
               href="https://www.linkedin.com/in/christian-otieno-9a9806229/"
               target="_blank"
               rel="noreferrer"
-              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-700 transition text-sky-700 dark:text-sky-400 shadow-2xs"
+              className="flex items-center gap-2 px-5 py-2.5 bg-white dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 rounded-lg text-xs sm:text-sm font-mono text-slate-800 dark:text-slate-200 hover:border-slate-400 dark:hover:border-slate-700 transition text-sky-700 dark:text-sky-400 shadow-2xs"
             >
               <LinkedinIcon className="w-4 h-4" /> LinkedIn
             </a>
@@ -2145,16 +2145,16 @@ EDUCATION & EXPERIENCE:
         </section>
       </main>
 
-      {/* 3. Responsive Dock Optimization */}
-      <aside aria-label="Quick Actions" className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border border-slate-300/90 dark:border-slate-800 rounded-full px-3.5 py-1.5 sm:px-4 sm:py-2 shadow-xl flex items-center gap-2.5 sm:gap-3 text-xs font-mono">
+      {/* Floating Action Dock */}
+      <aside aria-label="Quick Actions" className="fixed bottom-3 sm:bottom-5 left-1/2 -translate-x-1/2 z-40 bg-white/95 dark:bg-[#0b0f19]/95 backdrop-blur-md border border-slate-300/90 dark:border-slate-800 rounded-full px-3.5 py-1.5 sm:px-4 sm:py-2 shadow-xl flex items-center gap-2.5 sm:gap-3 text-xs font-mono">
         <button
           onClick={() => {
             playHapticClick(90, 0.02);
             setIsCommandOpen(true);
           }}
-          className="flex items-center gap-1.5 text-slate-800 dark:text-slate-200 hover:text-teal-800 dark:hover:text-teal-400 font-bold transition"
+          className="flex items-center gap-1.5 text-slate-800 dark:text-slate-200 hover:text-cyan-800 dark:hover:text-cyan-400 font-bold transition"
         >
-          <Command className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
+          <Command className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
           <span className="hidden sm:inline">Actions</span>
           <kbd className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400">Ctrl+K</kbd>
         </button>
@@ -2166,7 +2166,7 @@ EDUCATION & EXPERIENCE:
           className="flex items-center gap-1 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition font-semibold"
           title="Download Plaintext Resume"
         >
-          <Download className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
+          <Download className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
           <span>CV</span>
         </button>
 
@@ -2176,7 +2176,7 @@ EDUCATION & EXPERIENCE:
           onClick={() => handleCopy("christianamos67@gmail.com", "quick-copy")}
           className="flex items-center gap-1 text-slate-700 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition font-semibold"
         >
-          <Mail className="w-3.5 h-3.5 text-teal-700 dark:text-teal-400" />
+          <Mail className="w-3.5 h-3.5 text-cyan-700 dark:text-cyan-400" />
           <span>
             {copiedKey === "quick-copy" ? "Copied!" : "Email"}
           </span>
@@ -2186,9 +2186,9 @@ EDUCATION & EXPERIENCE:
       {/* Command Palette Drawer */}
       {isCommandOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 dark:bg-black/80 backdrop-blur-xs flex items-start justify-center pt-24 p-4">
-          <div className="w-full max-w-lg bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl overflow-hidden shadow-2xl font-mono text-xs">
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/60">
-              <Command className="w-4 h-4 text-teal-800 dark:text-teal-400" />
+          <div className="w-full max-w-lg bg-white dark:bg-[#020617] border border-slate-300 dark:border-slate-800 rounded-xl overflow-hidden shadow-2xl font-mono text-xs">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-[#0b0f19]">
+              <Command className="w-4 h-4 text-cyan-800 dark:text-cyan-400" />
               <input
                 type="text"
                 value={commandQuery}
@@ -2223,7 +2223,7 @@ EDUCATION & EXPERIENCE:
                     playHapticClick(90, 0.02);
                     setIsCommandOpen(false);
                   }}
-                  className="block px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-800 dark:text-slate-300 hover:text-teal-800 dark:hover:text-teal-400 transition font-medium"
+                  className="block px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-[#0b0f19] text-slate-800 dark:text-slate-300 hover:text-cyan-800 dark:hover:text-cyan-400 transition font-medium"
                 >
                   {cmd.label}
                 </a>
@@ -2238,7 +2238,7 @@ EDUCATION & EXPERIENCE:
                   setIsCommandOpen(false);
                   setIsResumeOpen(true);
                 }}
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition flex items-center justify-between font-medium"
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-[#0b0f19] text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition flex items-center justify-between font-medium"
               >
                 <span>Open Resume Drawer</span>
                 <span className="text-slate-500 text-[10px]">Action</span>
@@ -2248,7 +2248,7 @@ EDUCATION & EXPERIENCE:
                   handleCopy("christianamos67@gmail.com", "email-copy");
                   setIsCommandOpen(false);
                 }}
-                className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-slate-900 text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition flex items-center justify-between font-medium"
+                className="w-full text-left px-3 py-2 rounded-md hover:bg-slate-100 dark:hover:bg-[#0b0f19] text-slate-800 dark:text-slate-300 hover:text-slate-950 dark:hover:text-white transition flex items-center justify-between font-medium"
               >
                 <span>Copy Email (christianamos67@gmail.com)</span>
                 <span className="text-slate-500 text-[10px]">Clipboard</span>
@@ -2261,10 +2261,10 @@ EDUCATION & EXPERIENCE:
       {/* Resume Modal */}
       {isResumeOpen && (
         <div className="fixed inset-0 z-50 bg-black/40 dark:bg-black/80 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="w-full max-w-3xl bg-white dark:bg-slate-950 border border-slate-300 dark:border-slate-800 rounded-xl overflow-hidden shadow-2xl p-6 space-y-6">
+          <div className="w-full max-w-3xl bg-white dark:bg-[#020617] border border-slate-300 dark:border-slate-800 rounded-xl overflow-hidden shadow-2xl p-6 space-y-6">
             <div className="flex items-center justify-between border-b border-slate-200 dark:border-slate-800 pb-3">
               <div>
-                <span className="text-xs font-mono text-teal-800 dark:text-teal-400 uppercase tracking-wider font-bold">
+                <span className="text-xs font-mono text-cyan-800 dark:text-cyan-400 uppercase tracking-wider font-bold">
                   Curriculum Vitae
                 </span>
                 <h3 className="text-xl font-bold text-slate-950 dark:text-white mt-1">Christian Amos Otieno</h3>
@@ -2357,7 +2357,7 @@ EDUCATION & EXPERIENCE:
             <div className="flex justify-between items-center pt-3 border-t border-slate-200 dark:border-slate-800">
               <button
                 onClick={downloadDynamicResume}
-                className="flex items-center gap-1.5 px-4 py-2 bg-teal-600 hover:bg-teal-700 dark:bg-teal-400 dark:hover:bg-teal-300 text-white dark:text-slate-950 text-xs font-semibold rounded-md transition shadow-2xs"
+                className="flex items-center gap-1.5 px-4 py-2 bg-cyan-600 hover:bg-cyan-700 dark:bg-cyan-500 dark:hover:bg-cyan-400 text-white dark:text-slate-950 text-xs font-semibold rounded-md transition shadow-2xs glow-cyan"
               >
                 <Download className="w-3.5 h-3.5" /> Compile & Download CV
               </button>
@@ -2366,7 +2366,7 @@ EDUCATION & EXPERIENCE:
                   playHapticClick(90, 0.02);
                   setIsResumeOpen(false);
                 }}
-                className="px-4 py-2 bg-slate-100 dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-xs font-mono text-slate-800 dark:text-slate-300 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 font-medium"
+                className="px-4 py-2 bg-slate-100 dark:bg-[#0b0f19] border border-slate-300 dark:border-slate-800 text-xs font-mono text-slate-800 dark:text-slate-300 rounded-md hover:bg-slate-200 dark:hover:bg-slate-800 font-medium"
               >
                 Close
               </button>
@@ -2376,7 +2376,7 @@ EDUCATION & EXPERIENCE:
       )}
 
       {/* Footer */}
-      <footer className="relative z-10 border-t border-slate-200 dark:border-slate-900 py-10 text-center text-xs font-mono text-slate-600 dark:text-slate-400 pb-20">
+      <footer className="relative z-10 border-t border-slate-200 dark:border-slate-800 py-10 text-center text-xs font-mono text-slate-600 dark:text-slate-400 pb-20">
         © {new Date().getFullYear()} Christian Amos Otieno. Built with Go, Next.js & Tailwind CSS.
       </footer>
     </div>
